@@ -1,6 +1,15 @@
 package com.atgc.hd;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.net.DhcpInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -8,45 +17,88 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.atgc.hd.comm.Utils;
+import com.atgc.hd.comm.net.ClientSocket;
 
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+
+public class MainActivity extends Activity {
+    private TextView tv_net, tvResult;
+
+    private WifiManager my_wifiManager;
+    private WifiInfo wifiInfo;
+    private DhcpInfo dhcpInfo;
+
+
+    @SuppressLint("WrongConstant")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        my_wifiManager = ((WifiManager) getSystemService("wifi"));
+        dhcpInfo = my_wifiManager.getDhcpInfo();
+        wifiInfo = my_wifiManager.getConnectionInfo();
+
+        initViews();
+    }
+
+    private void initViews() {
+        tvResult = findViewById(R.id.tv_net);
+        tv_net = findViewById(R.id.tv_start);
+        tv_net.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startActivity(new Intent(MainActivity.this, SecondActivity.class));
             }
         });
+        Utils.printIpAddress();
+        /**
+         C:\ProgramData\Oracle\Java\javapath;%JAVA_HOME%\bin;%JAVA_HOME%\jre\bin;C:\Program Files\Git\cmd;C:\Program Files\TortoiseSVN\bin
+
+         */
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    protected void onResume() {
+        super.onResume();
+        StringBuilder sb = new StringBuilder();
+        sb.append("网络信息：");
+//        sb.append("\nipAddress：" + Utils.getLocalInetAddress().toString());
+//        sb.append("\nMac：" + Utils.getLocalMacAddressFromIp(MainActivity.this));
+//        sb.append("\nGateWay：" + Utils.getGateway());
+        sb.append("\nipAddress：" + intToIp(dhcpInfo.ipAddress));
+        sb.append("\nnetmask：" + intToIp(dhcpInfo.netmask));
+        sb.append("\ngateway：" + intToIp(dhcpInfo.gateway));
+        sb.append("\nserverAddress：" + intToIp(dhcpInfo.serverAddress));
+        sb.append("\ndns1：" + intToIp(dhcpInfo.dns1));
+        sb.append("\ndns2：" + intToIp(dhcpInfo.dns2));
+        sb.append("\n");
+        System.out.println(intToIp(dhcpInfo.ipAddress));
+        System.out.println(intToIp(dhcpInfo.netmask));
+        System.out.println(intToIp(dhcpInfo.gateway));
+        System.out.println(intToIp(dhcpInfo.serverAddress));
+        System.out.println(intToIp(dhcpInfo.dns1));
+        System.out.println(intToIp(dhcpInfo.dns2));
+        System.out.println(dhcpInfo.leaseDuration);
+
+        sb.append("Wifi信息：");
+        sb.append("\nIpAddress：" + intToIp(wifiInfo.getIpAddress()));
+        sb.append("\nMacAddress：" + wifiInfo.getMacAddress());
+        tvResult.setText(sb.toString());
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    private String intToIp(int paramInt) {
+        return (paramInt & 0xFF) + "." + (0xFF & paramInt >> 8) + "." + (0xFF & paramInt >> 16) + "."
+                + (0xFF & paramInt >> 24);
     }
+
+
+
+
 }
