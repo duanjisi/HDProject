@@ -9,7 +9,7 @@ import java.util.Date;
  * <p>描述： 日期工具类
  * <p>作者： liangguokui 2018/1/11
  */
-public class DateUtils {
+public class DateUtil {
 
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     public static final String MINUTE_PATTERN = "yyyy-MM-dd HH:mm";
@@ -19,6 +19,26 @@ public class DateUtils {
     public static final String YEAR_PATTERN = "yyyy";
     public static final String MINUTE_ONLY_PATTERN = "mm";
     public static final String HOUR_ONLY_PATTERN = "HH";
+
+    /**
+     * 当前手机系统时间
+     * <p>返回指定格式的日期使用{@link #currentTime(String)}</p>
+     * @return 返回格式：yyyy-MM-dd HH:mm:ss
+     */
+    public static String currentTime() {
+        return currentTime(DateUtil.DATE_TIME_PATTERN);
+    }
+
+    /**
+     * 当前手机系统时间
+     * @param format 指定格式
+     * @return
+     */
+    public static String currentTime(String format) {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(date);
+    }
 
     /**
      * 日期相加减天数
@@ -34,7 +54,7 @@ public class DateUtils {
             date = new Date();
         }
         if (!includeTime) {
-            SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN);
+            SimpleDateFormat sdf = new SimpleDateFormat(DateUtil.DATE_PATTERN);
             date = sdf.parse(sdf.format(date));
         }
         Calendar cal = Calendar.getInstance();
@@ -52,8 +72,8 @@ public class DateUtils {
      * @throws ParseException
      */
     public static String dateFormat(Date date, String pattern) throws ParseException {
-        if (StringUtils.isEmpty(pattern)) {
-            pattern = DateUtils.DATE_PATTERN;
+        if (StringUtil.isEmpty(pattern)) {
+            pattern = DateUtil.DATE_PATTERN;
         }
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         return sdf.format(date);
@@ -68,8 +88,8 @@ public class DateUtils {
      * @throws ParseException
      */
     public static Date dateParse(String dateTimeString, String pattern) {
-        if (StringUtils.isEmpty(pattern)) {
-            pattern = DateUtils.DATE_PATTERN;
+        if (StringUtil.isEmpty(pattern)) {
+            pattern = DateUtil.DATE_PATTERN;
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
@@ -92,7 +112,7 @@ public class DateUtils {
      * @throws ParseException
      */
     public static String dateTimeToDateString(Date dateTime) throws ParseException {
-        String dateTimeString = DateUtils.dateFormat(dateTime, DateUtils.DATE_TIME_PATTERN);
+        String dateTimeString = DateUtil.dateFormat(dateTime, DateUtil.DATE_TIME_PATTERN);
         return dateTimeString.substring(0, 10);
     }
 
@@ -105,7 +125,7 @@ public class DateUtils {
      * @throws ParseException
      */
     public static String dateTimeToDateStringIfTimeEndZero(Date dateTime) throws ParseException {
-        String dateTimeString = DateUtils.dateFormat(dateTime, DateUtils.DATE_TIME_PATTERN);
+        String dateTimeString = DateUtil.dateFormat(dateTime, DateUtil.DATE_TIME_PATTERN);
         if ("00:00:00".endsWith(dateTimeString)) {
             return dateTimeString.substring(0, 10);
         } else {
@@ -410,7 +430,7 @@ public class DateUtils {
 
     public static void main(String[] args) throws Exception {
         /*System.out.println(dateTimeToDate(new Date()));
-		System.out.println(dateParse("2017-02-04 14:58:20", null));
+        System.out.println(dateParse("2017-02-04 14:58:20", null));
 		System.out.println(dateTimeToDateStringIfTimeEndZero(new Date()));
 		System.out.println(dateTimeToDateStringIfTimeEndZero(dateTimeToDate(new Date())));*/
         //System.out.println(dateBetween(dateParse("2017-01-30", null), dateParse("2017-02-01", null)));

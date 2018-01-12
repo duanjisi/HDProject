@@ -1,15 +1,18 @@
 package com.atgc.hd.comm.utils;
 
+import android.os.Environment;
+
+import java.io.File;
 import java.util.Random;
 
 /**
  * 描述： 字符串工具类
  * 作者： liangguokui 2018/1/11
  */
-public class StringUtils {
+public class StringUtil {
     private static final String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    private StringUtils() {
+    private StringUtil() {
 
     }
 

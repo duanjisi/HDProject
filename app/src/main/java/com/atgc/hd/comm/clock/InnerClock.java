@@ -1,6 +1,6 @@
 package com.atgc.hd.comm.clock;
 
-import com.atgc.hd.comm.utils.DateUtils;
+import com.atgc.hd.comm.utils.DateUtil;
 
 import java.util.Date;
 import java.util.Timer;
@@ -35,7 +35,7 @@ public class InnerClock {
      * @param time
      */
     public boolean initClock(String time) {
-        return initClock(time, DateUtils.DATE_TIME_PATTERN);
+        return initClock(time, DateUtil.DATE_TIME_PATTERN);
     }
 
     /**
@@ -46,7 +46,7 @@ public class InnerClock {
      * @param time
      */
     public boolean initClock(String time, String format) {
-        serviceDate = DateUtils.dateParse(time, format);
+        serviceDate = DateUtil.dateParse(time, format);
         startTick();
         return serviceDate != null;
     }
@@ -75,7 +75,7 @@ public class InnerClock {
      * @return 返回一串serialnumber，用于取消提醒
      */
     public void schedule(String alarmTime, TimerTask timerTask) {
-        Date date = DateUtils.dateParse(alarmTime, DateUtils.DATE_TIME_PATTERN);
+        Date date = DateUtil.dateParse(alarmTime, DateUtil.DATE_TIME_PATTERN);
 
         long delay = date.getTime() - serviceDate.getTime() - getTickCount();
 
@@ -89,7 +89,7 @@ public class InnerClock {
      * @return
      */
     public Date getInnerClockDate() {
-        return DateUtils.dateAddSeconds(serviceDate, period);
+        return DateUtil.dateAddSeconds(serviceDate, period);
     }
 
 }
