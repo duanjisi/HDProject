@@ -2,30 +2,15 @@ package com.atgc.hd;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.atgc.hd.comm.Utils;
-import com.atgc.hd.comm.net.ClientSocket;
-
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 
 public class MainActivity extends Activity {
     private TextView tv_net, tvResult;
@@ -40,6 +25,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         my_wifiManager = ((WifiManager) getSystemService("wifi"));
         dhcpInfo = my_wifiManager.getDhcpInfo();
@@ -97,8 +83,6 @@ public class MainActivity extends Activity {
         return (paramInt & 0xFF) + "." + (0xFF & paramInt >> 8) + "." + (0xFF & paramInt >> 16) + "."
                 + (0xFF & paramInt >> 24);
     }
-
-
 
 
 }
