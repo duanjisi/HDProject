@@ -47,8 +47,14 @@ public class InnerClock {
      */
     public boolean initClock(String time, String format) {
         serviceDate = DateUtil.dateParse(time, format);
-        startTick();
-        return serviceDate != null;
+
+        boolean initSuccess = serviceDate != null;
+        if (initSuccess) {
+            startTick();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void startTick() {

@@ -1,5 +1,7 @@
 package com.atgc.hd.comm.utils;
 
+import com.atgc.hd.comm.clock.InnerClock;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -32,6 +34,7 @@ public class DateUtil {
 
     /**
      * 当前手机系统时间
+     * <p>注：若时间需要上传到服务器端，请使用{@link InnerClock#getInnerClockDate()}
      * @param format 指定格式
      * @return
      */
