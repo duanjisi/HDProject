@@ -59,10 +59,6 @@ public class SocketClientHandler {
 
                 @Override
                 public void onDisconnected(SocketClient client) {
-//                    SocketClient.State state = client.getState();
-//                    if (socketCallback != null) {
-//                        socketCallback.onError("连接异常!");
-//                    }
                     new AsyncTask<Void, Void, Void>() {
                         @Override
                         protected Void doInBackground(Void... params) {
@@ -89,7 +85,14 @@ public class SocketClientHandler {
                     if (datas != null && datas.length != 0) {
                         byteBuf.writeBytes(datas);
                         String version = ProtocolDecoder.parseString(byteBuf, 4);
+//                        String contentLength = ProtocolDecoder.parseNumber(byteBuf, 4);
+                        String srcID = ProtocolDecoder.parseString(byteBuf, 20);
+                        String destID = ProtocolDecoder.parseString(byteBuf, 20);
+                        String request = ProtocolDecoder.parseNumber(byteBuf, 1);
+                        String packNo = ProtocolDecoder.parseNumber(byteBuf, 4);
                         String contentLength = ProtocolDecoder.parseNumber(byteBuf, 4);
+                        String hold = ProtocolDecoder.parseNumber(byteBuf, 2);
+                        String crc = ProtocolDecoder.parseNumber(byteBuf, 2);
                         //内容长度
                         long length = Long.parseLong(contentLength);
                         // 读取消息内容

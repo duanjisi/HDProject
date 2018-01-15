@@ -1,6 +1,6 @@
 package com.atgc.hd.comm;
 
-import com.atgc.hd.comm.utils.DateUtils;
+import com.atgc.hd.comm.utils.DateUtil;
 import com.atgc.hd.comm.utils.StringUtils;
 import com.orhanobut.logger.Logger;
 
@@ -28,7 +28,7 @@ public class ProtocolDecoder {
         try {
             str = new String(bytes, "utf-8");
         } catch (Exception e) {
-            Logger.d("时间为" + DateUtils.getDate(new Date()) + "解码器转换字符串发生异常:" + e.getMessage());
+            Logger.d("时间为" + DateUtil.getDate(new Date()) + "解码器转换字符串发生异常:" + e.getMessage());
             return null;
         }
         return str;
@@ -51,7 +51,7 @@ public class ProtocolDecoder {
         try {
             result = StringUtils.binary(bytes, 10);
         } catch (Exception e) {
-            Logger.d("时间为" + DateUtils.getDate(new Date()) + "解码器转换数字异常:" + e.getMessage());
+            Logger.d("时间为" + DateUtil.getDate(new Date()) + "解码器转换数字异常:" + e.getMessage());
             return null;
         }
         return result;

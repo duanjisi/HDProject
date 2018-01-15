@@ -3,6 +3,7 @@ package com.atgc.hd.comm.utils;
 import android.os.Environment;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.Random;
 
 /**
@@ -50,10 +51,8 @@ public class StringUtils {
     /**
      * 将byte[]转为各种进制的字符串
      *
-     * @param bytes
-     *            byte[]
-     * @param radix
-     *            基数可以转换进制的范围，从Character.MIN_RADIX到Character.MAX_RADIX，超出范围后变为10进制
+     * @param bytes byte[]
+     * @param radix 基数可以转换进制的范围，从Character.MIN_RADIX到Character.MAX_RADIX，超出范围后变为10进制
      * @return 转换后的字符串
      */
     public static String binary(byte[] bytes, int radix) {

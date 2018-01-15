@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import io.netty.util.internal.StringUtil;
 
 /**
  * <p>描述： 日期工具类
@@ -72,7 +73,7 @@ public class DateUtil {
      * @throws ParseException
      */
     public static String dateFormat(Date date, String pattern) throws ParseException {
-        if (StringUtil.isEmpty(pattern)) {
+        if (StringUtils.isEmpty(pattern)) {
             pattern = DateUtil.DATE_PATTERN;
         }
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
@@ -88,7 +89,7 @@ public class DateUtil {
      * @throws ParseException
      */
     public static Date dateParse(String dateTimeString, String pattern) {
-        if (StringUtil.isEmpty(pattern)) {
+        if (StringUtils.isEmpty(pattern)) {
             pattern = DateUtil.DATE_PATTERN;
         }
 

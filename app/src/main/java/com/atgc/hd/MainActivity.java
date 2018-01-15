@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
 
         initViews();
 
-        throw new NullPointerException("发生空指针异常啦。。。。");
+//        throw new NullPointerException("发生空指针异常啦。。。。");
     }
 
     private void initViews() {

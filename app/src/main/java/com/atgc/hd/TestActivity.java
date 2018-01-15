@@ -40,8 +40,6 @@ public class TestActivity extends BaseActivity {
 //        map.put("UserName", "张三");
 //        map.put("UserNo", "1006");
 //        map.put("OpTime", "2017-11-10 08:00:01");
-
-
         map.put("Type", "1");
         map.put("deviceID", "10012017020000000000");
         map.put("manufacturer", "XXX厂商");

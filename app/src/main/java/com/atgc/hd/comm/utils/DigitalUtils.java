@@ -3,7 +3,7 @@ package com.atgc.hd.comm.utils;
 
 import android.text.TextUtils;
 
-import com.atgc.hd.MyApplication;
+import com.atgc.hd.AppApplication;
 import com.atgc.hd.entity.Header;
 import com.orhanobut.logger.Logger;
 
@@ -125,7 +125,7 @@ public class DigitalUtils {
         Logger.i("info", "===json:" + json);
         int contentLength = json.getBytes().length;
         int crcCode = CRCUtil.crc16CCITTFalse(json.getBytes(), contentLength);
-        Header header = MyApplication.getInstance().getHeader();
+        Header header = AppApplication.getInstance().getHeader();
         final ByteBuf byteBuf = Unpooled.buffer();
         byteBuf.writeBytes(header.getVersion().getBytes());
         byteBuf.writeBytes(header.getSrcID().getBytes());
