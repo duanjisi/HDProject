@@ -29,13 +29,12 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.println(4, "hahawtf", "let me see.......................................................");
-
-        Logger.v("hahha", "let me see...............");
-        Logger.d("hahha", "let me see...............");
-        Logger.i("hahha", "let me see...............");
-        Logger.w("hahha", "let me see...............");
-        Logger.e("hahha", "let me see...............");
+//        Log.println(4, "hahawtf", "let me see.......................................................");
+//        Logger.v("hahha", "let me see...............");
+//        Logger.d("hahha", "let me see...............");
+//        Logger.i("hahha", "let me see...............");
+//        Logger.w("hahha", "let me see...............");
+//        Logger.e("hahha", "let me see...............");
 
 
         Logger.addLogAdapter(new DiskLogAdapter());
