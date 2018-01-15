@@ -28,4 +28,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation project(':logger')
+    implementation files('libs/json-lib-2.2.3-jdk13-sources.jar')
+    compile 'com.github.vilyever:AndroidSocketClient:1.4.1'
 }

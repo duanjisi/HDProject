@@ -9,6 +9,12 @@
         android:layout_centerInParent="true"
         android:orientation="vertical">
 
+        <Button
+            android:id="@+id/btn_Param"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="上传参数" />
+
         <TextView
             android:id="@+id/tv_device_register"
             android:layout_width="wrap_content"

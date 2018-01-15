@@ -7,12 +7,15 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.atgc.hd.comm.ProtocolDecoder;
+import com.atgc.hd.comm.utils.DigitalUtils;
 import com.atgc.hd.comm.utils.Int2ByteUtil;
 import com.atgc.hd.entity.Header;
 import com.orhanobut.logger.Logger;
+import com.vilyever.socketclient.SocketClient;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -24,6 +27,7 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.HashMap;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -102,7 +106,11 @@ public class SecondActivity extends Activity {
                     sb.append("request:" + request + "\n");
                     sb.append("contentLength:" + contentLength + "\n");
                     sb.append("hold:" + hold + "\n");
-                    txt1.append(sb.toString());
+                    sb.append("packNo:" + packNo + "\n");
+                    sb.append("crc:" + crc + "\n");
+                    String str = sb.toString();
+                    Logger.i("info", "=====str:" + str);
+                    txt1.append(str);
                 }
             }
         }
@@ -110,6 +118,7 @@ public class SecondActivity extends Activity {
     };
 
     private boolean running = true;
+    private Button btn_Param;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -120,9 +129,15 @@ public class SecondActivity extends Activity {
 
     private void initViews() {
 //        arr = getBytes();
-        Logger.i("info", "arr:" + arr);
+        Button btnParam = findViewById(R.id.btn_Param);
         tvRegister = findViewById(R.id.tv_device_register);
         txt1 = findViewById(R.id.tv_str);
+        btnParam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                testParam();
+            }
+        });
 
         tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,6 +146,21 @@ public class SecondActivity extends Activity {
             }
         });
     }
+
+
+    private void testParam() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("StartTime", "2017-11-10");
+        map.put("EndTime", "2017-11-10");
+        map.put("UserType", "MONTH_A");
+        map.put("CredenceType", "CAR_PLATE");
+        map.put("CredenceNo", "湘 A123456");
+        map.put("UserName", "张三");
+        map.put("UserNo", "1006");
+        map.put("OpTime", "2017-11-10 08:00:01");
+        DigitalUtils.getParamBytes("COM_LOAD_CERTIFICATE", map);
+    }
+
 
     @Override
     protected void onDestroy() {

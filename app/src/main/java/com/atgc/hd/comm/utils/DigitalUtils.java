@@ -3,8 +3,20 @@ package com.atgc.hd.comm.utils;
 
 import android.text.TextUtils;
 
-import java.nio.ByteBuffer;
+import com.atgc.hd.MyApplication;
+import com.atgc.hd.entity.Header;
+import com.orhanobut.logger.Logger;
+
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Locale;
+import java.util.Map;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * <p>描述： 数字转换工具类
@@ -71,7 +83,6 @@ public class DigitalUtils {
         return sb.toString();
     }
 
-
     /**
      * byte[]数组转换为16进制的字符串
      *
@@ -107,5 +118,48 @@ public class DigitalUtils {
             hexString.append(Integer.toHexString(0xFF & byteArray[i]));
         }
         return hexString.toString().toLowerCase();
+    }
+
+    public static byte[] getParamBytes(String cmd, Map<String, String> map) {
+        String json = getJson(cmd, map);
+        Logger.i("info", "===json:" + json);
+        int contentLength = json.getBytes().length;
+        int crcCode = CRCUtil.crc16CCITTFalse(json.getBytes(), contentLength);
+        Header header = MyApplication.getInstance().getHeader();
+        final ByteBuf byteBuf = Unpooled.buffer();
+        byteBuf.writeBytes(header.getVersion().getBytes());
+        byteBuf.writeBytes(header.getSrcID().getBytes());
+        byteBuf.writeBytes(header.getDestID().getBytes());
+        byteBuf.writeBytes(Int2ByteUtil.intTo1Bytes(Integer.parseInt(header.getRequest())));
+        byteBuf.writeBytes(Int2ByteUtil.intTo4Bytes(Integer.parseInt(header.getPackNo())));
+//        byteBuf.writeBytes(Int2ByteUtil.intTo4Bytes(Integer.parseInt(header.getContentLength())));
+        byteBuf.writeBytes(Int2ByteUtil.intTo4Bytes(contentLength));
+        byteBuf.writeBytes(Int2ByteUtil.intTo2Bytes(Integer.parseInt(header.getHold())));
+//        byteBuf.writeBytes(Int2ByteUtil.intTo2Bytes(Integer.parseInt(header.getCrc())));
+        byteBuf.writeBytes(Int2ByteUtil.intTo2Bytes(crcCode));
+        byteBuf.writeBytes(json.getBytes());
+        return byteBuf.array();
+    }
+
+
+    private static String getJson(String cmd, Map<String, String> map) {
+//        JSONObject Data = JSONObject.fromObject(map);
+        JSONObject object = new JSONObject();
+        try {
+            object.put("Command", cmd);
+            if (cmd.equals("COM_DEV_REGISTER")) {
+                JSONArray array = new JSONArray();
+
+                JSONObject obj = new JSONObject(map);
+                array.put(obj);
+                object.put("Data", array);
+            } else {
+                object.put("Data", map);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object.toString();
     }
 }

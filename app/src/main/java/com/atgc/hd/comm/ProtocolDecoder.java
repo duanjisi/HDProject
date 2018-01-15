@@ -15,7 +15,6 @@ import io.netty.buffer.ByteBuf;
 public class ProtocolDecoder {
     /**
      * byte数组转成字符串
-     *
      * @param buffer
      * @param length
      * @return String
