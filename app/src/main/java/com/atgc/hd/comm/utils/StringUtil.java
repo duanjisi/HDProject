@@ -1,6 +1,8 @@
 package com.atgc.hd.comm.utils;
 
-import java.math.BigInteger;
+import android.os.Environment;
+
+import java.io.File;
 import java.util.Random;
 
 /**

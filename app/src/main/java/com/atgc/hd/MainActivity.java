@@ -7,11 +7,13 @@ import android.net.DhcpInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.atgc.hd.comm.Utils;
 import com.orhanobut.logger.Logger;
+import com.orhanobut.logger.adapter.DiskLogAdapter;
 
 public class MainActivity extends Activity {
     private TextView tv_net, tvResult;
@@ -27,12 +29,24 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.println(4, "hahawtf", "let me see.......................................................");
+
+        Logger.v("hahha", "let me see...............");
+        Logger.d("hahha", "let me see...............");
+        Logger.i("hahha", "let me see...............");
+        Logger.w("hahha", "let me see...............");
+        Logger.e("hahha", "let me see...............");
+
+
+        Logger.addLogAdapter(new DiskLogAdapter());
 
         my_wifiManager = ((WifiManager) getSystemService("wifi"));
         dhcpInfo = my_wifiManager.getDhcpInfo();
         wifiInfo = my_wifiManager.getConnectionInfo();
 
         initViews();
+
+        throw new NullPointerException("发生空指针异常啦。。。。");
     }
 
     private void initViews() {
