@@ -3,6 +3,7 @@ package com.atgc.hd.comm.net;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,6 +13,8 @@ import java.io.Writer;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Created by duanjisi on 2018/1/11.
@@ -54,26 +57,20 @@ public class ClientSocket implements Runnable {
     private Socket client;
     private OutputStream os;
     BufferedReader br = null;
-    Handler handler, revHandler;
+    Handler handler;
+    Handler revHandler;
 
     public ClientSocket(Handler handler) {
         this.handler = handler;
-        try {
-            client = new Socket(HOST, PORT);
-            br = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            os = client.getOutputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void run() {
         try {
-            client.connect(new InetSocketAddress("1.1.9.30", 3000), 5000);
+            client = new Socket(HOST, PORT);
+//            client.connect(new InetSocketAddress(HOST, PORT), 5000);
             br = new BufferedReader(new InputStreamReader(client.getInputStream()));
             os = client.getOutputStream();
-
             new Thread() {
                 @Override
                 public void run() {
@@ -113,13 +110,30 @@ public class ClientSocket implements Runnable {
             };
             // 启动Looper
             Looper.loop();
-
         } catch (SocketTimeoutException e) {
             Message msg = new Message();
             msg.what = 0x123;
-            msg.obj = "网络连接超时！";
+//            msg.obj = "网络连接超时！";
+            msg.obj = e.getMessage();
             handler.sendMessage(msg);
         } catch (IOException e) {
+            e.printStackTrace();
+            Log.i("info", "" + e.getMessage());
+            Message msg = new Message();
+            msg.what = 0x123;
+            msg.obj = e.getMessage();
+            handler.sendMessage(msg);
+        }
+    }
+
+    public void sendMsg() {
+        try {
+            // 当用户按下按钮之后，将用户输入的数据封装成Message
+            // 然后发送给子线程Handler
+            Message msg = new Message();
+            msg.what = 0x345;
+            revHandler.sendMessage(msg);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

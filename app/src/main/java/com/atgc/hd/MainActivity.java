@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.atgc.hd.comm.Utils;
+import com.orhanobut.logger.Logger;
 
 public class MainActivity extends Activity {
     private TextView tv_net, tvResult;
@@ -44,10 +45,6 @@ public class MainActivity extends Activity {
             }
         });
         Utils.printIpAddress();
-        /**
-         C:\ProgramData\Oracle\Java\javapath;%JAVA_HOME%\bin;%JAVA_HOME%\jre\bin;C:\Program Files\Git\cmd;C:\Program Files\TortoiseSVN\bin
-
-         */
     }
 
     @Override
@@ -55,27 +52,27 @@ public class MainActivity extends Activity {
         super.onResume();
         StringBuilder sb = new StringBuilder();
         sb.append("网络信息：");
-//        sb.append("\nipAddress：" + Utils.getLocalInetAddress().toString());
-//        sb.append("\nMac：" + Utils.getLocalMacAddressFromIp(MainActivity.this));
-//        sb.append("\nGateWay：" + Utils.getGateway());
-        sb.append("\nipAddress：" + intToIp(dhcpInfo.ipAddress));
-        sb.append("\nnetmask：" + intToIp(dhcpInfo.netmask));
-        sb.append("\ngateway：" + intToIp(dhcpInfo.gateway));
-        sb.append("\nserverAddress：" + intToIp(dhcpInfo.serverAddress));
-        sb.append("\ndns1：" + intToIp(dhcpInfo.dns1));
-        sb.append("\ndns2：" + intToIp(dhcpInfo.dns2));
-        sb.append("\n");
-        System.out.println(intToIp(dhcpInfo.ipAddress));
-        System.out.println(intToIp(dhcpInfo.netmask));
-        System.out.println(intToIp(dhcpInfo.gateway));
-        System.out.println(intToIp(dhcpInfo.serverAddress));
-        System.out.println(intToIp(dhcpInfo.dns1));
-        System.out.println(intToIp(dhcpInfo.dns2));
-        System.out.println(dhcpInfo.leaseDuration);
-
-        sb.append("Wifi信息：");
-        sb.append("\nIpAddress：" + intToIp(wifiInfo.getIpAddress()));
-        sb.append("\nMacAddress：" + wifiInfo.getMacAddress());
+        sb.append("\nipAddress：" + Utils.getLocalInetAddress().toString());
+        sb.append("\nMac：" + Utils.getNewMac());
+        sb.append("\nGateWay：" + Utils.getGateway());
+//        sb.append("\nipAddress：" + intToIp(dhcpInfo.ipAddress));
+//        sb.append("\nnetmask：" + intToIp(dhcpInfo.netmask));
+//        sb.append("\ngateway：" + intToIp(dhcpInfo.gateway));
+//        sb.append("\nserverAddress：" + intToIp(dhcpInfo.serverAddress));
+//        sb.append("\ndns1：" + intToIp(dhcpInfo.dns1));
+//        sb.append("\ndns2：" + intToIp(dhcpInfo.dns2));
+//        sb.append("\n");
+//        System.out.println(intToIp(dhcpInfo.ipAddress));
+//        System.out.println(intToIp(dhcpInfo.netmask));
+//        System.out.println(intToIp(dhcpInfo.gateway));
+//        System.out.println(intToIp(dhcpInfo.serverAddress));
+//        System.out.println(intToIp(dhcpInfo.dns1));
+//        System.out.println(intToIp(dhcpInfo.dns2));
+//        System.out.println(dhcpInfo.leaseDuration);
+//
+//        sb.append("Wifi信息：");
+//        sb.append("\nIpAddress：" + intToIp(wifiInfo.getIpAddress()));
+//        sb.append("\nMacAddress：" + wifiInfo.getMacAddress());
         tvResult.setText(sb.toString());
     }
 
