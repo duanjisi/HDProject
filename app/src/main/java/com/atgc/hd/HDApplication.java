@@ -1,8 +1,10 @@
 package com.atgc.hd;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.atgc.hd.comm.crash.CrashHandler;
+import com.atgc.hd.comm.local.LocationService;
 import com.atgc.hd.comm.utils.FileUtil;
 import com.atgc.hd.entity.Header;
 import com.orhanobut.logger.Logger;
@@ -13,19 +15,27 @@ import com.orhanobut.logger.adapter.DiskLogAdapter;
  * <p>描述：
  * <p>作者： liangguokui 2018/1/12
  */
-public class AppApplication extends Application {
-    private static AppApplication mApplication;
+
+public class HDApplication extends Application {
+    private static Context context;
+    public static LocationService locationService;
+
+    private static HDApplication mApplication;
     private Header header = null;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mApplication = this;
+        context = getApplicationContext();
+
         initLog();
         initCrashHandler();
+
+        locationService = new LocationService(getApplicationContext());
     }
 
-    public synchronized static AppApplication getInstance() {
+    public synchronized static HDApplication getInstance() {
         return mApplication;
     }
 
@@ -56,5 +66,13 @@ public class AppApplication extends Application {
     private void initCrashHandler() {
         CrashHandler crashHandler = CrashHandler.instance();
         crashHandler.init(getApplicationContext());
+    }
+
+    public static Context applicationContext() {
+        return context;
+    }
+
+    public static LocationService locationService() {
+        return locationService;
     }
 }
