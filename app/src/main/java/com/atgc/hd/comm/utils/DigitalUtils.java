@@ -122,7 +122,6 @@ public class DigitalUtils {
 
     public static byte[] getParamBytes(String cmd, Map<String, String> map) {
         String json = getJson(cmd, map);
-        Logger.i("info", "===json:" + json);
         int contentLength = json.getBytes().length;
         int crcCode = CRCUtil.crc16CCITTFalse(json.getBytes(), contentLength);
         Header header = HDApplication.getInstance().getHeader();

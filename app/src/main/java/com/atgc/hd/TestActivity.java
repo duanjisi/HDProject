@@ -9,13 +9,14 @@ import android.widget.Button;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.comm.net.BaseDataRequest;
 import com.atgc.hd.comm.net.request.RegisterRequest;
+import com.atgc.hd.entity.Header;
 
 import java.util.HashMap;
 
 /**
- * Created by duanjisi on 2018/1/15.
+ * <p>描述：
+ * <p>作者：duanjisi 2018/1/16
  */
-
 public class TestActivity extends BaseActivity {
     private Button btn;
 

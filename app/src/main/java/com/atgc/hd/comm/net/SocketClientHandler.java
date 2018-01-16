@@ -26,7 +26,6 @@ public class SocketClientHandler {
     private static SocketClientHandler handler;
     private SocketClient socketClient;
     private SocketCallback socketCallback;
-    final ByteBuf byteBuf = Unpooled.buffer();
 
     public void setSocketCallback(SocketCallback socketCallback) {
         this.socketCallback = socketCallback;
@@ -83,22 +82,7 @@ public class SocketClientHandler {
                 public void onResponse(SocketClient client, @NonNull SocketResponsePacket responsePacket) {
                     byte[] datas = responsePacket.getData();
                     if (datas != null && datas.length != 0) {
-                        byteBuf.writeBytes(datas);
-                        String version = ProtocolDecoder.parseString(byteBuf, 4);
-//                        String contentLength = ProtocolDecoder.parseNumber(byteBuf, 4);
-                        String srcID = ProtocolDecoder.parseString(byteBuf, 20);
-                        String destID = ProtocolDecoder.parseString(byteBuf, 20);
-                        String request = ProtocolDecoder.parseNumber(byteBuf, 1);
-                        String packNo = ProtocolDecoder.parseNumber(byteBuf, 4);
-                        String contentLength = ProtocolDecoder.parseNumber(byteBuf, 4);
-                        String hold = ProtocolDecoder.parseNumber(byteBuf, 2);
-                        String crc = ProtocolDecoder.parseNumber(byteBuf, 2);
-                        //内容长度
-                        long length = Long.parseLong(contentLength);
-                        // 读取消息内容
-                        String content = ProtocolDecoder.parseString(byteBuf, (int) length);
-                        byteBuf.readableBytes();
-                        byteBuf.clear();
+                        String content = ProtocolDecoder.parseContent(datas);
                         if (!TextUtils.isEmpty(content) && socketCallback != null) {
                             socketCallback.onResponse(content);
                         }

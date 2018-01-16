@@ -11,7 +11,14 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'armeabi-v7a', 'x86_64'
+            universalApk true
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -35,8 +42,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation project(':logger')
-
     implementation files('libs/json-lib-2.2.3-jdk13-sources.jar')
     compile 'com.github.vilyever:AndroidSocketClient:1.4.1'
     implementation files('libs/BaiduLBS_Android.jar')
+    compile 'net.jodah:typetools:0.4.0'
+    compile 'com.alibaba:fastjson:1.2.9'
 }

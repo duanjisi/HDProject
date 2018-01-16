@@ -7,14 +7,18 @@ import com.orhanobut.logger.Logger;
 import java.util.Date;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
- * Created by duanjisi on 2018/1/12.
+ * <p>描述：解析工具类
+ * <p>作者：duanjisi 2018年 01月 12日
  */
-
 public class ProtocolDecoder {
+    private static ByteBuf byteBuf = Unpooled.buffer();
+
     /**
      * byte数组转成字符串
+     *
      * @param buffer
      * @param length
      * @return String
@@ -55,5 +59,28 @@ public class ProtocolDecoder {
             return null;
         }
         return result;
+    }
+
+    /**
+     * @param bytes
+     * @return String
+     */
+    public static String parseContent(byte[] bytes) {
+        byteBuf.writeBytes(bytes);
+        String version = parseString(byteBuf, 4);
+        String srcID = parseString(byteBuf, 20);
+        String destID = parseString(byteBuf, 20);
+        String request = parseNumber(byteBuf, 1);
+        String packNo = parseNumber(byteBuf, 4);
+        String contentLength = parseNumber(byteBuf, 4);
+        String hold = parseNumber(byteBuf, 2);
+        String crc = parseNumber(byteBuf, 2);
+        //内容长度
+        long length = Long.parseLong(contentLength);
+        // 读取消息内容
+        String content = parseString(byteBuf, (int) length);
+        byteBuf.readableBytes();
+        byteBuf.clear();
+        return content;
     }
 }
