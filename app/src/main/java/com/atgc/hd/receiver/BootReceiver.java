@@ -7,14 +7,10 @@
  */
 
 package com.atgc.hd.receiver;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
-
 import com.atgc.hd.MainActivity;
-
 /**
  * <p>描述：接受开机广播
  * <p>作者：duanjisi 2018年 01月 16日

@@ -16,6 +16,7 @@ import java.util.Map;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.util.CharsetUtil;
 
 /**
  * 描述：socket通讯工具处理类
@@ -45,15 +46,17 @@ public class SocketClientHandler {
     public void init() {
         if (this.socketClient != null) {
             socketClient.setConnectionTimeout(1000 * 15);
-//            socketClient.setHeartBeatInterval(1000);
+            socketClient.setHeartBeatInterval(1000 * 5);
+            socketClient.setHeartBeatMessage("HeartBeatMessage", "utf-8");
             socketClient.setRemoteNoReplyAliveTimeout(1000 * 60);
             socketClient.setCharsetName("UTF-8");
             socketClient.registerSocketDelegate(new SocketClient.SocketDelegate() {
                 @Override
                 public void onConnected(SocketClient client) {
-                    if (socketCallback != null) {
-                        socketCallback.onError("建立连接");
-                    }
+//                    socketClient.setHeartBeatMessage("HeartBeatMessage");
+//                    if (socketCallback != null) {
+//                        socketCallback.onError("建立连接");
+//                    }
                 }
 
                 @Override
@@ -69,17 +72,19 @@ public class SocketClientHandler {
                             socketClient.connect();
                             return null;
                         }
-
                         @Override
                         protected void onPostExecute(Void aVoid) {
                             super.onPostExecute(aVoid);
-
                         }
                     }.execute();
                 }
 
                 @Override
                 public void onResponse(SocketClient client, @NonNull SocketResponsePacket responsePacket) {
+                    String message = responsePacket.getMessage();
+                    if (message.equals("HeartBeatMessage")) {
+                        return;
+                    }
                     byte[] datas = responsePacket.getData();
                     if (datas != null && datas.length != 0) {
                         String content = ProtocolDecoder.parseContent(datas);
