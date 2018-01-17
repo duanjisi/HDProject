@@ -18,16 +18,12 @@ import com.atgc.hd.comm.net.SocketClientHandler;
 public abstract class BaseActivity extends Activity {
 
     public Context context;
-//    protected SocketClientHandler socketClientHandler;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
-//        socketClientHandler = SocketClientHandler.getInstance();
-//        socketClientHandler.init();
-//        socketClientHandler.setSocketCallback(this);
     }
 
     /**

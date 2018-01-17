@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pannel_bg">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/top_bar_height"
+        android:background="@color/top_bar_bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="11dp"
+            android:paddingRight="11dp"
+            android:text="返回"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_common" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:paddingLeft="11dp"
+            android:paddingRight="11dp"
+            android:text="对话消息"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_36" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:paddingLeft="11dp"
+            android:paddingRight="11dp"
+            android:text="通讯录"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_common" />
+    </RelativeLayout>
+</RelativeLayout>

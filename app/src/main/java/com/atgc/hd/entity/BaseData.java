@@ -6,21 +6,30 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.atgc.hd.comm;
+package com.atgc.hd.entity;
+
+import java.io.Serializable;
 
 /**
- * <p>描述：常量类
+ * <p>描述：网络数据类的基类
  * <p>作者：duanjisi 2018年 01月 16日
  */
+public abstract class BaseData implements Serializable {
 
-public class Constants {
+    protected static final int STATUS_OK = 0;
+    protected static final int STATUS_ERROR = -1;
     /**
-     * 行为
+     *
      */
-    public static final class Action {
-        public static final String REGISTER_SUCCESSED = "com.atgc.hd.REGISTER_SUCCESSED";
-        public static final String HEART_BEAT = "com.atgc.hd.HEART_BEAT";
-        public static final String CONNECT_BREAK = "com.atgc.hd.CONNECT_BREAK";
-        public static final String CONNECT_FALIED = "com.atgc.hd.CONNECT_FALIED";
+    private static final long serialVersionUID = 1L;
+
+    private transient int status;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

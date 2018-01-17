@@ -159,6 +159,13 @@ public class DigitalUtils {
         return object.toString();
     }
 
+    /**
+     * 根据命令及参数获取所传的信息字节数组
+     *
+     * @param cmd
+     * @param map
+     * @return 转换的字节数组
+     */
     public static byte[] getBytes(String cmd, Map<String, String> map) {
         String json = getJson(cmd, map);
         byte[] strData = json.getBytes();
@@ -169,6 +176,13 @@ public class DigitalUtils {
         return data;
     }
 
+    /**
+     * 获取头部的信息的字节数组
+     *
+     * @param crcCode
+     * @param dataLength
+     * @return 转换的字节数组
+     */
     public static byte[] constructByteHead(int crcCode, int dataLength) {
         Header header = HDApplication.getInstance().getHeader();
         byte[] b = "HDXM".getBytes();
@@ -206,6 +220,12 @@ public class DigitalUtils {
         return bytes;
     }
 
+    /**
+     * 将int类型转换成字节数组
+     *
+     * @param res
+     * @return 字节数组
+     */
     public static byte[] intToByteArrays(int res) {
         byte[] targets = new byte[4];
 //        targets[0] = (byte) (res & 0xff);// 最低位
@@ -219,6 +239,12 @@ public class DigitalUtils {
         return targets;
     }
 
+    /**
+     * 将short类型转换的字节数组
+     *
+     * @param n
+     * @return 转换的字节数组
+     */
     public static byte[] shortToByteArrays(short n) {
         byte[] b = new byte[2];
         b[0] = (byte) ((n >> 8) & 0xFF);

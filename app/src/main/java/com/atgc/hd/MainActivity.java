@@ -7,6 +7,7 @@ import android.net.DhcpInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
@@ -29,6 +30,8 @@ import de.greenrobot.event.Subscribe;
 public class MainActivity extends BaseActivity {
     private TextView tv_net, tvResult, tvState;
 
+    private Handler mHandler = new Handler();
+
     private WifiManager my_wifiManager;
     private WifiInfo wifiInfo;
     private DhcpInfo dhcpInfo;
@@ -44,7 +47,7 @@ public class MainActivity extends BaseActivity {
         dhcpInfo = my_wifiManager.getDhcpInfo();
         wifiInfo = my_wifiManager.getConnectionInfo();
         initViews();
-        testGPSLocation();
+//        testGPSLocation();
     }
 
     private void testGPSLocation() {
@@ -116,11 +119,40 @@ public class MainActivity extends BaseActivity {
         if (event != null) {
             String action = event.getAction();
             if (action.equals(Constants.Action.REGISTER_SUCCESSED)) {
-                tvState.setText("设备已经注册");
+                int tag = (int) event.getData();
+                switch (tag) {
+                    case 0:
+                        showMessage("设备注册成功!");
+                        break;
+                    case 1:
+                        showMessage("设备注册失败!");
+                        break;
+                }
             } else if (action.equals(Constants.Action.HEART_BEAT)) {
-                showToast("心跳包来了!", true);
+                int tag = (int) event.getData();
+                switch (tag) {
+                    case 0:
+                        showMessage("心跳包来了!");
+                        break;
+                    case 1:
+                        showMessage("心跳包响应失败!");
+                        break;
+                }
+            } else if (action.equals(Constants.Action.CONNECT_BREAK)) {
+                showMessage("连接断开!");
+            } else if (action.equals(Constants.Action.CONNECT_FALIED)) {
+                showMessage("连接失败!");
             }
         }
+    }
+
+    private void showMessage(final String string) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                showToast(string, true);
+            }
+        });
     }
 
     @Override
@@ -136,18 +168,17 @@ public class MainActivity extends BaseActivity {
         tvResult = findViewById(R.id.tv_net);
         tv_net = findViewById(R.id.tv_start);
         tvState = findViewById(R.id.tv_device_state);
+        boolean isRegister = PreferenceUtils.getBoolean(this, PrefKey.REGISTER, false);
+        if (!isRegister) {
+            Intent intent = new Intent(context, DeviceBootService.class);
+            startService(intent);
+        }
         tv_net.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, TestActivity.class));
             }
         });
-//        boolean isRegister = PreferenceUtils.getBoolean(this, PrefKey.REGISTER, false);
-//        if (!isRegister) {
-//            Intent intent = new Intent(context, DeviceBootService.class);
-//            startService(intent);
-//        }
-
 //        Utils.printIpAddress();
     }
 

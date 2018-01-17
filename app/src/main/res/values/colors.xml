@@ -3,4 +3,26 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="top_bar_bg">#1B82D2</color>
+    <color name="white">#ffffff</color>
+    <color name="pannel_bg">#E5E5E5</color>
+    <!-- 线条颜色 start -->
+    <color name="line_color_gray_d1">#d1d1d1</color>
+    <color name="line_color_gray_d2">#dddddd</color>
+    <color name="line_color_gray_c7">#c7c7c7</color>
+    <color name="ios7_white">#ffa8a8a8</color>
+    <color name="line_school">#d9d9d9</color>
+    <!-- 线条颜色 end -->
+    <color name="viewfinder_mask">#B2000000</color>
+    <!-- 字体颜色 start -->
+    <color name="text_color_black">#333333</color>
+    <color name="text_color_gray_6">#666666</color>
+    <color name="text_color_gray_9">#999999</color>
+    <color name="text_color_gray_a">#aaaaaa</color>
+    <color name="text_color_gray_b">#8D8D8D</color>
+    <color name="text_color_gray_c">#BCBCBC</color>
+    <color name="text_color_gray_d">#B3B3B3</color>
+    <color name="text_color_blue">#607398</color>
+    <!-- 字体颜色 end -->
+
 </resources>

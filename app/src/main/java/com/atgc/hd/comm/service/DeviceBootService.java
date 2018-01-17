@@ -69,9 +69,9 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
         super.onStart(intent, startId);
         boolean isRegister = PreferenceUtils.getBoolean(this, PrefKey.REGISTER, false);
         if (!isRegister) {
-
+            sendRegisterMsg();
         } else {
-
+            sendHeatBeat();
         }
     }
 
@@ -98,13 +98,13 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
     }
 
     private void sendHeatBeat() {
-        byte[] datas = DigitalUtils.getParamBytes(DeviceCmd.HEART_BEAT, null);
+        byte[] datas = DigitalUtils.getBytes(DeviceCmd.HEART_BEAT, null);
         tcpSocketClient.getTransceiver().sendMSG(datas);
     }
 
     private void startHeartBeat() {
         timer = new Timer();
-        timer.schedule(timerTask, 1000, 1000 * 60);
+        timer.schedule(timerTask, 1000, 60*1000);
     }
 
     @Override
@@ -120,17 +120,34 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
 
     @Override
     public void onConnectBreak() {
-
+        EventBus.getDefault().post(new ActionEntity(Constants.Action.CONNECT_BREAK));
     }
 
     @Override
-    public void onReceive(String s) {
-
+    public void onReceive(String json) {
+        PreRspPojo preRspPojo = null;
+        preRspPojo = JSON.parseObject(json, PreRspPojo.class);
+        if (preRspPojo.Result.equals("0")) {
+            if (preRspPojo.Command.equals(DeviceCmd.REGISTER)) {//设备注册成功
+                PreferenceUtils.putBoolean(this, PrefKey.REGISTER, true);
+                EventBus.getDefault().post(new ActionEntity(Constants.Action.REGISTER_SUCCESSED, 0));
+                startHeartBeat();
+            } else if (preRspPojo.Command.equals(DeviceCmd.HEART_BEAT)) {
+                EventBus.getDefault().post(new ActionEntity(Constants.Action.HEART_BEAT, 0));
+            }
+        } else {//响应失败
+            if (preRspPojo.Command.equals(DeviceCmd.REGISTER)) {//设备注册失败
+                EventBus.getDefault().post(new ActionEntity(Constants.Action.REGISTER_SUCCESSED, 1));
+                startHeartBeat();
+            } else if (preRspPojo.Command.equals(DeviceCmd.HEART_BEAT)) {
+                EventBus.getDefault().post(new ActionEntity(Constants.Action.HEART_BEAT, 1));
+            }
+        }
     }
 
     @Override
     public void onConnectFalied() {
-
+        EventBus.getDefault().post(new ActionEntity(Constants.Action.CONNECT_FALIED));
     }
 
     @Override
