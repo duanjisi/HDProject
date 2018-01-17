@@ -3,6 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
     <color name="top_bar_bg">#1B82D2</color>
     <color name="white">#ffffff</color>
     <color name="pannel_bg">#E5E5E5</color>
@@ -25,4 +26,15 @@
     <color name="text_color_blue">#607398</color>
     <!-- 字体颜色 end -->
 
+    <color name="black">#000000</color>
+    <color name="black_transparent">#1f000000</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="meta_text_primary">#df1f1f1f</color>
+    <color name="meta_text_secondary">#4f4f4f</color>
+    <color name="meta_text_tertiary">#8f8f8f</color>
+    <color name="meta_text_fourth">#bfbfbf</color>
+    <color name="meta_text_fifth">#efefef</color>
+
+    <color name="theme_color">#00b6e9</color>
 </resources>

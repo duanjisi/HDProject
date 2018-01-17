@@ -26,7 +26,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.NoTitleBar">
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -51,6 +51,8 @@
         <activity android:name=".SecondActivity"></activity>
         <activity android:name=".FouthActivity"></activity>
         <activity android:name=".LocationTestActivity"></activity>
+
+        <activity android:name=".client.TaskListActivity"/>
 
         <service android:name=".comm.service.DeviceBootService"></service>
 
