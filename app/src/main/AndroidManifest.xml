@@ -60,6 +60,7 @@
             android:exported="true">
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+                <!--<category android:name="android.intent.category.HOME" />-->
             </intent-filter>
         </receiver>
     </application>

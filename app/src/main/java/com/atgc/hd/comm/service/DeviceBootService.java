@@ -25,6 +25,7 @@ import com.atgc.hd.comm.net.TcpSocketClient;
 import com.atgc.hd.comm.utils.DigitalUtils;
 import com.atgc.hd.comm.utils.PreferenceUtils;
 import com.atgc.hd.entity.ActionEntity;
+import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
 import java.util.Timer;
@@ -36,7 +37,6 @@ import de.greenrobot.event.EventBus;
  * <p>描述：设备引导服务
  * <p>作者：duanjisi 2018年 01月 16日
  */
-
 public class DeviceBootService extends Service implements TcpSocketClient.TcpListener {
 
     private TcpSocketClient tcpSocketClient = null;
@@ -67,11 +67,12 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
+        Logger.i("info===============开启服务onStart");
         boolean isRegister = PreferenceUtils.getBoolean(this, PrefKey.REGISTER, false);
         if (!isRegister) {
             sendRegisterMsg();
         } else {
-            sendHeatBeat();
+            startHeartBeat();
         }
     }
 
@@ -104,7 +105,7 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
 
     private void startHeartBeat() {
         timer = new Timer();
-        timer.schedule(timerTask, 1000, 60*1000);
+        timer.schedule(timerTask, 1000, 10 * 1000);
     }
 
     @Override
@@ -132,15 +133,19 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
                 PreferenceUtils.putBoolean(this, PrefKey.REGISTER, true);
                 EventBus.getDefault().post(new ActionEntity(Constants.Action.REGISTER_SUCCESSED, 0));
                 startHeartBeat();
+                Logger.i("info===============设备注册成功");
             } else if (preRspPojo.Command.equals(DeviceCmd.HEART_BEAT)) {
+                Logger.i("info===============心跳包响应成功");
                 EventBus.getDefault().post(new ActionEntity(Constants.Action.HEART_BEAT, 0));
             }
         } else {//响应失败
             if (preRspPojo.Command.equals(DeviceCmd.REGISTER)) {//设备注册失败
                 EventBus.getDefault().post(new ActionEntity(Constants.Action.REGISTER_SUCCESSED, 1));
                 startHeartBeat();
+                Logger.i("info===============设备注册失败");
             } else if (preRspPojo.Command.equals(DeviceCmd.HEART_BEAT)) {
                 EventBus.getDefault().post(new ActionEntity(Constants.Action.HEART_BEAT, 1));
+                Logger.i("info===============心跳包响应失败");
             }
         }
     }

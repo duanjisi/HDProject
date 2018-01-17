@@ -111,7 +111,7 @@ public abstract class SocketTransceiver implements Runnable {
             public void run() {
                 if (outputStream != null) {
                     bufferedOutputStream = new BufferedOutputStream(outputStream);
-                    Logger.e("连接状态：" + socket.isConnected());
+//                    Logger.e("连接状态：" + socket.isConnected());
                     try {
                         bufferedOutputStream.write(bytes, 0, bytes.length);
                         bufferedOutputStream.flush();

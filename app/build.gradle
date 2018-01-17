@@ -19,6 +19,7 @@ android {
             universalApk true
         }
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -30,6 +31,11 @@ android {
         main {
             jniLibs.srcDirs = ['libs']
         }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
     }
 }
 
