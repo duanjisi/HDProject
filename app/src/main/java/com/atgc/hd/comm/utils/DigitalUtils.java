@@ -147,11 +147,11 @@ public class DigitalUtils {
         try {
             object.put("Command", cmd);
             JSONArray array = new JSONArray();
-
-            JSONObject obj = new JSONObject(map);
-            array.put(obj);
-            object.put("Data", array);
-
+            if (map != null && map.size() != 0) {
+                JSONObject obj = new JSONObject(map);
+                array.put(obj);
+                object.put("Data", array);
+            }
             Logger.json("请求报文：", object.toString());
         } catch (JSONException e) {
             e.printStackTrace();

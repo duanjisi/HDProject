@@ -159,7 +159,7 @@ public class LocationTestActivity extends BaseActivity {
             map.put("userID", "357684684634234");
             map.put("taskID", "");
 
-            socketClientHandler.sendMsg("PAT_UPLOAD_GPS", map);
+//            socketClientHandler.sendMsg("PAT_UPLOAD_GPS", map);
         }
     };
 
@@ -182,13 +182,4 @@ public class LocationTestActivity extends BaseActivity {
         super.onResume();
     }
 
-    @Override
-    public void onError(String msg) {
-
-    }
-
-    @Override
-    public void onResponse(String json) {
-
-    }
 }
