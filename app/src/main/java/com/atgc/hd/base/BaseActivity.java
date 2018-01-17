@@ -15,19 +15,19 @@ import com.atgc.hd.comm.net.SocketClientHandler;
  * Created by duanjisi on 2018/1/15.
  */
 
-public abstract class BaseActivity extends Activity implements SocketClientHandler.SocketCallback {
+public abstract class BaseActivity extends Activity {
 
-    private Context context;
-    protected SocketClientHandler socketClientHandler;
+    public Context context;
+//    protected SocketClientHandler socketClientHandler;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
-        socketClientHandler = SocketClientHandler.getInstance();
-        socketClientHandler.init();
-        socketClientHandler.setSocketCallback(this);
+//        socketClientHandler = SocketClientHandler.getInstance();
+//        socketClientHandler.init();
+//        socketClientHandler.setSocketCallback(this);
     }
 
     /**

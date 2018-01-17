@@ -18,7 +18,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="测试" />
+            android:text="设备注册" />
 
+        <Button
+            android:id="@+id/btn_beat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="测试心跳" />
     </LinearLayout>
 </RelativeLayout>

@@ -15,6 +15,7 @@ public class RegisterRequest extends BaseDataRequest<String> {
     protected boolean isParse() {
         return false;
     }
+
     @Override
     protected Map<String, String> getParams() {
         HashMap<String, String> map = new HashMap<>();

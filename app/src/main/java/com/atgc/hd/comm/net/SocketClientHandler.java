@@ -5,12 +5,13 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.Ip_Port;
 import com.atgc.hd.comm.ProtocolDecoder;
 import com.atgc.hd.comm.utils.DigitalUtils;
 import com.orhanobut.logger.Logger;
 import com.vilyever.socketclient.SocketClient;
-import com.vilyever.socketclient.SocketResponsePacket;
+//import com.vilyever.socketclient.SocketResponsePacket;
 
 import java.util.Map;
 
@@ -33,7 +34,8 @@ public class SocketClientHandler {
     }
 
     public SocketClientHandler() {
-        socketClient = new SocketClient(Ip_Port.getHOST(), Ip_Port.getPORT());
+//        socketClient = new SocketClient(Ip_Port.getHOST(), Ip_Port.getPORT());
+        init();
     }
 
     public static SocketClientHandler getInstance() {
@@ -45,63 +47,146 @@ public class SocketClientHandler {
 
     public void init() {
         if (this.socketClient != null) {
-            socketClient.setConnectionTimeout(1000 * 15);
-            socketClient.setHeartBeatInterval(1000 * 5);
-            socketClient.setHeartBeatMessage("HeartBeatMessage", "utf-8");
-            socketClient.setRemoteNoReplyAliveTimeout(1000 * 60);
-            socketClient.setCharsetName("UTF-8");
-            socketClient.registerSocketDelegate(new SocketClient.SocketDelegate() {
-                @Override
-                public void onConnected(SocketClient client) {
-//                    socketClient.setHeartBeatMessage("HeartBeatMessage");
-//                    if (socketCallback != null) {
-//                        socketCallback.onError("建立连接");
+//            socketClient.setConnectionTimeout(1000 * 15);
+//            socketClient.setHeartBeatInterval(1000 * 5);
+//            socketClient.setRemoteNoReplyAliveTimeout(1000 * 60);
+//            socketClient.setCharsetName("UTF-8");
+//            socketClient.registerSocketDelegate(new SocketClient.SocketDelegate() {
+//                @Override
+//                public void onConnected(SocketClient client) {
+////                    if (socketCallback != null) {
+////                        socketCallback.onError("建立连接");
+////                    }
+//                    if (datas != null && datas.length != 0) {
+//                        socketClient.send(datas);
+//                        datas = null;
 //                    }
-                }
-
-                @Override
-                public void onDisconnected(SocketClient client) {
-                    new AsyncTask<Void, Void, Void>() {
-                        @Override
-                        protected Void doInBackground(Void... params) {
-                            try {
-                                Thread.sleep(3 * 1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            socketClient.connect();
-                            return null;
-                        }
-                        @Override
-                        protected void onPostExecute(Void aVoid) {
-                            super.onPostExecute(aVoid);
-                        }
-                    }.execute();
-                }
-
-                @Override
-                public void onResponse(SocketClient client, @NonNull SocketResponsePacket responsePacket) {
-                    String message = responsePacket.getMessage();
-                    if (message.equals("HeartBeatMessage")) {
-                        return;
-                    }
-                    byte[] datas = responsePacket.getData();
-                    if (datas != null && datas.length != 0) {
-                        String content = ProtocolDecoder.parseContent(datas);
-                        if (!TextUtils.isEmpty(content) && socketCallback != null) {
-                            socketCallback.onResponse(content);
-                        }
-                    }
-                }
-            });
-            socketClient.connect();
+//                }
+//
+//                @Override
+//                public void onDisconnected(SocketClient client) {
+//                    socketCallback.onError("断开连接");
+//                }
+//
+//                @Override
+//                public void onResponse(SocketClient client, @NonNull SocketResponsePacket responsePacket) {
+//                    byte[] datas = responsePacket.getData();
+//                    if (datas != null && datas.length != 0) {
+//                        String content = ProtocolDecoder.parseContent(datas);
+//                        if (!TextUtils.isEmpty(content) && socketCallback != null) {
+//                            socketCallback.onResponse(content);
+//                        }
+//                    }
+//                }
+//            });
+////            socketClient.connect();
         }
     }
 
+    byte[] datas = null;
+
     public void sendMsg(String cmd, Map<String, String> map) {
+//        if (socketClient != null) {
+//            datas = DigitalUtils.getParamBytes(cmd, map);
+//            if (socketClient.isConnected()) {
+//                socketClient.send(datas);
+//            } else {
+//                new AsyncTask<Void, Void, Void>() {
+//                    @Override
+//                    protected Void doInBackground(Void... params) {
+//                        try {
+//                            Thread.sleep(500);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                        socketClient.connect();
+//                        return null;
+//                    }
+//
+//                    @Override
+//                    protected void onPostExecute(Void aVoid) {
+//                        super.onPostExecute(aVoid);
+//                    }
+//                }.execute();
+//            }
+
+//        if (socketClient != null) {
+//            if (socketClient.isConnecting()) {
+//                byte[] datas = DigitalUtils.getParamBytes(cmd, map);
+//                socketClient.send(datas);
+//            }
+//            else {
+//                new AsyncTask<Void, Void, Void>() {
+//                    @Override
+//                    protected Void doInBackground(Void... params) {
+//                        try {
+//                            Thread.sleep(1000);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                        socketClient.connect();
+//                        return null;
+//                    }
+//
+//                    @Override
+//                    protected void onPostExecute(Void aVoid) {
+//                        super.onPostExecute(aVoid);
+//                    }
+//                }.execute();
+//            }
+//    }
+    }
+
+    public void sendHearBeatMsg() {
+//        if (socketClient != null) {
+//            datas = DigitalUtils.getParamBytes(DeviceCmd.HEART_BEAT, null);
+//            if (socketClient.isConnected()) {
+//                socketClient.send(datas);
+//            } else {
+//                new AsyncTask<Void, Void, Void>() {
+//                    @Override
+//                    protected Void doInBackground(Void... params) {
+//                        try {
+//                            Thread.sleep(500);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                        socketClient.connect();
+//                        return null;
+//                    }
+//
+//                    @Override
+//                    protected void onPostExecute(Void aVoid) {
+//                        super.onPostExecute(aVoid);
+//                    }
+//                }.execute();
+//            }
+//        }
+
+
+//        byte[] bytes = DigitalUtils.getParamBytes(DeviceCmd.HEART_BEAT, null);
+//        socketClient.setHeartBeatMessage(bytes);
+    }
+
+    public void disconnect() {
         if (socketClient != null && socketClient.isConnected()) {
-            byte[] datas = DigitalUtils.getParamBytes(cmd, map);
-            socketClient.send(datas);
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... params) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    socketClient.disconnect();
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    super.onPostExecute(aVoid);
+                }
+            }.execute();
         }
     }
 

@@ -7,4 +7,5 @@ package com.atgc.hd.comm;
 public class DeviceCmd {
 
     public static final String REGISTER = "COM_DEV_REGISTER";
+    public static final String HEART_BEAT = "COM_HEARTBEAT";
 }

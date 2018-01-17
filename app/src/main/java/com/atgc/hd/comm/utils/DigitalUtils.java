@@ -7,7 +7,6 @@ import com.atgc.hd.HDApplication;
 import com.atgc.hd.entity.Header;
 import com.orhanobut.logger.Logger;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -122,6 +121,9 @@ public class DigitalUtils {
 
     public static byte[] getParamBytes(String cmd, Map<String, String> map) {
         String json = getJson(cmd, map);
+
+        Logger.json(json);
+
         int contentLength = json.getBytes().length;
         int crcCode = CRCUtil.crc16CCITTFalse(json.getBytes(), contentLength);
         Header header = HDApplication.getInstance().getHeader();
@@ -147,18 +149,88 @@ public class DigitalUtils {
         try {
             object.put("Command", cmd);
             if (cmd.equals("COM_DEV_REGISTER")) {
-                JSONArray array = new JSONArray();
-
-                JSONObject obj = new JSONObject(map);
-                array.put(obj);
-                object.put("Data", array);
+                if (map != null && map.size() != 0) {
+                    JSONArray array = new JSONArray();
+                    JSONObject obj = new JSONObject(map);
+                    array.put(obj);
+                    object.put("Data", array);
+                }
             } else {
-                object.put("Data", map);
+                if (map != null && map.size() != 0) {
+                    object.put("Data", map);
+                }
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return object.toString();
+    }
+
+    public static byte[] getBytes(String cmd, Map<String, String> map) {
+        String json = getJson(cmd, map);
+        byte[] strData = json.getBytes();
+        int dataLength = strData.length;
+        int crcCode = CRCUtil.crc16CCITTFalse(strData, dataLength);
+        byte[] infoHead = constructByteHead(crcCode, dataLength);
+        byte[] data = concatByteArrays(infoHead, strData);
+        return data;
+    }
+
+    public static byte[] constructByteHead(int crcCode, int dataLength) {
+        Header header = HDApplication.getInstance().getHeader();
+        byte[] b = "HDXM".getBytes();
+        byte[] b2 = "10012017020000000000".getBytes();
+        byte[] b3 = "00000000000000000000".getBytes();
+
+
+        byte[] b4 = {0};//请求应答
+        byte[] b5 = intToByteArrays(5684);//包号
+        byte[] b6 = intToByteArrays(dataLength);
+        byte[] b7 = shortToByteArrays((short) 0xff);//预留
+        byte[] b8 = shortToByteArrays((short) crcCode);//CRC16
+
+        b = concatByteArrays(b, b2);
+        b = concatByteArrays(b, b3);
+        b = concatByteArrays(b, b4);
+        b = concatByteArrays(b, b5);
+        b = concatByteArrays(b, b6);
+        b = concatByteArrays(b, b7);
+        b = concatByteArrays(b, b8);
+        return b;
+    }
+
+    /**
+     * 将两个字节数组拼装成一个字节数组
+     *
+     * @param b1
+     * @param b2
+     * @return 拼装好的字节数组
+     */
+    public static byte[] concatByteArrays(byte[] b1, byte[] b2) {
+        byte[] bytes = new byte[b1.length + b2.length];
+        System.arraycopy(b1, 0, bytes, 0, b1.length);
+        System.arraycopy(b2, 0, bytes, b1.length, b2.length);
+        return bytes;
+    }
+
+    public static byte[] intToByteArrays(int res) {
+        byte[] targets = new byte[4];
+//        targets[0] = (byte) (res & 0xff);// 最低位
+//        targets[1] = (byte) ((res >> 8) & 0xff);// 次低位
+//        targets[2] = (byte) ((res >> 16) & 0xff);// 次高位
+//        targets[3] = (byte) (res >>> 24);// 最高位,无符号右移。
+        targets[0] = (byte) ((res >>> 24) & 0xFF);
+        targets[1] = (byte) ((res >>> 16) & 0xFF);
+        targets[2] = (byte) ((res >>> 8) & 0xFF);
+        targets[3] = (byte) (res & 0xff);// 最低位
+        return targets;
+    }
+
+    public static byte[] shortToByteArrays(short n) {
+        byte[] b = new byte[2];
+        b[0] = (byte) ((n >> 8) & 0xFF);
+        b[1] = (byte) (n & 0xFF);
+        return b;
     }
 }

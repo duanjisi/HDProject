@@ -30,7 +30,7 @@ public class HDApplication extends Application {
         context = getApplicationContext();
 
         initLog();
-        initCrashHandler();
+//        initCrashHandler();
 
         locationService = new LocationService(getApplicationContext());
     }

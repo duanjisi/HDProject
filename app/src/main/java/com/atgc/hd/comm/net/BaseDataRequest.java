@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.alibaba.fastjson.JSON;
+import com.atgc.hd.comm.Ip_Port;
+import com.atgc.hd.comm.utils.DigitalUtils;
 
 import net.jodah.typetools.TypeResolver;
 
@@ -13,23 +15,26 @@ import java.util.Map;
  * Created by duanjisi on 2018/1/15.
  */
 
-public abstract class BaseDataRequest<T> implements SocketClientHandler.SocketCallback {
+public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener {
     private static String TAG = "BaseDataModel";
     private final Class<T> mGenericPojoClazz;
-    private SocketClientHandler socketClientHandler;
     private RequestCallback callback;
     private Handler mHandler = new Handler(Looper.getMainLooper());
+    private TcpSocketClient tcpSocketClient;
 
     protected BaseDataRequest() {
         mGenericPojoClazz = (Class<T>) TypeResolver.resolveRawArgument(BaseDataRequest.class, getClass());
-        socketClientHandler = SocketClientHandler.getInstance();
-        socketClientHandler.init();
-        socketClientHandler.setSocketCallback(this);
+        tcpSocketClient = TcpSocketClient.getInstance();
+        tcpSocketClient.setListener(this);
+        if (!tcpSocketClient.isConnected()) {
+            tcpSocketClient.connect(Ip_Port.getHOST(), Ip_Port.getPORT());
+        }
     }
 
     public void send(final RequestCallback callback) {
         this.callback = callback;
-        socketClientHandler.sendMsg(getCommand(), getParams());
+        byte[] bytes = DigitalUtils.getBytes(getCommand(), getParams());
+        tcpSocketClient.getTransceiver().sendMSG(bytes);
     }
 
     protected abstract boolean isParse();
@@ -38,15 +43,34 @@ public abstract class BaseDataRequest<T> implements SocketClientHandler.SocketCa
 
     protected abstract String getCommand();
 
+
     @Override
-    public void onError(String msg) {
-        if (callback != null) {
-            callback.onFailure(msg);
-        }
+    public void onConnect() {
+
     }
 
     @Override
-    public void onResponse(String json) {
+    public void onConnectBreak() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                callback.onFailure("连接断开");
+            }
+        });
+    }
+
+    @Override
+    public void onConnectFalied() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                callback.onFailure("连接失败");
+            }
+        });
+    }
+
+    @Override
+    public void onReceive(String json) {
         PreRspPojo preRspPojo = null;
         preRspPojo = JSON.parseObject(json, PreRspPojo.class);
         if (preRspPojo.Result.equals("0")) {
@@ -71,6 +95,11 @@ public abstract class BaseDataRequest<T> implements SocketClientHandler.SocketCa
                 }
             });
         }
+    }
+
+    @Override
+    public void onSendSuccess(byte[] s) {
+
     }
 
     public interface RequestCallback<T> {

@@ -1,73 +1,171 @@
+/**
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
 package com.atgc.hd;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
+import android.location.Location;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.atgc.hd.comm.Utils;
+import com.atgc.hd.base.BaseActivity;
+import com.atgc.hd.comm.Constants;
+import com.atgc.hd.comm.PrefKey;
+import com.atgc.hd.comm.local.GPSLocationTool;
+import com.atgc.hd.comm.local.LocationService;
+import com.atgc.hd.comm.net.TcpSocketClient;
+import com.atgc.hd.comm.service.DeviceBootService;
+import com.atgc.hd.comm.utils.PreferenceUtils;
+import com.atgc.hd.entity.ActionEntity;
+import com.baidu.location.BDAbstractLocationListener;
+import com.baidu.location.BDLocation;
 import com.orhanobut.logger.Logger;
-import com.orhanobut.logger.adapter.DiskLogAdapter;
 
-public class MainActivity extends Activity {
-    private TextView tv_net, tvResult;
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
+
+public class MainActivity extends BaseActivity {
+    private TextView tv_net, tvResult, tvState;
 
     private WifiManager my_wifiManager;
     private WifiInfo wifiInfo;
     private DhcpInfo dhcpInfo;
-
 
     @SuppressLint("WrongConstant")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-//        Log.println(4, "hahawtf", "let me see.......................................................");
-//        Logger.v("hahha", "let me see...............");
-//        Logger.d("hahha", "let me see...............");
-//        Logger.i("hahha", "let me see...............");
-//        Logger.w("hahha", "let me see...............");
-//        Logger.e("hahha", "let me see...............");
-
-
-        Logger.addLogAdapter(new DiskLogAdapter());
-
+        EventBus.getDefault().register(this);
         my_wifiManager = ((WifiManager) getSystemService("wifi"));
         dhcpInfo = my_wifiManager.getDhcpInfo();
         wifiInfo = my_wifiManager.getConnectionInfo();
-
         initViews();
+        testGPSLocation();
+    }
 
-//        throw new NullPointerException("发生空指针异常啦。。。。");
+    private void testGPSLocation() {
+        GPSLocationTool.isGpsEnabled(this);
+        GPSLocationTool.isLocationEnabled(this);
+
+        GPSLocationTool.registerLocation(this, 1000, 1, new GPSLocationTool.OnLocationChangeListener() {
+
+            @Override
+            public void getLastKnownLocation(Location location) {
+                StringBuilder builder = new StringBuilder();
+                builder.append("最后已知坐标\n经度：");
+                builder.append(location.getLongitude());
+                builder.append("\n纬度：");
+                builder.append(location.getLatitude());
+                tvResult.setText(builder.toString());
+
+                Logger.e("最后已知坐标：经度-" + location.getLongitude() + " 纬度-" + location.getLatitude());
+            }
+
+            @Override
+            public void onLocationChanged(Location location) {
+                StringBuilder builder = new StringBuilder();
+                builder.append("坐标位置变化\n经度：");
+                builder.append(location.getLongitude());
+                builder.append("\n纬度：");
+                builder.append(location.getLatitude());
+                tvResult.setText(builder.toString());
+
+                Logger.e("坐标位置变化：经度-" + location.getLongitude() + " 纬度-" + location.getLatitude());
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                Logger.e("状态变化：" + provider + " " + status);
+            }
+        });
+
+    }
+
+    LocationService service;
+
+    private void testLocation() {
+        service = HDApplication.locationService();
+        service.registerListener(listener);
+        service.setLocationOption(service.getDefaultLocationClientOption());
+        service.start();
+    }
+
+    private BDAbstractLocationListener listener = new BDAbstractLocationListener() {
+        @Override
+        public void onReceiveLocation(BDLocation bdLocation) {
+            Logger.e("地址：" + bdLocation.getAddrStr() + "\n经度：" + bdLocation.getLongitude() + " 纬度：" + bdLocation.getLatitude());
+//            经度：113.620759 纬度：23.305057           bd09ll
+//            经度：113.614258 纬度：23.298979           WGS84？？
+//            经度：113.614258 纬度：23.298979           gcj02
+//            经度：1.2648342665247E7 纬度：2651895.153317   bd09
+            StringBuilder builder = new StringBuilder();
+            builder.append("经度：");
+            builder.append(bdLocation.getLongitude());
+            builder.append("\n纬度：");
+            builder.append(bdLocation.getLatitude());
+            tvResult.setText(builder.toString());
+        }
+    };
+
+    @Subscribe
+    public void onMessageEvent(ActionEntity event) {
+        if (event != null) {
+            String action = event.getAction();
+            if (action.equals(Constants.Action.REGISTER_SUCCESSED)) {
+                tvState.setText("设备已经注册");
+            } else if (action.equals(Constants.Action.HEART_BEAT)) {
+                showToast("心跳包来了!", true);
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        service.unregisterListener(listener);
+        service.stop();
+
+        super.onDestroy();
     }
 
     private void initViews() {
         tvResult = findViewById(R.id.tv_net);
         tv_net = findViewById(R.id.tv_start);
+        tvState = findViewById(R.id.tv_device_state);
         tv_net.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, TestActivity.class));
             }
         });
-        Utils.printIpAddress();
+//        boolean isRegister = PreferenceUtils.getBoolean(this, PrefKey.REGISTER, false);
+//        if (!isRegister) {
+//            Intent intent = new Intent(context, DeviceBootService.class);
+//            startService(intent);
+//        }
+
+//        Utils.printIpAddress();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        StringBuilder sb = new StringBuilder();
-        sb.append("网络信息：");
-        sb.append("\nipAddress：" + Utils.getLocalInetAddress().toString());
-        sb.append("\nMac：" + Utils.getNewMac());
-        sb.append("\nGateWay：" + Utils.getGateway());
+//        StringBuilder sb = new StringBuilder();
+//        sb.append("网络信息：");
+////        sb.append("\nipAddress：" + Utils.getLocalInetAddress().toString());
+////        sb.append("\nMac：" + Utils.getLocalMacAddressFromIp(MainActivity.this));
+////        sb.append("\nGateWay：" + Utils.getGateway());
 //        sb.append("\nipAddress：" + intToIp(dhcpInfo.ipAddress));
 //        sb.append("\nnetmask：" + intToIp(dhcpInfo.netmask));
 //        sb.append("\ngateway：" + intToIp(dhcpInfo.gateway));
@@ -75,21 +173,21 @@ public class MainActivity extends Activity {
 //        sb.append("\ndns1：" + intToIp(dhcpInfo.dns1));
 //        sb.append("\ndns2：" + intToIp(dhcpInfo.dns2));
 //        sb.append("\n");
-//        System.out.println(intToIp(dhcpInfo.ipAddress));
-//        System.out.println(intToIp(dhcpInfo.netmask));
-//        System.out.println(intToIp(dhcpInfo.gateway));
-//        System.out.println(intToIp(dhcpInfo.serverAddress));
-//        System.out.println(intToIp(dhcpInfo.dns1));
-//        System.out.println(intToIp(dhcpInfo.dns2));
-//        System.out.println(dhcpInfo.leaseDuration);
-//
+////        System.out.println(intToIp(dhcpInfo.ipAddress));
+////        System.out.println(intToIp(dhcpInfo.netmask));
+////        System.out.println(intToIp(dhcpInfo.gateway));
+////        System.out.println(intToIp(dhcpInfo.serverAddress));
+////        System.out.println(intToIp(dhcpInfo.dns1));
+////        System.out.println(intToIp(dhcpInfo.dns2));
+////        System.out.println(dhcpInfo.leaseDuration);
 //        sb.append("Wifi信息：");
 //        sb.append("\nIpAddress：" + intToIp(wifiInfo.getIpAddress()));
 //        sb.append("\nMacAddress：" + wifiInfo.getMacAddress());
-        tvResult.setText(sb.toString());
+//        tvResult.setText(sb.toString());
     }
 
     private String intToIp(int paramInt) {
+
         return (paramInt & 0xFF) + "." + (0xFF & paramInt >> 8) + "." + (0xFF & paramInt >> 16) + "."
                 + (0xFF & paramInt >> 24);
     }
