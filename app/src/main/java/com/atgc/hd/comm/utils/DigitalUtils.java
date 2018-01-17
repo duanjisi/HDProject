@@ -7,7 +7,6 @@ import com.atgc.hd.HDApplication;
 import com.atgc.hd.entity.Header;
 import com.orhanobut.logger.Logger;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -146,16 +145,13 @@ public class DigitalUtils {
         JSONObject object = new JSONObject();
         try {
             object.put("Command", cmd);
-            if (cmd.equals("COM_DEV_REGISTER")) {
-                JSONArray array = new JSONArray();
+            JSONArray array = new JSONArray();
 
-                JSONObject obj = new JSONObject(map);
-                array.put(obj);
-                object.put("Data", array);
-            } else {
-                object.put("Data", map);
-            }
+            JSONObject obj = new JSONObject(map);
+            array.put(obj);
+            object.put("Data", array);
 
+            Logger.json("请求报文：", object.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

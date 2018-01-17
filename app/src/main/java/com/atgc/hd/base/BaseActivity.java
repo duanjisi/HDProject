@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atgc.hd.comm.net.SocketClientHandler;
+import com.orhanobut.logger.Logger;
 
 /**
  * Created by duanjisi on 2018/1/15.
@@ -25,9 +26,10 @@ public abstract class BaseActivity extends Activity implements SocketClientHandl
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
-        socketClientHandler = SocketClientHandler.getInstance();
-        socketClientHandler.init();
-        socketClientHandler.setSocketCallback(this);
+//        socketClientHandler = SocketClientHandler.getInstance();
+//        socketClientHandler.init();
+//        socketClientHandler.setSocketCallback(this);
+        Logger.e("socket初始化");
     }
 
     /**

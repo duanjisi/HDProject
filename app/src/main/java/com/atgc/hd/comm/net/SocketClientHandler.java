@@ -61,22 +61,22 @@ public class SocketClientHandler {
 
                 @Override
                 public void onDisconnected(SocketClient client) {
-                    new AsyncTask<Void, Void, Void>() {
-                        @Override
-                        protected Void doInBackground(Void... params) {
-                            try {
-                                Thread.sleep(3 * 1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            socketClient.connect();
-                            return null;
-                        }
-                        @Override
-                        protected void onPostExecute(Void aVoid) {
-                            super.onPostExecute(aVoid);
-                        }
-                    }.execute();
+//                    new AsyncTask<Void, Void, Void>() {
+//                        @Override
+//                        protected Void doInBackground(Void... params) {
+//                            try {
+//                                Thread.sleep(3 * 1000);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                            socketClient.connect();
+//                            return null;
+//                        }
+//                        @Override
+//                        protected void onPostExecute(Void aVoid) {
+//                            super.onPostExecute(aVoid);
+//                        }
+//                    }.execute();
                 }
 
                 @Override
