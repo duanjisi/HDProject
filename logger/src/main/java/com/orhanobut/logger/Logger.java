@@ -91,6 +91,10 @@ public final class Logger {
         printer.json(json);
     }
 
+    public static void json(String title, String json) {
+        printer.json(title, json);
+    }
+
     /**
      * Formats the given xml content and print it
      */
@@ -98,4 +102,7 @@ public final class Logger {
         printer.xml(xml);
     }
 
+    public static void xml(String title, String xml) {
+        printer.xml(title, xml);
+    }
 }

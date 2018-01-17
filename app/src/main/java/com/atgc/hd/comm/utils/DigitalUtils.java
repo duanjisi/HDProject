@@ -7,6 +7,7 @@ import com.atgc.hd.HDApplication;
 import com.atgc.hd.entity.Header;
 import com.orhanobut.logger.Logger;
 
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -121,9 +122,6 @@ public class DigitalUtils {
 
     public static byte[] getParamBytes(String cmd, Map<String, String> map) {
         String json = getJson(cmd, map);
-
-        Logger.json(json);
-
         int contentLength = json.getBytes().length;
         int crcCode = CRCUtil.crc16CCITTFalse(json.getBytes(), contentLength);
         Header header = HDApplication.getInstance().getHeader();
@@ -148,19 +146,13 @@ public class DigitalUtils {
         JSONObject object = new JSONObject();
         try {
             object.put("Command", cmd);
-            if (cmd.equals("COM_DEV_REGISTER")) {
-                if (map != null && map.size() != 0) {
-                    JSONArray array = new JSONArray();
-                    JSONObject obj = new JSONObject(map);
-                    array.put(obj);
-                    object.put("Data", array);
-                }
-            } else {
-                if (map != null && map.size() != 0) {
-                    object.put("Data", map);
-                }
-            }
+            JSONArray array = new JSONArray();
 
+            JSONObject obj = new JSONObject(map);
+            array.put(obj);
+            object.put("Data", array);
+
+            Logger.json("请求报文：", object.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

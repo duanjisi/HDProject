@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 package com.atgc.hd;
 
 import android.annotation.SuppressLint;
@@ -47,6 +39,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         EventBus.getDefault().register(this);
+
         my_wifiManager = ((WifiManager) getSystemService("wifi"));
         dhcpInfo = my_wifiManager.getDhcpInfo();
         wifiInfo = my_wifiManager.getConnectionInfo();

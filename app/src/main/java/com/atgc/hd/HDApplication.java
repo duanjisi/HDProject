@@ -18,7 +18,7 @@ import com.orhanobut.logger.adapter.DiskLogAdapter;
 
 public class HDApplication extends Application {
     private static Context context;
-    public static LocationService locationService;
+    private static LocationService locationService;
 
     private static HDApplication mApplication;
     private Header header = null;
@@ -32,7 +32,7 @@ public class HDApplication extends Application {
         initLog();
 //        initCrashHandler();
 
-        locationService = new LocationService(getApplicationContext());
+        initLocationServcie();
     }
 
     public synchronized static HDApplication getInstance() {
@@ -66,6 +66,10 @@ public class HDApplication extends Application {
     private void initCrashHandler() {
         CrashHandler crashHandler = CrashHandler.instance();
         crashHandler.init(getApplicationContext());
+    }
+
+    private void initLocationServcie() {
+        locationService = new LocationService(getApplicationContext());
     }
 
     public static Context applicationContext() {

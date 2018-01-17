@@ -2,14 +2,14 @@ package com.atgc.hd.comm.local;
 
 /**
  * <p>描述：
- * <p>作者： liangguokui 2018/1/15
+ * <p>作者： liangguokui 2018/1/16
  */
-public class Gps {
+public class Coordinate {
 
     private double mLatitude;
     private double mLongitude;
 
-    public Gps(double longitude, double mLatitude) {
+    public Coordinate(double longitude, double mLatitude) {
         setLatitude(mLatitude);
         setLongitude(longitude);
     }
@@ -32,6 +32,6 @@ public class Gps {
 
     @Override
     public String toString() {
-        return mLongitude + "," + mLatitude;
+        return mLongitude + ", " + mLatitude;
     }
 }

@@ -97,6 +97,11 @@ class PrinterLogger implements Printer {
 
     @Override
     public void json(String json) {
+        json("", json);
+    }
+
+    @Override
+    public void json(String title, String json) {
         if (Utils.isEmpty(json)) {
             d("Empty/Null json content");
             return;
@@ -106,13 +111,13 @@ class PrinterLogger implements Printer {
             if (json.startsWith("{")) {
                 JSONObject jsonObject = new JSONObject(json);
                 String message = jsonObject.toString(JSON_INDENT);
-                d(message);
+                d(trimString(title) + message);
                 return;
             }
             if (json.startsWith("[")) {
                 JSONArray jsonArray = new JSONArray(json);
                 String message = jsonArray.toString(JSON_INDENT);
-                d(message);
+                d(trimString(title) + message);
                 return;
             }
             e("Invalid Json");
@@ -123,6 +128,11 @@ class PrinterLogger implements Printer {
 
     @Override
     public void xml(String xml) {
+        xml("", xml);
+    }
+
+    @Override
+    public void xml(String title, String xml) {
         if (Utils.isEmpty(xml)) {
             d("Empty/Null xml content");
             return;
@@ -134,7 +144,7 @@ class PrinterLogger implements Printer {
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
             transformer.transform(xmlInput, xmlOutput);
-            d(xmlOutput.getWriter().toString().replaceFirst(">", ">\n"));
+            d(trimString(title) + xmlOutput.getWriter().toString().replaceFirst(">", ">\n"));
         } catch (TransformerException e) {
             e("Invalid xml");
         }
@@ -192,5 +202,13 @@ class PrinterLogger implements Printer {
 
     private String createMessage(String message, Object... args) {
         return args == null || args.length == 0 ? message : String.format(message, args);
+    }
+
+    private String trimString(String src) {
+        if (src == null || src.length() == 0) {
+            return "";
+        } else {
+            return src + "\n";
+        }
     }
 }
