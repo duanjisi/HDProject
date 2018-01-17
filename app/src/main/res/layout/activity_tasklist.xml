@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/view_status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@color/theme_color"
+        android:clipToPadding="true"
+        android:fitsSystemWindows="true" />
+
+    <include
+        android:id="@+id/layout_custom_toolbar"
+        layout="@layout/layout_custom_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ViewSwitcher
+        android:id="@+id/pannel_content_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_error_tips"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center"
+            android:text="获取数据失败，点击重试"
+            android:textColor="@color/meta_text_secondary"
+            android:textSize="@dimen/text_size_large" />
+    </ViewSwitcher>
+</LinearLayout>
