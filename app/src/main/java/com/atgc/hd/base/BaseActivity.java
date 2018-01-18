@@ -43,11 +43,10 @@ public abstract class BaseActivity extends AppCompatActivity{
         LinearLayout parentLayout
                 = (LinearLayout) getLayoutInflater().inflate(R.layout.base_activity_contentview, null);
 
-        contentViewSwitcher = findById(parentLayout, R.id.pannel_content_view);
-
         View childView = getLayoutInflater().inflate(layoutResID, null);
-
+        contentViewSwitcher = findById(parentLayout, R.id.pannel_content_view);
         contentViewSwitcher.addView(childView);
+        contentViewSwitcher.setDisplayedChild(1);
 
         super.setContentView(parentLayout);
 

@@ -21,13 +21,4 @@ public class TaskListActivity extends BaseActivity {
         setContentView(R.layout.activity_tasklist);
     }
 
-    @Override
-    public void onError(String msg) {
-
-    }
-
-    @Override
-    public void onResponse(String json) {
-
-    }
 }
