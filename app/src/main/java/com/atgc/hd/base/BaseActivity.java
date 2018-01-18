@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -17,7 +16,6 @@ import android.widget.ViewSwitcher;
 
 import com.atgc.hd.R;
 import com.atgc.hd.client.widgethelper.BarHelper;
-import com.atgc.hd.comm.net.SocketClientHandler;
 
 import com.atgc.hd.comm.utils.SysManager;
 
@@ -89,7 +87,7 @@ public abstract class BaseActivity extends AppCompatActivity{
         View toolbarView = findViewById(R.id.layout_custom_toolbar);
 
         barHelper = new BarHelper(this, toolbarView);
-        barHelper.setTitle(getToolBarTitle());
+        barHelper.setTitle(toolBarTitle());
 
         barHelper.setActionLeftDrawable(R.drawable.ic_svg_back);
 
@@ -135,7 +133,7 @@ public abstract class BaseActivity extends AppCompatActivity{
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    public String getToolBarTitle() {
+    public String toolBarTitle() {
         return getString(R.string.app_name);
     }
 

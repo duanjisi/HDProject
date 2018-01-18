@@ -8,4 +8,5 @@ public class DeviceCmd {
 
     public static final String REGISTER = "COM_DEV_REGISTER";
     public static final String HEART_BEAT = "COM_HEARTBEAT";
+    public static final String PAT_UPLOAD_GPS = "PAT_UPLOAD_GPS";
 }

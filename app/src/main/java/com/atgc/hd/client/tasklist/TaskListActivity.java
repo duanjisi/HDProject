@@ -22,6 +22,11 @@ public class TaskListActivity extends BaseActivity {
     private ContentFragAdapter fragAdapter;
 
     @Override
+    public String toolBarTitle() {
+        return "巡更";
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasklist);
