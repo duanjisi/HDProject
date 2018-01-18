@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -44,16 +45,15 @@ public abstract class BaseActivity extends AppCompatActivity{
                 = (LinearLayout) getLayoutInflater().inflate(R.layout.base_activity_contentview, null);
 
         View childView = getLayoutInflater().inflate(layoutResID, null);
-        contentViewSwitcher = findById(parentLayout, R.id.pannel_content_view);
+        contentViewSwitcher = findViewById(parentLayout, R.id.pannel_content_view);
         contentViewSwitcher.addView(childView);
-        contentViewSwitcher.setDisplayedChild(1);
 
         super.setContentView(parentLayout);
 
-        tvAtyTips = findById(parentLayout, R.id.tv_error_tips);
+        tvAtyTips = findViewById(parentLayout, R.id.tv_error_tips);
 
-//        showContentView();
-//
+        showContentView();
+
         initStatusBar();
 
         initToolBar();
@@ -101,6 +101,12 @@ public abstract class BaseActivity extends AppCompatActivity{
         });
     }
 
+    public void showContentView() {
+        if (contentViewSwitcher.getDisplayedChild() == 0) {
+            contentViewSwitcher.setDisplayedChild(1);
+        }
+    }
+
     /**
      * @param msg    内容
      * @param length true为长时间，false为短时间
@@ -133,11 +139,7 @@ public abstract class BaseActivity extends AppCompatActivity{
         return getString(R.string.app_name);
     }
 
-    public <T extends View> T findById(int id) {
-        return (T) findViewById(id);
-    }
-
-    public static <T extends View> T findById( View view, int id) {
+    public static <T extends View> T findViewById( View view, int id) {
         return (T) view.findViewById(id);
     }
 }
