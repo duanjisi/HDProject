@@ -1,5 +1,6 @@
 package com.atgc.hd;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
@@ -10,6 +11,9 @@ import com.atgc.hd.entity.Header;
 import com.orhanobut.logger.Logger;
 import com.orhanobut.logger.adapter.AndroidLogAdapter;
 import com.orhanobut.logger.adapter.DiskLogAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>描述：
@@ -30,7 +34,7 @@ public class HDApplication extends Application {
         context = getApplicationContext();
 
         initLog();
-//        initCrashHandler();
+        initCrashHandler();
 
         initLocationServcie();
     }
