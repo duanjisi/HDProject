@@ -23,8 +23,6 @@ import com.atgc.hd.comm.utils.SysManager;
 /**
  * Created by duanjisi on 2018/1/15.
  */
-
-
 public abstract class BaseActivity extends AppCompatActivity {
 
     public Context context;

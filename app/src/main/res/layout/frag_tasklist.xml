@@ -3,13 +3,13 @@
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_below="@+id/rlayout_head">
+    android:background="@color/white">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/task_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/color_theme_background"
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp" />

@@ -2,7 +2,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/tv_position"
@@ -21,8 +22,8 @@
         android:id="@+id/tv_task_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:text="ADS-001"
         android:textColor="@color/meta_text_primary"
         android:textSize="@dimen/text_size_medium"
@@ -37,10 +38,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_1x"
         android:background="@color/color_green"
+        android:paddingBottom="2dp"
         android:paddingLeft="@dimen/spacing_2x"
         android:paddingRight="@dimen/spacing_2x"
         android:paddingTop="2dp"
-        android:paddingBottom="2dp"
         android:text="已打点"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_medium"
@@ -50,10 +51,10 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_task_title" />
 
     <TextView
-        android:id="@+id/tv_task_start_time"
+        android:id="@+id/tv_task_period"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
+        android:layout_marginRight="@dimen/spacing_8x"
         android:text="08：35"
         android:textColor="@color/meta_text_primary"
         android:textSize="@dimen/text_size_medium"
@@ -73,4 +74,11 @@
         app:layout_constraintStart_toStartOf="@+id/tv_task_tag"
         app:layout_constraintTop_toBottomOf="@+id/tv_task_tag"
         app:layout_constraintVertical_bias="0.0" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="16dp" />
 </android.support.constraint.ConstraintLayout>

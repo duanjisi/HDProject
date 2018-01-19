@@ -18,7 +18,15 @@ public class HistoryTaskListAdapter extends BaseSingleAdapter<HistoryTaskEntity>
 
     @Override
     protected void convert(ViewHolder holder, HistoryTaskEntity data, int position) {
+        int temp = position + 1;
+        String strPositioin = temp < 10 ? ("0" + temp + ".") : (temp + ".");
+        holder.setText(R.id.tv_position, strPositioin);
+
         holder.setText(R.id.tv_task_title, data.getHistoryTaskTitle());
+
+        holder.setText(R.id.tv_task_period, data.getTaskPeriod());
+
+        holder.setText(R.id.tv_task_tag, data.getTaskStatus());
     }
 
     @Override

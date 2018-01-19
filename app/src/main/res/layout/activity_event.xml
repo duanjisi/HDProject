@@ -20,7 +20,7 @@
             android:paddingRight="11dp"
             android:text="返回"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_common" />
+            android:textSize="@dimen/text_size_medium" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,7 +31,7 @@
             android:paddingRight="11dp"
             android:text="应急事件"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_36" />
+            android:textSize="@dimen/text_size_xxlarge" />
     </RelativeLayout>
 
     <!--<RelativeLayout-->
@@ -87,5 +87,5 @@
         android:background="@drawable/bg_frame_bule"
         android:text="提交"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_large" />
+        android:textSize="@dimen/text_size_medium" />
 </RelativeLayout>

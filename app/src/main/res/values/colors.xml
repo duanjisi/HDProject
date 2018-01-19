@@ -9,7 +9,6 @@
     <color name="actionsheet_gray">#8F8F8F</color>
 
     <color name="bt_bg_gray">#DFDFDF</color>
-    <color name="text_gray">#bfbfbf</color>
     <color name="top_bar_bg">#1B82D2</color>
     <color name="white">#ffffff</color>
     <color name="pannel_bg">#E5E5E5</color>
@@ -21,16 +20,14 @@
     <color name="line_school">#d9d9d9</color>
     <!-- 线条颜色 end -->
     <color name="viewfinder_mask">#B2000000</color>
-    <!-- 字体颜色 start -->
-    <color name="text_color_black">#333333</color>
-    <color name="text_color_gray_6">#666666</color>
-    <color name="text_color_gray_9">#999999</color>
-    <color name="text_color_gray_a">#aaaaaa</color>
-    <color name="text_color_gray_b">#8D8D8D</color>
-    <color name="text_color_gray_c">#BCBCBC</color>
-    <color name="text_color_gray_d">#B3B3B3</color>
-    <color name="text_color_blue">#607398</color>
-    <!-- 字体颜色 end -->
+
+    <color name="color_gray_6">#666666</color>
+    <color name="color_gray_9">#999999</color>
+    <color name="color_gray_a">#aaaaaa</color>
+    <color name="color_gray_b">#8D8D8D</color>
+    <color name="color_gray_c">#BCBCBC</color>
+    <color name="color_gray_d">#B3B3B3</color>
+    <color name="color_blue">#607398</color>
 
     <color name="black">#000000</color>
     <color name="black_transparent">#1f000000</color>
@@ -45,4 +42,7 @@
     <color name="theme_color">#00b6e9</color>
 
     <color name="color_green">#FF27CB55</color>
+
+    <!--所有页面的背景颜色-->
+    <color name="color_theme_background">#FFE4E4E4</color>
 </resources>

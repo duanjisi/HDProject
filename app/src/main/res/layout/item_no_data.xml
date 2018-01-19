@@ -22,7 +22,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="28dp"
             android:text="@string/no_datas"
-            android:textColor="@color/text_gray"
+            android:textColor="@color/meta_text_fourth"
             android:textSize="24sp" />
     </RelativeLayout>
 </RelativeLayout>
