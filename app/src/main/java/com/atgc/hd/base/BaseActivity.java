@@ -17,7 +17,6 @@ import android.widget.ViewSwitcher;
 
 import com.atgc.hd.R;
 import com.atgc.hd.client.widgethelper.BarHelper;
-import com.atgc.hd.comm.net.SocketClientHandler;
 
 import com.atgc.hd.comm.utils.SysManager;
 
@@ -38,30 +37,28 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected BarHelper barHelper;
 
-//    @Override
-//    public void setContentView(int layoutResID) {
+    @Override
+    public void setContentView(int layoutResID) {
+
+        LinearLayout parentLayout
+                = (LinearLayout) getLayoutInflater().inflate(R.layout.base_activity_contentview, null);
+
+        View childView = getLayoutInflater().inflate(layoutResID, null);
+        contentViewSwitcher = findViewById(parentLayout, R.id.pannel_content_view);
+        contentViewSwitcher.addView(childView);
+
+        super.setContentView(parentLayout);
+
+        tvAtyTips = findViewById(parentLayout, R.id.tv_error_tips);
+
+        showContentView();
+
+        initStatusBar();
+
+        initToolBar();
 //
-//        LinearLayout parentLayout
-//                = (LinearLayout) getLayoutInflater().inflate(R.layout.base_activity_contentview, null);
-//
-//        contentViewSwitcher = findById(parentLayout, R.id.pannel_content_view);
-//
-//        View childView = getLayoutInflater().inflate(layoutResID, null);
-//
-//        contentViewSwitcher.addView(childView);
-//
-//        super.setContentView(parentLayout);
-//
-//        tvAtyTips = findById(parentLayout, R.id.tv_error_tips);
-//
-////        showContentView();
-////
-//        initStatusBar();
-//
-//        initToolBar();
-////
-////        initLoadingTips();
-//    }
+//        initLoadingTips();
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,7 +88,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         View toolbarView = findViewById(R.id.layout_custom_toolbar);
 
         barHelper = new BarHelper(this, toolbarView);
-        barHelper.setTitle(getToolBarTitle());
+        barHelper.setTitle(toolBarTitle());
 
         barHelper.setActionLeftDrawable(R.drawable.ic_svg_back);
 
@@ -135,6 +132,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    public void showContentView() {
+        if (contentViewSwitcher.getDisplayedChild() == 0) {
+            contentViewSwitcher.setDisplayedChild(1);
+        }
+    }
 
     /**
      * @param msg    内容
@@ -164,15 +166,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    public String getToolBarTitle() {
+    public String toolBarTitle() {
         return getString(R.string.app_name);
     }
 
-    public <T extends View> T findById(int id) {
-        return (T) findViewById(id);
-    }
-
-    public static <T extends View> T findById(View view, int id) {
+    public static <T extends View> T findViewById( View view, int id) {
         return (T) view.findViewById(id);
     }
 }

@@ -8,9 +8,11 @@
         <attr name="pstsIndicatorPaddingLeftRight" format="dimension" />
         <attr name="pstsIndicatorColor" format="color" />
         <attr name="pstsIndicatorHeight" format="dimension" />
+        <attr name="pstsIndicatorPaddingBottom" format="dimension" />
 
         <attr name="pstsUnderlineColor" format="color" />
         <attr name="pstsUnderlineHeight" format="dimension" />
+        <attr name="pstsUnderlinePaddingBottom" format="dimension" />
 
         <attr name="pstsDividerColor" format="color" />
         <attr name="pstsDividerPadding" format="dimension" />

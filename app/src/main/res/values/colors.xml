@@ -43,4 +43,6 @@
     <color name="meta_text_fifth">#efefef</color>
 
     <color name="theme_color">#00b6e9</color>
+
+    <color name="color_green">#FF27CB55</color>
 </resources>
