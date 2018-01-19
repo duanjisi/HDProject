@@ -42,4 +42,9 @@
 
     <dimen name="grid_expected_size">120dp</dimen>
 
+    <dimen name="mis_image_size">120dp</dimen>
+    <dimen name="mis_space_size">2dp</dimen>
+    <dimen name="mis_folder_cover_size">72dp</dimen>
+    <dimen name="dp_6">6dp</dimen>
+    <dimen name="dp_22">22dp</dimen>
 </resources>

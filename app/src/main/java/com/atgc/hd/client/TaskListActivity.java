@@ -20,14 +20,4 @@ public class TaskListActivity extends BaseActivity {
         super.onCreate(savedInstanceState, persistentState);
         setContentView(R.layout.activity_tasklist);
     }
-
-    @Override
-    public void onError(String msg) {
-
-    }
-
-    @Override
-    public void onResponse(String json) {
-
-    }
 }

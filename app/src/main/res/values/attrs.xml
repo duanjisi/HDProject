@@ -25,12 +25,12 @@
     </declare-styleable>
 
     <declare-styleable name="VectorCompatTextView">
-        <attr name="drawableLeftCompat" format="reference"/>
-        <attr name="drawableRightCompat" format="reference"/>
-        <attr name="drawableTopCompat" format="reference"/>
-        <attr name="drawableBottomCompat" format="reference"/>
-        <attr name="tintDrawableInTextColor" format="boolean"/>
-        <attr name="drawableCompatColor" format="reference|color"/>
+        <attr name="drawableLeftCompat" format="reference" />
+        <attr name="drawableRightCompat" format="reference" />
+        <attr name="drawableTopCompat" format="reference" />
+        <attr name="drawableBottomCompat" format="reference" />
+        <attr name="tintDrawableInTextColor" format="boolean" />
+        <attr name="drawableCompatColor" format="reference|color" />
     </declare-styleable>
 
     <declare-styleable name="SectorProgressView">
@@ -39,5 +39,16 @@
         <attr name="textColor" format="color" />
         <attr name="percent" format="float" />
         <attr name="startAngle" format="float" />
+    </declare-styleable>
+    <!--图片截取取景框-->
+    <declare-styleable name="ClipImageView">
+        <attr name="civHeight" format="integer" />
+        <attr name="civWidth" format="integer" />
+        <attr name="civTipText" format="string" />
+        <attr name="civTipTextSize" format="dimension" />
+        <attr name="civMaskColor" format="color" />
+        <attr name="civClipPadding" format="dimension" />
+        <attr name="civClipRoundCorner" format="dimension|reference" />
+        <attr name="civClipCircle" format="boolean" />
     </declare-styleable>
 </resources>

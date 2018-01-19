@@ -4,6 +4,12 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="actionsheet_blue">#037BFF</color>
+    <color name="actionsheet_red">#FD4A2E</color>
+    <color name="actionsheet_gray">#8F8F8F</color>
+
+    <color name="bt_bg_gray">#DFDFDF</color>
+    <color name="text_gray">#bfbfbf</color>
     <color name="top_bar_bg">#1B82D2</color>
     <color name="white">#ffffff</color>
     <color name="pannel_bg">#E5E5E5</color>

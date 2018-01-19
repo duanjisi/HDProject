@@ -18,6 +18,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".HDApplication"
@@ -47,12 +49,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".TestActivity"></activity>
         <activity android:name=".SecondActivity"></activity>
         <activity android:name=".FouthActivity"></activity>
         <activity android:name=".LocationTestActivity"></activity>
 
-        <activity android:name=".client.TaskListActivity"/>
+        <activity android:name=".activity.ConversationActivity"></activity>
+        <activity android:name=".activity.ChatActivity"></activity>
+        <activity android:name=".activity.EmergencyEventActivity"></activity>
+        <activity android:name=".activity.ClipImageActivity"></activity>
+        <activity
+            android:name=".comm.utils.PhotoAlbumUtil.MultiImageSelectorActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".client.TaskListActivity" />
 
         <service android:name=".comm.service.DeviceBootService"></service>
 

@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
+import com.atgc.hd.activity.EmergencyEventActivity;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.PrefKey;
@@ -176,7 +177,7 @@ public class MainActivity extends BaseActivity {
         tv_net.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, TestActivity.class));
+                startActivity(new Intent(MainActivity.this, EmergencyEventActivity.class));
             }
         });
 //        Utils.printIpAddress();

@@ -52,9 +52,13 @@ dependencies {
     compile 'de.greenrobot:eventbus:3.0.0-beta1'
     implementation project(':logger')
     implementation files('libs/json-lib-2.2.3-jdk13-sources.jar')
-//    compile 'com.github.vilyever:AndroidSocketClient:1.4.1'
+    //    compile 'com.github.vilyever:AndroidSocketClient:1.4.1'
     compile 'com.github.vilyever:AndroidSocketClient:3.0.3'
     implementation files('libs/BaiduLBS_Android.jar')
     compile 'net.jodah:typetools:0.4.0'
     compile 'com.alibaba:fastjson:1.2.9'
+    implementation files('libs/universal-image-loader-1.9.5.jar')
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.jakewharton:butterknife:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
 }

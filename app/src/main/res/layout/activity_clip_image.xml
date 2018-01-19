@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?><!--~
+  ~ Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <com.atgc.hd.widget.ClipImageView
+        android:id="@+id/clip_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom"
+        android:layout_centerInParent="true"
+        app:civClipPadding="16dp"
+        app:civClipRoundCorner="5dp"
+        app:civHeight="2"
+        app:civMaskColor="@color/viewfinder_mask"
+        app:civWidth="3" />
+
+    <RelativeLayout
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@id/bottom"
+        android:background="@android:color/black"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
+        tools:layout_marginBottom="40dp">
+
+        <TextView
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@android:string/cancel"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/dp_22" />
+
+        <TextView
+            android:id="@+id/clip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="16dp"
+            android:text="@android:string/ok"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/dp_22" />
+    </RelativeLayout>
+</RelativeLayout>

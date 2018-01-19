@@ -1,6 +1,7 @@
 package com.atgc.hd.base;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,7 +26,7 @@ import com.atgc.hd.comm.utils.SysManager;
  */
 
 
-public abstract class BaseActivity extends AppCompatActivity{
+public abstract class BaseActivity extends AppCompatActivity {
 
     public Context context;
 
@@ -37,30 +38,30 @@ public abstract class BaseActivity extends AppCompatActivity{
 
     protected BarHelper barHelper;
 
-    @Override
-    public void setContentView(int layoutResID) {
-
-        LinearLayout parentLayout
-                = (LinearLayout) getLayoutInflater().inflate(R.layout.base_activity_contentview, null);
-
-        contentViewSwitcher = findById(parentLayout, R.id.pannel_content_view);
-
-        View childView = getLayoutInflater().inflate(layoutResID, null);
-
-        contentViewSwitcher.addView(childView);
-
-        super.setContentView(parentLayout);
-
-        tvAtyTips = findById(parentLayout, R.id.tv_error_tips);
-
-//        showContentView();
+//    @Override
+//    public void setContentView(int layoutResID) {
 //
-        initStatusBar();
-
-        initToolBar();
+//        LinearLayout parentLayout
+//                = (LinearLayout) getLayoutInflater().inflate(R.layout.base_activity_contentview, null);
 //
-//        initLoadingTips();
-    }
+//        contentViewSwitcher = findById(parentLayout, R.id.pannel_content_view);
+//
+//        View childView = getLayoutInflater().inflate(layoutResID, null);
+//
+//        contentViewSwitcher.addView(childView);
+//
+//        super.setContentView(parentLayout);
+//
+//        tvAtyTips = findById(parentLayout, R.id.tv_error_tips);
+//
+////        showContentView();
+////
+//        initStatusBar();
+//
+//        initToolBar();
+////
+////        initLoadingTips();
+//    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,6 +103,39 @@ public abstract class BaseActivity extends AppCompatActivity{
         });
     }
 
+
+    public void openActivity(Class<?> clazz) {
+        openActivity(clazz, null);
+    }
+
+    public void openActivity(Class<?> clazz, Bundle bundle) {
+        Intent intent = new Intent(this, clazz);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
+        startActivity(intent);
+    }
+
+    public void openActvityForResult(Class<?> clazz, int requestCode) {
+        Intent intent = new Intent(this, clazz);
+        startActivityForResult(intent, requestCode);
+    }
+
+    public void openActvityForResult(Class<?> clazz, int requestCode, Bundle bundle) {
+        Intent intent = new Intent(this, clazz);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
+        startActivityForResult(intent, requestCode);
+    }
+
+    protected void setTextView(TextView tv, String str) {
+        if (!TextUtils.isEmpty(str)) {
+            tv.setText(str);
+        }
+    }
+
+
     /**
      * @param msg    内容
      * @param length true为长时间，false为短时间
@@ -138,7 +172,7 @@ public abstract class BaseActivity extends AppCompatActivity{
         return (T) findViewById(id);
     }
 
-    public static <T extends View> T findById( View view, int id) {
+    public static <T extends View> T findById(View view, int id) {
         return (T) view.findViewById(id);
     }
 }

@@ -4,4 +4,67 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/iv_head"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/person" />
+
+    <TextView
+        android:id="@+id/tv_device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/iv_head"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="6dp"
+        android:layout_toRightOf="@+id/iv_head"
+        android:text="通讯设备001"
+        android:textColor="@color/text_color_black"
+        android:textSize="@dimen/text_size_28" />
+
+    <TextView
+        android:id="@+id/tv_identy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tv_device"
+        android:layout_below="@+id/tv_device"
+        android:layout_marginTop="18dp"
+        android:text="当值警卫"
+        android:textSize="@dimen/text_size_24" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tv_identy"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="18dp"
+        android:layout_toRightOf="@+id/tv_identy"
+        android:text="张三"
+        android:textSize="@dimen/text_size_24" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tv_device"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:text="10:00"
+        android:textSize="@dimen/text_size_24" />
+
+    <LinearLayout
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1.6px"
+        android:layout_alignLeft="@+id/tv_identy"
+        android:layout_below="@+id/iv_head"
+        android:layout_marginTop="10dp"
+        android:background="@color/line_color_gray_d1"
+        android:orientation="horizontal">
+
+    </LinearLayout>
 </RelativeLayout>
