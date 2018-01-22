@@ -61,7 +61,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityQueue.intance().addActivity(this);
         context = this;
+    }
+
+    @Override
+    protected void onDestroy() {
+        ActivityQueue.intance().removeActivity(this);
+        super.onDestroy();
     }
 
     private void initStatusBar() {
