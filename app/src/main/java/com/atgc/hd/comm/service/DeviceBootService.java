@@ -12,19 +12,21 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.Ip_Port;
 import com.atgc.hd.comm.PrefKey;
+import com.atgc.hd.comm.local.LocationService;
+import com.atgc.hd.comm.net.BaseDataRequest;
 import com.atgc.hd.comm.net.PreRspPojo;
-import com.atgc.hd.comm.net.SocketClientHandler;
 import com.atgc.hd.comm.net.TcpSocketClient;
+import com.atgc.hd.comm.net.request.GPSRequest;
 import com.atgc.hd.comm.utils.DigitalUtils;
 import com.atgc.hd.comm.utils.PreferenceUtils;
 import com.atgc.hd.entity.ActionEntity;
+import com.baidu.location.BDLocation;
 import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
@@ -39,12 +41,19 @@ import de.greenrobot.event.EventBus;
  */
 public class DeviceBootService extends Service implements TcpSocketClient.TcpListener {
 
+    private LocationService locationService;
     private TcpSocketClient tcpSocketClient = null;
     private Timer timer = null;
-    private TimerTask timerTask = new TimerTask() {
+    private TimerTask heartBeatTimerTask = new TimerTask() {
         @Override
         public void run() {
             sendHeatBeat();
+        }
+    };
+    private TimerTask gpsTimerTask = new TimerTask() {
+        @Override
+        public void run() {
+            sendGps();
         }
     };
 
@@ -57,11 +66,20 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
     @Override
     public void onCreate() {
         super.onCreate();
+
+        timer = new Timer();
+
         tcpSocketClient = TcpSocketClient.getInstance();
         tcpSocketClient.setListener(this);
         if (!tcpSocketClient.isConnected()) {
             tcpSocketClient.connect(Ip_Port.getHOST(), Ip_Port.getPORT());
         }
+
+        Logger.e("开机广播服务");
+
+        locationService = LocationService.intance();
+        locationService.initService(this);
+        locationService.start();
     }
 
     @Override
@@ -73,6 +91,7 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
             sendRegisterMsg();
         } else {
             startHeartBeat();
+            startSendGps();
         }
     }
 
@@ -104,8 +123,35 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
     }
 
     private void startHeartBeat() {
-        timer = new Timer();
-        timer.schedule(timerTask, 1000, 10 * 1000);
+        timer.schedule(heartBeatTimerTask, 1000, 10 * 1000);
+    }
+
+    private void sendGps() {
+        BDLocation bdLocation = locationService.getLastBDLocation();
+        if (bdLocation == null) {
+            return;
+        }
+        Logger.e("upload gps.....");
+
+        GPSRequest gpsRequest = new GPSRequest();
+        gpsRequest.setLongitude("" + bdLocation.getLongitude());
+        gpsRequest.setLatitude("" + bdLocation.getLatitude());
+
+        gpsRequest.send(new BaseDataRequest.RequestCallback() {
+            @Override
+            public void onSuccess(Object pojo) {
+
+            }
+
+            @Override
+            public void onFailure(String msg) {
+
+            }
+        });
+    }
+
+    private void startSendGps() {
+        timer.schedule(gpsTimerTask, 0, 10 * 1000);
     }
 
     @Override

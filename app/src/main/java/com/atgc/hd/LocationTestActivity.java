@@ -14,6 +14,7 @@ import com.atgc.hd.comm.utils.DigitalUtils;
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDNotifyListener;
+import com.baidu.location.LocationClientOption;
 import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
@@ -95,14 +96,13 @@ public class LocationTestActivity extends BaseActivity {
 
     private void testLocation() {
         service = HDApplication.locationService();
-        service.registerListener(listener);
-        service.setLocationOption(service.getDefaultLocationClientOption());
+//        service.setLocationOption(getLocationClientOption());
+//        service.registerListener(listener);
 
 //        经度：113.6157 纬度：23.300853
 //        notifyListener.SetNotifyLocation(23.300853, 113.615709, 2000, service.getOption().getCoorType());
 //        service.registerNotifyListener(notifyListener);
         service.start();
-
     }
 
     private BDNotifyListener notifyListener = new BDNotifyListener() {
@@ -124,7 +124,7 @@ public class LocationTestActivity extends BaseActivity {
                 lastLocation = bdLocation;
             }
             double distance2 = CoordinateUtil.getDistance(lastLocation.getLatitude(), lastLocation.getLongitude(), bdLocation.getLatitude(), bdLocation.getLongitude());
-
+//            经度：113.616141 纬度：23.299926
             Logger.e("距离上一点：" + distance2 + "\n经度：" + bdLocation.getLongitude() + " 纬度：" + bdLocation.getLatitude());
 
             StringBuilder builder = new StringBuilder();
@@ -143,21 +143,6 @@ public class LocationTestActivity extends BaseActivity {
 
             tvResult.setText(builder.toString());
 
-            Map<String, String> map = new HashMap<>();
-            map.put("deviceID", "10012017020000000000");
-            map.put("uploadTime", "2018-1-17 09:00:42");
-            map.put("longitude", "113.468761313");
-            map.put("latitude", "23.5468321315");
-            map.put("direction", "");
-            map.put("speed", "");
-            map.put("satellites", "");
-            map.put("precision", "");
-            map.put("height", "");
-            map.put("retransFlag", "0");
-            map.put("needsResponse", "0");
-            map.put("remark", "");
-            map.put("userID", "357684684634234");
-            map.put("taskID", "");
 
 //            socketClientHandler.sendMsg("PAT_UPLOAD_GPS", map);
         }
@@ -165,9 +150,11 @@ public class LocationTestActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        service.unregisterListener(listener);
-        service.unregisterNotifyListener(notifyListener);
-        service.stop();
+        if (service != null) {
+//            service.unregisterListener(listener);
+            service.unregisterNotifyListener(notifyListener);
+            service.stop();
+        }
 
         super.onDestroy();
     }

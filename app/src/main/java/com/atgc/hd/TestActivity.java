@@ -15,8 +15,10 @@ import android.widget.Toast;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.comm.PrefKey;
 import com.atgc.hd.comm.net.BaseDataRequest;
+import com.atgc.hd.comm.net.request.GPSRequest;
 import com.atgc.hd.comm.net.request.HeartBeatRequest;
 import com.atgc.hd.comm.net.request.RegisterRequest;
+import com.orhanobut.logger.Logger;
 import com.atgc.hd.comm.net.request.UploadEventRequest;
 import com.atgc.hd.comm.utils.PreferenceUtils;
 
@@ -55,7 +57,8 @@ public class TestActivity extends BaseActivity {
         btn_beat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                testHearBeat();
+//                testHearBeat();
+                testGPS();
             }
         });
 
@@ -83,6 +86,21 @@ public class TestActivity extends BaseActivity {
     private void println(String str) {
         sb.append(str + "\n");
         tv_msg.setText(sb.toString());
+    }
+
+    private void testGPS() {
+        GPSRequest gpsRequest = new GPSRequest();
+        gpsRequest.send(new BaseDataRequest.RequestCallback() {
+            @Override
+            public void onSuccess(Object pojo) {
+                Logger.e("发送成功：" + pojo.toString());
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                Logger.e("发送失败：" + msg);
+            }
+        });
     }
 
     private void testRegister() {

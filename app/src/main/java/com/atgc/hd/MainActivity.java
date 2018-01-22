@@ -11,13 +11,12 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
-import com.atgc.hd.activity.EmergencyEventActivity;
 import com.atgc.hd.base.BaseActivity;
+import com.atgc.hd.client.tasklist.TaskListActivity;
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.PrefKey;
 import com.atgc.hd.comm.local.GPSLocationTool;
 import com.atgc.hd.comm.local.LocationService;
-import com.atgc.hd.comm.net.TcpSocketClient;
 import com.atgc.hd.comm.service.DeviceBootService;
 import com.atgc.hd.comm.utils.PreferenceUtils;
 import com.atgc.hd.entity.ActionEntity;
@@ -48,14 +47,17 @@ public class MainActivity extends BaseActivity {
         dhcpInfo = my_wifiManager.getDhcpInfo();
         wifiInfo = my_wifiManager.getConnectionInfo();
         initViews();
+
+        Logger.e("MainActivity----------------------------------");
 //        testGPSLocation();
+//        testLocation();
     }
 
     private void testGPSLocation() {
         GPSLocationTool.isGpsEnabled(this);
         GPSLocationTool.isLocationEnabled(this);
 
-        GPSLocationTool.registerLocation(this, 1000, 1, new GPSLocationTool.OnLocationChangeListener() {
+        GPSLocationTool.registerLocation(this, 5 * 1000, 1, new GPSLocationTool.OnLocationChangeListener() {
 
             @Override
             public void getLastKnownLocation(Location location) {
@@ -89,13 +91,18 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    LocationService service;
+    @Override
+    public String toolBarTitle() {
+        return "sdfasdf";
+    }
+
+//    LocationService service;
 
     private void testLocation() {
-        service = HDApplication.locationService();
-        service.registerListener(listener);
-        service.setLocationOption(service.getDefaultLocationClientOption());
-        service.start();
+//        service = HDApplication.locationService();
+//        service.registerListener(listener);
+//        service.setLocationOption(service.getDefaultLocationClientOption());
+//        service.start();
     }
 
     private BDAbstractLocationListener listener = new BDAbstractLocationListener() {
@@ -159,8 +166,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
-        service.unregisterListener(listener);
-        service.stop();
+//        service.unregisterListener(listener);
+//        service.stop();
 
         super.onDestroy();
     }
@@ -169,11 +176,11 @@ public class MainActivity extends BaseActivity {
         tvResult = findViewById(R.id.tv_net);
         tv_net = findViewById(R.id.tv_start);
         tvState = findViewById(R.id.tv_device_state);
-//        boolean isRegister = PreferenceUtils.getBoolean(this, PrefKey.REGISTER, false);
-//        if (!isRegister) {
-//            Intent intent = new Intent(context, DeviceBootService.class);
-//            startService(intent);
-//        }
+        boolean isRegister = PreferenceUtils.getBoolean(this, PrefKey.REGISTER, false);
+        if (!isRegister) {
+            Intent intent = new Intent(context, DeviceBootService.class);
+            startService(intent);
+        }
         tv_net.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
