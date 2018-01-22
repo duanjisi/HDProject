@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">HDProject</string>
     <string name="action_settings">Settings</string>
+    <string name="emergence_event">应急事件</string>
 
     <string name="loading">数据加载中， 请稍候&#8230;</string>
     <string name="no_datas">暂未获取到任何数据</string>

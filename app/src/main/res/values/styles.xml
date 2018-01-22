@@ -13,6 +13,11 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <declare-styleable name="RoundImageView">
+        <attr name="round_borderRadius" format="dimension" />
+        <attr name="round_type" format="integer" />
+    </declare-styleable>
+
     <style name="AppTheme.NoTitleBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

@@ -15,4 +15,6 @@ package com.atgc.hd.comm;
 
 public class PrefKey {
     public static final String REGISTER = "com.atgc.hd.register";
+    public static final String HOST = "com.atgc.hd.host";
+    public static final String PORT = "com.atgc.hd.port";
 }

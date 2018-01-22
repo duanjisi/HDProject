@@ -21,7 +21,5 @@
         android:left="2dp"
         android:right="2dp"
         android:top="2dp"></padding>
-
     <corners android:radius="40dp" />
-
 </shape>

@@ -73,7 +73,6 @@ public abstract class SocketTransceiver implements Runnable {
                 }
 //                this.onReceive(s);
             } catch (IOException e) {
-
                 runFlag = false;
                 e.printStackTrace();
             }

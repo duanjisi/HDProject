@@ -169,15 +169,15 @@ public class MainActivity extends BaseActivity {
         tvResult = findViewById(R.id.tv_net);
         tv_net = findViewById(R.id.tv_start);
         tvState = findViewById(R.id.tv_device_state);
-        boolean isRegister = PreferenceUtils.getBoolean(this, PrefKey.REGISTER, false);
-        if (!isRegister) {
-            Intent intent = new Intent(context, DeviceBootService.class);
-            startService(intent);
-        }
+//        boolean isRegister = PreferenceUtils.getBoolean(this, PrefKey.REGISTER, false);
+//        if (!isRegister) {
+//            Intent intent = new Intent(context, DeviceBootService.class);
+//            startService(intent);
+//        }
         tv_net.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, EmergencyEventActivity.class));
+                startActivity(new Intent(MainActivity.this, TestActivity.class));
             }
         });
 //        Utils.printIpAddress();

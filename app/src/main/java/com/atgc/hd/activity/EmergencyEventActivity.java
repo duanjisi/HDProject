@@ -28,11 +28,14 @@ import android.widget.TextView;
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.comm.Utils;
+import com.atgc.hd.comm.net.http.MyTask;
+import com.atgc.hd.comm.net.http.UploadFileTask;
 import com.atgc.hd.comm.utils.PermissonUtil.PermissionListener;
 import com.atgc.hd.comm.utils.PermissonUtil.PermissionUtil;
 import com.atgc.hd.comm.utils.PhotoAlbumUtil.MultiImageSelector;
 import com.atgc.hd.comm.utils.PhotoAlbumUtil.MultiImageSelectorActivity;
 import com.atgc.hd.widget.ActionSheet;
+import com.atgc.hd.widget.MyGridView;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -59,14 +62,14 @@ public class EmergencyEventActivity extends BaseActivity implements ActionSheet.
     private final int REQUEST_CLIP_IMAGE = 3;//裁剪
     private String savePath;
     private String mOutputPath;
-    @BindView(R.id.tv_back)
-    TextView tvBack;
     @BindView(R.id.tv_write)
     EditText tvWrite;
     @BindView(R.id.iv)
     ImageView iv;
     @BindView(R.id.btn_submit)
     Button btnSubmit;
+    @BindView(R.id.grid)
+    MyGridView gridView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,18 +82,18 @@ public class EmergencyEventActivity extends BaseActivity implements ActionSheet.
             savePath = Environment.getExternalStorageDirectory() + "/HDProject/";
         }
         mOutputPath = new File(getExternalCacheDir(), "chosen.jpg").getPath();
+        barHelper.setTitleColor(R.color.white);
     }
 
-    private void init() {
-        mOutputPath = new File(getExternalCacheDir(), "chosen.jpg").getPath();
+    @Override
+    public String toolBarTitle() {
+        return getString(R.string.emergence_event);
     }
 
-    @OnClick({R.id.tv_back, R.id.iv, R.id.btn_submit})
+
+    @OnClick({R.id.iv, R.id.btn_submit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.tv_back:
-                finish();
-                break;
             case R.id.iv:
                 showActionSheet();
                 break;
@@ -248,9 +251,19 @@ public class EmergencyEventActivity extends BaseActivity implements ActionSheet.
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_CLIP_IMAGE) {
             String path = ClipImageActivity.ClipOptions.createFromBundle(data).getOutputPath();
             if (path != null) {
-//                uploadImageFile(path);
+                uploadImageFile(path);
             }
             return;
         }
+    }
+
+    //    private UploadFileTask uploadFileTask;
+    private MyTask task;
+
+    private void uploadImageFile(String path) {
+//        uploadFileTask = new UploadFileTask(context, path);
+//        uploadFileTask.execute();
+        task = new MyTask(context, path);
+        task.execute();
     }
 }

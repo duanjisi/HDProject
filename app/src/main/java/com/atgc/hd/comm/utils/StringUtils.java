@@ -2,6 +2,9 @@ package com.atgc.hd.comm.utils;
 
 import android.os.Environment;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.math.BigInteger;
 import java.util.Random;
@@ -57,5 +60,18 @@ public class StringUtils {
      */
     public static String binary(byte[] bytes, int radix) {
         return new BigInteger(1, bytes).toString(radix);// 这里的1代表正数
+    }
+
+    public static String getJson(String filePath) {
+        String data = FileUtil.getBase64Data(filePath);
+        String fileName = FileUtil.getFileName(filePath);
+        JSONObject object = new JSONObject();
+        try {
+            object.put("data", data);
+            object.put("fileName", fileName);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object.toString();
     }
 }

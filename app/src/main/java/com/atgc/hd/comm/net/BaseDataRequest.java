@@ -21,8 +21,20 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
     private RequestCallback callback;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private TcpSocketClient tcpSocketClient;
+    protected Object[] mParams;
+    private String mTag;
 
     protected BaseDataRequest() {
+        mGenericPojoClazz = (Class<T>) TypeResolver.resolveRawArgument(BaseDataRequest.class, getClass());
+        tcpSocketClient = TcpSocketClient.getInstance();
+        tcpSocketClient.setListener(this);
+        if (!tcpSocketClient.isConnected()) {
+            tcpSocketClient.connect(Ip_Port.getHOST(), Ip_Port.getPORT());
+        }
+    }
+
+    protected BaseDataRequest(String tag, Object... params) {
+        mParams = params;
         mGenericPojoClazz = (Class<T>) TypeResolver.resolveRawArgument(BaseDataRequest.class, getClass());
         tcpSocketClient = TcpSocketClient.getInstance();
         tcpSocketClient.setListener(this);

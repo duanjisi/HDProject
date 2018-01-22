@@ -9,13 +9,18 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atgc.hd.base.BaseActivity;
+import com.atgc.hd.comm.PrefKey;
 import com.atgc.hd.comm.net.BaseDataRequest;
 import com.atgc.hd.comm.net.request.HeartBeatRequest;
 import com.atgc.hd.comm.net.request.RegisterRequest;
+import com.atgc.hd.comm.net.request.UploadEventRequest;
+import com.atgc.hd.comm.utils.PreferenceUtils;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +29,8 @@ import java.util.regex.Pattern;
  * <p>作者：duanjisi 2018/1/16
  */
 public class TestActivity extends BaseActivity {
+    private final String Tag = TestActivity.class.getSimpleName();
+    private TextView tv_msg;
     private Button btn, btn_beat;
     private EditText etHost, etPort;
     private Handler mHandler = new Handler(Looper.getMainLooper());
@@ -36,6 +43,8 @@ public class TestActivity extends BaseActivity {
         btn_beat = findViewById(R.id.btn_beat);
         etHost = findViewById(R.id.et_ip);
         etPort = findViewById(R.id.et_Port);
+        tv_msg = findViewById(R.id.tv_msg);
+
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,22 +59,30 @@ public class TestActivity extends BaseActivity {
             }
         });
 
-
     }
+
+    private StringBuilder sb = new StringBuilder();
 
     private void testHearBeat() {
         HeartBeatRequest request = new HeartBeatRequest();
         request.send(new BaseDataRequest.RequestCallback<String>() {
             @Override
             public void onSuccess(String pojo) {
-                showToast(pojo);
+//                showToast(pojo);
+                println(pojo);
             }
 
             @Override
             public void onFailure(String msg) {
-                showToast(msg);
+//                showToast(msg);
+                println(msg);
             }
         });
+    }
+
+    private void println(String str) {
+        sb.append(str + "\n");
+        tv_msg.setText(sb.toString());
     }
 
     private void testRegister() {
@@ -86,10 +103,29 @@ public class TestActivity extends BaseActivity {
         String host = getText(etHost);
         String port = getText(etPort);
         if (!TextUtils.isEmpty(host)) {
-
+            if (isHostMatcher(host)) {
+                PreferenceUtils.putString(context, PrefKey.HOST, host);
+            } else {
+                showToast("IP地址不合法");
+                return;
+            }
         } else {
             showToast("IP地址为空");
+            return;
         }
+
+        if (!TextUtils.isEmpty(port)) {
+            if (isPortMatcher(port)) {
+                PreferenceUtils.putInt(context, PrefKey.PORT, Integer.parseInt(port));
+            } else {
+                showToast("端口号不合法");
+                return;
+            }
+        } else {
+            showToast("端口为空");
+            return;
+        }
+
         RegisterRequest request = new RegisterRequest();
         request.send(new BaseDataRequest.RequestCallback<String>() {
             @Override
@@ -104,13 +140,46 @@ public class TestActivity extends BaseActivity {
         });
     }
 
+    private void upLoadEmergency() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("deviceId", "");
+        map.put("longitude", "");
+        map.put("latitude", "");
+        map.put("uploadTime", "");
+        map.put("description", "");
+        map.put("picUrl", "");
+        map.put("videoUrl", "");
+        map.put("place", "");
+        map.put("eventType", "");
+        map.put("taskID", "");
+        UploadEventRequest request = new UploadEventRequest(Tag, map);
+        request.send(new BaseDataRequest.RequestCallback<String>() {
+            @Override
+            public void onSuccess(String pojo) {
+
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                showToast(msg);
+            }
+        });
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
     }
 
-    private boolean isMatcher(String str) {
+    private boolean isHostMatcher(String str) {
         Pattern pattern = Pattern.compile("\\d+\\.\\d+\\.\\d+\\.\\d+");
+        Matcher matcher = pattern.matcher(str);
+        return matcher.matches();
+    }
+
+
+    private boolean isPortMatcher(String str) {
+        Pattern pattern = Pattern.compile("^([1-9]|[1-9]\\\\d{1,3}|[1-6][0-5][0-5][0-3][0-5])$");
         Matcher matcher = pattern.matcher(str);
         return matcher.matches();
     }

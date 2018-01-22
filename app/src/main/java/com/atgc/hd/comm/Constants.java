@@ -14,6 +14,11 @@ package com.atgc.hd.comm;
  */
 
 public class Constants {
+
+    //    public static final String UP_LOAD_IMAGE = "http://ip:port/VIID/Images";
+//    public static final String UP_LOAD_IMAGE = "http://192.168.0.242:39047/VIID/Images";
+    public static final String UP_LOAD_IMAGE = "http://172.16.10.115:8090/scp-imagemgmtcomponent/VIID/Images";
+
     /**
      * 行为
      */
