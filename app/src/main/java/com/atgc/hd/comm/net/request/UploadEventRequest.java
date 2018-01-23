@@ -10,7 +10,6 @@ package com.atgc.hd.comm.net.request;
 
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.net.BaseDataRequest;
-
 import java.util.HashMap;
 import java.util.Map;
 

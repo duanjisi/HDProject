@@ -2,29 +2,14 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:roundiv="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
-    <FrameLayout
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+    <com.atgc.hd.widget.MyView
+        android:id="@+id/my_view"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_centerInParent="true">
 
-
-        <com.atgc.hd.widget.RoundImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/person"
-            roundiv:round_borderRadius="6dp"
-            roundiv:round_type="1" />
-
-        <com.atgc.hd.widget.RoundImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:alpha="0.4"
-            android:src="@drawable/bg_frame_bule"
-            android:visibility="gone"
-            roundiv:round_borderRadius="6dp"
-            roundiv:round_type="1" />
-    </FrameLayout>
+    </com.atgc.hd.widget.MyView>
 </RelativeLayout>

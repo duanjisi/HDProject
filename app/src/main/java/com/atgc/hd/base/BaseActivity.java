@@ -175,7 +175,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         return getString(R.string.app_name);
     }
 
-    public static <T extends View> T findViewById( View view, int id) {
+    public static <T extends View> T findViewById(View view, int id) {
         return (T) view.findViewById(id);
     }
 }

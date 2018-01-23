@@ -177,7 +177,7 @@ public class MainActivity extends BaseActivity {
         tv_net.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, TestActivity.class));
+                startActivity(new Intent(MainActivity.this, EmergencyEventActivity.class));
             }
         });
 //        Utils.printIpAddress();

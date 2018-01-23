@@ -2,6 +2,7 @@
     <string name="app_name">HDProject</string>
     <string name="action_settings">Settings</string>
     <string name="emergence_event">应急事件</string>
+    <string name="local_videos">本地视频</string>
 
     <string name="loading">数据加载中， 请稍候&#8230;</string>
     <string name="no_datas">暂未获取到任何数据</string>
@@ -11,7 +12,9 @@
     <string name="xlistview_header_last_time">上次更新：</string>
     <string name="xlistview_footer_hint_normal">查看更多</string>
     <string name="xlistview_footer_hint_ready">松开载入更多</string>
-
+    <string name="giving_video_permissions">需要视频权限</string>
+    <string name="giving_camera2_permissions">需要相机权限</string>
+    <string name="giving_album_permissions">需要相册权限</string>
     <!-- 相册多选 -->
     <string name="mis_folder_all">所有图片</string>
     <string name="mis_preview">预览</string>

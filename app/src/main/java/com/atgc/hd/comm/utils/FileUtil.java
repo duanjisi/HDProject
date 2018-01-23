@@ -1,8 +1,12 @@
 package com.atgc.hd.comm.utils;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -72,6 +76,7 @@ public class FileUtil {
 
     /**
      * 根据路径获取文件名
+     *
      * @param path
      * @return
      */
@@ -147,5 +152,44 @@ public class FileUtil {
         BigDecimal result4 = new BigDecimal(teraBytes);
         return result4.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString()
                 + "TB";
+    }
+
+    // 删除在/sdcard/dcim/Camera/默认生成的文件
+    public static void deleteDefaultFile(Context context, Uri uri) {
+        String fileName = null;
+        if (uri != null) {
+            // content
+            Log.d("Scheme", uri.getScheme());
+            if (uri.getScheme().equals("content")) {
+                Cursor cursor = context.getContentResolver().query(uri, null,
+                        null, null, null);
+                if (cursor != null) {
+                    if (cursor.moveToNext()) {
+                        int columnIndex = cursor
+                                .getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
+                        fileName = cursor.getString(columnIndex);
+                        //获取缩略图id
+                        int id = cursor.getInt(cursor
+                                .getColumnIndex(MediaStore.Video.VideoColumns._ID));
+                        //获取缩略图
+//                    Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+//                            getContentResolver(), id, MediaStore.Images.Thumbnails.MICRO_KIND,
+//                            null);
+
+                        if (!fileName.startsWith("/mnt")) {
+                            fileName = "/mnt/" + fileName;
+                        }
+                        Log.d("fileName", fileName);
+                    }
+                    cursor.close();
+                }
+            }
+        }
+        // 删除文件
+        File file = new File(fileName);
+        if (file.exists()) {
+            file.delete();
+            Log.d("delete", "删除成功");
+        }
     }
 }

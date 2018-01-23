@@ -32,7 +32,7 @@ import java.util.List;
 
 public class Utils {
 
-//    @SuppressLint("LongLogTag")
+    //    @SuppressLint("LongLogTag")
 //    public static String getLocalIpAddress() {
 //        try {
 //            for (Enumeration<NetworkInterface> en = NetworkInterface
@@ -51,6 +51,17 @@ public class Utils {
 //        }
 //        return null;
 //    }
+    public static boolean hasGingerbread() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD;
+    }
+
+    public static boolean hasHoneycomb() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+    }
+
+    public static boolean hasHoneycombMR1() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1;
+    }
 
     //根据IP获取本地Mac
     public static String getLocalMacAddressFromIp(Context context) {
@@ -439,6 +450,10 @@ public class Utils {
     public static boolean hasFroyo() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO;
 
+    }
+
+    public static boolean hasKitKat() {
+        return Build.VERSION.SDK_INT >= 19;
     }
 
     public static String getDataColumn(Context context, Uri uri,

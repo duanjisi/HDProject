@@ -34,7 +34,7 @@ public class HDApplication extends Application {
         context = getApplicationContext();
 
         initLog();
-        initCrashHandler();
+//        initCrashHandler();
 
         initLocationServcie();
     }

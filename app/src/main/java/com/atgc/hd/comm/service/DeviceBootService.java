@@ -138,7 +138,8 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
                 Logger.i("info===============心跳包响应成功");
                 EventBus.getDefault().post(new ActionEntity(Constants.Action.HEART_BEAT, 0));
             }
-        } else {//响应失败
+        } else {
+            //响应失败
             if (preRspPojo.Command.equals(DeviceCmd.REGISTER)) {//设备注册失败
                 EventBus.getDefault().post(new ActionEntity(Constants.Action.REGISTER_SUCCESSED, 1));
                 startHeartBeat();
