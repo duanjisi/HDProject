@@ -10,6 +10,7 @@ package com.atgc.hd.comm.net.request;
 
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.net.BaseDataRequest;
+import com.atgc.hd.comm.utils.DateUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,26 @@ import java.util.Map;
  */
 
 public class GPSRequest extends BaseDataRequest<String> {
+
+    private String deviceID = "137000000000000000";
+    private String uploadTime = "";
+    private String longitude = "";
+    private String latitude = "";
+    private String direction = "";
+    private String speed = "";
+    private String satellites = "";
+    private String precision = "";
+    private String height = "";
+    private String retransFlag = "0";
+    private String needsResponse = "1";
+    private String remark = "";
+    private String userID = "";
+    private String taskI = "";
+
+    public GPSRequest() {
+        this.uploadTime = DateUtil.currentTime();
+    }
+
     @Override
     protected boolean isParse() {
         return false;
@@ -28,25 +49,137 @@ public class GPSRequest extends BaseDataRequest<String> {
     @Override
     protected Map<String, String> getParams() {
         Map<String, String> map = new HashMap<>();
-        map.put("deviceID", "10012017020000000000");
-        map.put("uploadTime", "2018-1-17 09:00:42");
-        map.put("longitude", "113.468761313");
-        map.put("latitude", "23.5468321315");
-        map.put("direction", "");
-        map.put("speed", "");
-        map.put("satellites", "");
-        map.put("precision", "");
-        map.put("height", "");
-        map.put("retransFlag", "0");
-        map.put("needsResponse", "0");
-        map.put("remark", "");
-        map.put("userID", "357684684634234");
-        map.put("taskID", "548894889558555");
+        map.put("deviceID", deviceID);
+        map.put("uploadTime", uploadTime);
+        map.put("longitude", longitude);
+        map.put("latitude", latitude);
+        map.put("direction", direction);
+        map.put("speed", speed);
+        map.put("satellites", satellites);
+        map.put("precision", precision);
+        map.put("height", height);
+        map.put("retransFlag", retransFlag);
+        map.put("needsResponse", needsResponse);
+        map.put("remark", remark);
+        map.put("userID", userID);
+        map.put("taskID", "暂无任务");
         return map;
     }
 
     @Override
     protected String getCommand() {
         return DeviceCmd.PAT_UPLOAD_GPS;
+    }
+
+    public String getDeviceID() {
+        return deviceID;
+    }
+
+    public void setDeviceID(String deviceID) {
+        this.deviceID = deviceID;
+    }
+
+    public String getUploadTime() {
+        return uploadTime;
+    }
+
+    public void setUploadTime(String uploadTime) {
+        this.uploadTime = uploadTime;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+
+    public String getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(String speed) {
+        this.speed = speed;
+    }
+
+    public String getSatellites() {
+        return satellites;
+    }
+
+    public void setSatellites(String satellites) {
+        this.satellites = satellites;
+    }
+
+    public String getPrecision() {
+        return precision;
+    }
+
+    public void setPrecision(String precision) {
+        this.precision = precision;
+    }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
+
+    public String getRetransFlag() {
+        return retransFlag;
+    }
+
+    public void setRetransFlag(String retransFlag) {
+        this.retransFlag = retransFlag;
+    }
+
+    public String getNeedsResponse() {
+        return needsResponse;
+    }
+
+    public void setNeedsResponse(String needsResponse) {
+        this.needsResponse = needsResponse;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    public String getTaskI() {
+        return taskI;
+    }
+
+    public void setTaskI(String taskI) {
+        this.taskI = taskI;
     }
 }

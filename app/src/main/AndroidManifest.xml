@@ -65,7 +65,7 @@
             android:name=".comm.utils.PhotoAlbumUtil.MultiImageSelectorActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".client.TaskListActivity" />
+        <activity android:name=".client.tasklist.TaskListActivity" />
 
         <service android:name=".comm.service.DeviceBootService"></service>
 

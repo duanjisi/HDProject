@@ -12,19 +12,20 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
-import com.alibaba.fastjson.JSON;
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.DeviceCmd;
-import com.atgc.hd.comm.Ip_Port;
+import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.PrefKey;
+import com.atgc.hd.comm.local.LocationService;
+import com.atgc.hd.comm.net.BaseDataRequest;
 import com.atgc.hd.comm.net.PreRspPojo;
-import com.atgc.hd.comm.net.SocketClientHandler;
 import com.atgc.hd.comm.net.TcpSocketClient;
+import com.atgc.hd.comm.net.request.GPSRequest;
 import com.atgc.hd.comm.utils.DigitalUtils;
 import com.atgc.hd.comm.utils.PreferenceUtils;
 import com.atgc.hd.entity.ActionEntity;
+import com.baidu.location.BDLocation;
 import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
@@ -39,12 +40,19 @@ import de.greenrobot.event.EventBus;
  */
 public class DeviceBootService extends Service implements TcpSocketClient.TcpListener {
 
+    private LocationService locationService;
     private TcpSocketClient tcpSocketClient = null;
     private Timer timer = null;
-    private TimerTask timerTask = new TimerTask() {
+    private TimerTask heartBeatTimerTask = new TimerTask() {
         @Override
         public void run() {
             sendHeatBeat();
+        }
+    };
+    private TimerTask gpsTimerTask = new TimerTask() {
+        @Override
+        public void run() {
+            sendGps();
         }
     };
 
@@ -57,23 +65,27 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
     @Override
     public void onCreate() {
         super.onCreate();
+
+        timer = new Timer();
+
         tcpSocketClient = TcpSocketClient.getInstance();
         tcpSocketClient.setListener(this);
         if (!tcpSocketClient.isConnected()) {
-            tcpSocketClient.connect(Ip_Port.getHOST(), Ip_Port.getPORT());
+            tcpSocketClient.connect(IPPort.getHOST(), IPPort.getPORT());
         }
+
+        Logger.e("开机广播服务");
+
+        locationService = LocationService.intance();
+        locationService.initService(this);
+        locationService.start();
     }
 
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
         Logger.i("info===============开启服务onStart");
-        boolean isRegister = PreferenceUtils.getBoolean(this, PrefKey.REGISTER, false);
-        if (!isRegister) {
-            sendRegisterMsg();
-        } else {
-            startHeartBeat();
-        }
+        sendRegisterMsg();
     }
 
     @Override
@@ -104,8 +116,35 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
     }
 
     private void startHeartBeat() {
-        timer = new Timer();
-        timer.schedule(timerTask, 1000, 10 * 1000);
+        timer.schedule(heartBeatTimerTask, 1000, 10 * 1000);
+    }
+
+    private void sendGps() {
+        BDLocation bdLocation = locationService.getLastBDLocation();
+        if (bdLocation == null) {
+            return;
+        }
+        Logger.e("upload gps.....");
+
+        GPSRequest gpsRequest = new GPSRequest();
+        gpsRequest.setLongitude("" + bdLocation.getLongitude());
+        gpsRequest.setLatitude("" + bdLocation.getLatitude());
+
+        gpsRequest.send(new BaseDataRequest.RequestCallback() {
+            @Override
+            public void onSuccess(Object pojo) {
+
+            }
+
+            @Override
+            public void onFailure(String msg) {
+
+            }
+        });
+    }
+
+    private void startSendGps() {
+        timer.schedule(gpsTimerTask, 0, 10 * 1000);
     }
 
     @Override
@@ -125,22 +164,25 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
     }
 
     @Override
-    public void onReceive(String json) {
-        PreRspPojo preRspPojo = null;
-        preRspPojo = JSON.parseObject(json, PreRspPojo.class);
+    public void onReceive(PreRspPojo preRspPojo) {
         if (preRspPojo.Result.equals("0")) {
-            if (preRspPojo.Command.equals(DeviceCmd.REGISTER)) {//设备注册成功
+            //设备注册成功
+            if (preRspPojo.Command.equals(DeviceCmd.REGISTER)) {
                 PreferenceUtils.putBoolean(this, PrefKey.REGISTER, true);
                 EventBus.getDefault().post(new ActionEntity(Constants.Action.REGISTER_SUCCESSED, 0));
+
                 startHeartBeat();
+                startSendGps();
                 Logger.i("info===============设备注册成功");
             } else if (preRspPojo.Command.equals(DeviceCmd.HEART_BEAT)) {
-                Logger.i("info===============心跳包响应成功");
                 EventBus.getDefault().post(new ActionEntity(Constants.Action.HEART_BEAT, 0));
+                Logger.i("info===============心跳包响应成功");
             }
-        } else {
-            //响应失败
-            if (preRspPojo.Command.equals(DeviceCmd.REGISTER)) {//设备注册失败
+        }
+        //响应失败
+        else {
+            //设备注册失败
+            if (preRspPojo.Command.equals(DeviceCmd.REGISTER)) {
                 EventBus.getDefault().post(new ActionEntity(Constants.Action.REGISTER_SUCCESSED, 1));
                 startHeartBeat();
                 Logger.i("info===============设备注册失败");

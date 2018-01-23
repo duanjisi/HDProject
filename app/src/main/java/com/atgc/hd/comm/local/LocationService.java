@@ -23,33 +23,45 @@ public class LocationService {
     private Object objLock = new Object();
     private List<BDAbstractLocationListener> locationListeners;
 
-    /***
-     *
-     * @param locationContext
-     */
-    public LocationService(Context locationContext) {
-        synchronized (objLock) {
-            if (client == null) {
-                client = new LocationClient(locationContext);
-                client.setLocOption(getDefaultLocationClientOption());
-                locationListeners = new ArrayList<>();
+    private static LocationService locationService = new LocationService();
+
+    private volatile BDLocation lastBDLocation;
+
+    private LocationService() {
+    }
+
+    public static LocationService intance() {
+        return locationService;
+    }
+
+    public void initService(Context locationContext) {
+        if (client == null) {
+            synchronized (objLock) {
+                if (client == null) {
+                    client = new LocationClient(locationContext);
+                    client.setLocOption(getDefaultLocationClientOption());
+                    client.registerLocationListener(bdLocationListener);
+                    locationListeners = new ArrayList<>();
+                }
             }
         }
     }
 
-    private BDAbstractLocationListener bdAbstractLocationListener = new BDAbstractLocationListener() {
+    private BDAbstractLocationListener bdLocationListener = new BDAbstractLocationListener() {
         @Override
         public void onReceiveLocation(BDLocation bdLocation) {
+            lastBDLocation = bdLocation;
+
             double longitude = Double.valueOf(bdLocation.getLongitude());
             double latitude = Double.valueOf(bdLocation.getLatitude());
             Coordinate coordinate = CoordinateUtil.gcj02ToWbs84(longitude, latitude);
             bdLocation.setLongitude(coordinate.getLongitude());
             bdLocation.setLatitude(coordinate.getLatitude());
 
-            bdLocation.setCoorType("已由gcj02转换为wgs84坐标系");
-            for (BDAbstractLocationListener locationListener : locationListeners) {
-                locationListener.onReceiveLocation(bdLocation);
-            }
+            bdLocation.setCoorType("原gcj02，已转换为wgs84坐标系");
+//            for (BDAbstractLocationListener locationListener : locationListeners) {
+//                locationListener.onReceiveLocation(bdLocation);
+//            }
         }
     };
 
@@ -59,7 +71,7 @@ public class LocationService {
      * @return
      */
 
-    public boolean registerListener(BDAbstractLocationListener listener) {
+    private boolean registerListener(BDAbstractLocationListener listener) {
         boolean isSuccess = false;
         if (listener != null) {
             client.registerLocationListener(listener);
@@ -68,7 +80,7 @@ public class LocationService {
         return isSuccess;
     }
 
-    public void unregisterListener(BDAbstractLocationListener listener) {
+    private void unregisterListener(BDAbstractLocationListener listener) {
         if (listener != null) {
             client.unRegisterLocationListener(listener);
         }
@@ -106,8 +118,9 @@ public class LocationService {
     public boolean setLocationOption(LocationClientOption option) {
         boolean isSuccess = false;
         if (option != null) {
-            if (client.isStarted())
+            if (client.isStarted()) {
                 client.stop();
+            }
             DIYoption = option;
             client.setLocOption(option);
         }
@@ -122,11 +135,11 @@ public class LocationService {
         if (mOption == null) {
             mOption = new LocationClientOption();
             //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
-            mOption.setLocationMode(LocationMode.Device_Sensors);
+            mOption.setLocationMode(LocationMode.Hight_Accuracy);
             //可选，默认gcj02，设置返回的定位结果坐标系，如果配合百度地图使用，建议设置为bd09ll;
             mOption.setCoorType("gcj02");
             //可选，默认0，即仅定位一次，设置发起连续定位请求的间隔需要大于等于1000ms才是有效的
-            mOption.setScanSpan(5 * 1000);
+            mOption.setScanSpan(3000);
             //可选，设置是否需要地址信息，默认不需要
             mOption.setIsNeedAddress(true);
             //可选，设置是否需要地址描述
@@ -176,6 +189,7 @@ public class LocationService {
     public void stop() {
         synchronized (objLock) {
             if (client != null && client.isStarted()) {
+                client.unRegisterLocationListener(bdLocationListener);
                 client.stop();
             }
         }
@@ -189,5 +203,16 @@ public class LocationService {
         return client.requestHotSpotState();
     }
 
+    /**
+     * 注意返回null的情况
+     * @return
+     */
+    public BDLocation getLastBDLocation() {
+        if (lastBDLocation == null) {
+            return null;
+        } else {
+            return new BDLocation(lastBDLocation);
+        }
+    }
 
 }

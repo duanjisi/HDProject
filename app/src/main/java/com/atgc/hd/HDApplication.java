@@ -8,6 +8,8 @@ import com.atgc.hd.comm.crash.CrashHandler;
 import com.atgc.hd.comm.local.LocationService;
 import com.atgc.hd.comm.utils.FileUtil;
 import com.atgc.hd.entity.Header;
+import com.baidu.location.BDAbstractLocationListener;
+import com.baidu.location.BDLocation;
 import com.orhanobut.logger.Logger;
 import com.orhanobut.logger.adapter.AndroidLogAdapter;
 import com.orhanobut.logger.adapter.DiskLogAdapter;
@@ -73,7 +75,16 @@ public class HDApplication extends Application {
     }
 
     private void initLocationServcie() {
-        locationService = new LocationService(getApplicationContext());
+//        locationService = new LocationService(getApplicationContext());
+
+//        LocationService locationService = new LocationService(getApplicationContext());
+//        locationService.registerListener(new BDAbstractLocationListener() {
+//            @Override
+//            public void onReceiveLocation(BDLocation bdLocation) {
+//                Logger.e("1111地址：" + bdLocation.getAddrStr() + "\n经度：" + bdLocation.getLongitude() + " 纬度：" + bdLocation.getLatitude());
+//            }
+//        });
+//        locationService.start();
     }
 
     public static Context applicationContext() {
