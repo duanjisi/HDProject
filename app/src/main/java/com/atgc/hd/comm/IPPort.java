@@ -9,7 +9,7 @@ import com.atgc.hd.comm.utils.PreferenceUtils;
  * Created by duanjisi on 2018/1/12.
  */
 
-public class Ip_Port {
+public class IPPort {
     private static final String HOST = "172.16.10.80";
     private static final int PORT = 20001;
 

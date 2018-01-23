@@ -4,8 +4,9 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.alibaba.fastjson.JSON;
-import com.atgc.hd.comm.Ip_Port;
+import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.utils.DigitalUtils;
+import com.orhanobut.logger.Logger;
 
 import net.jodah.typetools.TypeResolver;
 
@@ -25,12 +26,7 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
     private String mTag;
 
     protected BaseDataRequest() {
-        mGenericPojoClazz = (Class<T>) TypeResolver.resolveRawArgument(BaseDataRequest.class, getClass());
-        tcpSocketClient = TcpSocketClient.getInstance();
-        tcpSocketClient.setListener(this);
-        if (!tcpSocketClient.isConnected()) {
-            tcpSocketClient.connect(Ip_Port.getHOST(), Ip_Port.getPORT());
-        }
+        this("");
     }
 
     protected BaseDataRequest(String tag, Object... params) {
@@ -39,7 +35,7 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
         tcpSocketClient = TcpSocketClient.getInstance();
         tcpSocketClient.setListener(this);
         if (!tcpSocketClient.isConnected()) {
-            tcpSocketClient.connect(Ip_Port.getHOST(), Ip_Port.getPORT());
+            tcpSocketClient.connect(IPPort.getHOST(), IPPort.getPORT());
         }
     }
 
@@ -82,15 +78,16 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
     }
 
     @Override
-    public void onReceive(String json) {
-        PreRspPojo preRspPojo = null;
-        preRspPojo = JSON.parseObject(json, PreRspPojo.class);
+    public void onReceive(PreRspPojo preRspPojo) {
+        Logger.i("onReceive：" + preRspPojo.Result);
+
         if (preRspPojo.Result.equals("0")) {
             final T retT;
             if (isParse()) {
                 retT = JSON.parseObject(preRspPojo.Data, mGenericPojoClazz);
             } else {
-                retT = JSON.parseObject(json, mGenericPojoClazz);
+                retT = JSON.parseObject(preRspPojo.originJson, mGenericPojoClazz);
+//                retT = preRspPojo;
             }
             mHandler.post(new Runnable() {
                 @Override

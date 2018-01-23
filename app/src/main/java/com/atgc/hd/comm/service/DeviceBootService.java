@@ -13,10 +13,9 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.alibaba.fastjson.JSON;
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.DeviceCmd;
-import com.atgc.hd.comm.Ip_Port;
+import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.PrefKey;
 import com.atgc.hd.comm.local.LocationService;
 import com.atgc.hd.comm.net.BaseDataRequest;
@@ -72,7 +71,7 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
         tcpSocketClient = TcpSocketClient.getInstance();
         tcpSocketClient.setListener(this);
         if (!tcpSocketClient.isConnected()) {
-            tcpSocketClient.connect(Ip_Port.getHOST(), Ip_Port.getPORT());
+            tcpSocketClient.connect(IPPort.getHOST(), IPPort.getPORT());
         }
 
         Logger.e("开机广播服务");
@@ -86,13 +85,7 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
         Logger.i("info===============开启服务onStart");
-        boolean isRegister = PreferenceUtils.getBoolean(this, PrefKey.REGISTER, false);
-        if (!isRegister) {
-            sendRegisterMsg();
-        } else {
-            startHeartBeat();
-            startSendGps();
-        }
+        sendRegisterMsg();
     }
 
     @Override
@@ -171,21 +164,25 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
     }
 
     @Override
-    public void onReceive(String json) {
-        PreRspPojo preRspPojo = null;
-        preRspPojo = JSON.parseObject(json, PreRspPojo.class);
+    public void onReceive(PreRspPojo preRspPojo) {
         if (preRspPojo.Result.equals("0")) {
-            if (preRspPojo.Command.equals(DeviceCmd.REGISTER)) {//设备注册成功
+            //设备注册成功
+            if (preRspPojo.Command.equals(DeviceCmd.REGISTER)) {
                 PreferenceUtils.putBoolean(this, PrefKey.REGISTER, true);
                 EventBus.getDefault().post(new ActionEntity(Constants.Action.REGISTER_SUCCESSED, 0));
+
                 startHeartBeat();
+                startSendGps();
                 Logger.i("info===============设备注册成功");
             } else if (preRspPojo.Command.equals(DeviceCmd.HEART_BEAT)) {
-                Logger.i("info===============心跳包响应成功");
                 EventBus.getDefault().post(new ActionEntity(Constants.Action.HEART_BEAT, 0));
+                Logger.i("info===============心跳包响应成功");
             }
-        } else {//响应失败
-            if (preRspPojo.Command.equals(DeviceCmd.REGISTER)) {//设备注册失败
+        }
+        //响应失败
+        else {
+            //设备注册失败
+            if (preRspPojo.Command.equals(DeviceCmd.REGISTER)) {
                 EventBus.getDefault().post(new ActionEntity(Constants.Action.REGISTER_SUCCESSED, 1));
                 startHeartBeat();
                 Logger.i("info===============设备注册失败");

@@ -9,25 +9,50 @@
 package com.atgc.hd.comm.net;
 
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
 import com.atgc.hd.comm.ProtocolDecoder;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>描述：
  * <p>作者：duanjisi 2018年 01月 17日
  */
 
-public abstract class TcpSocketClient implements Runnable {
+public class TcpSocketClient implements Runnable {
     private String IP;
     private int port;
-    boolean connect = false;
     private SocketTransceiver transceiver;
     private Socket socket;
     private TcpListener listener;
+    private Map<String, OnReceiveListener> mapListener;
+
+    /**
+     * <p>注册监听器，用于从网关发送数据过来时回调
+     * <p>注：当不再使用时务必调用{@link #unregisterOnReceiveListener(String...)}注销
+     * @param listener
+     * @param cmds 可填写多个接口命令字
+     */
+    public void registerOnReceiveListener(OnReceiveListener listener, String... cmds) {
+        for (String cmd : cmds) {
+            mapListener.put(cmd, listener);
+        }
+    }
+
+    /**
+     * 注销监听
+     * @param cmds
+     */
+    public void unregisterOnReceiveListener(String... cmds) {
+        for (String cmd : cmds) {
+            mapListener.remove(cmd);
+        }
+    }
 
     public void setListener(TcpListener listener) {
         this.listener = listener;
@@ -35,10 +60,13 @@ public abstract class TcpSocketClient implements Runnable {
 
     private static TcpSocketClient tcpSocketClient = null;
 
+    private TcpSocketClient() {
+        mapListener = new HashMap<>();
+    }
+
     public synchronized static TcpSocketClient getInstance() {
         if (tcpSocketClient == null) {
-            tcpSocketClient = new TcpSocketClient() {
-            };
+            tcpSocketClient = new TcpSocketClient();
         }
         return tcpSocketClient;
     }
@@ -55,13 +83,26 @@ public abstract class TcpSocketClient implements Runnable {
             transceiver = new SocketTransceiver() {
                 @Override
                 public void onReceive(byte[] bytes) {
+
                     if (bytes != null && bytes.length != 0) {
+
                         final String content = ProtocolDecoder.parseContent(bytes);
+
                         if (!TextUtils.isEmpty(content)) {
+                            PreRspPojo preRspPojo = JSON.parseObject(content, PreRspPojo.class);
                             if (listener != null) {
-                                listener.onReceive(content);
+                                listener.onReceive(preRspPojo);
                             }
+
+                            onReceive(preRspPojo);
                         }
+                    }
+                }
+
+                private void onReceive(PreRspPojo preRspPojo) {
+                    if (mapListener.containsKey(preRspPojo.Command)) {
+                        OnReceiveListener listener = mapListener.get(preRspPojo.Command);
+                        listener.onReceive(preRspPojo.Command, preRspPojo.Data);
                     }
                 }
 
@@ -74,11 +115,13 @@ public abstract class TcpSocketClient implements Runnable {
 
                 @Override
                 public void onSendSuccess(byte[] s) {
+                    if (listener != null) {
+                        listener.onSendSuccess(s);
+                    }
                 }
             };
             socket = new Socket(IP, port);
-            connect = true;
-            Log.d("connect", String.valueOf(connect));
+
             if (listener != null) {
                 listener.onConnect();
             }
@@ -92,11 +135,10 @@ public abstract class TcpSocketClient implements Runnable {
     }
 
     public boolean isConnected() {
-        return connect;
+        return socket == null ? false : socket.isConnected();
     }
 
     public void disConnected() {
-        connect = false;
         if (transceiver != null) {
             transceiver.stop();
             transceiver = null;
@@ -109,14 +151,19 @@ public abstract class TcpSocketClient implements Runnable {
 
 
     public interface TcpListener {
+
         void onConnect();
 
         void onConnectBreak();
 
-        void onReceive(String s);
+        void onReceive(PreRspPojo preRspPojo);
 
         void onConnectFalied();
 
         void onSendSuccess(byte[] s);
+    }
+
+    public interface OnReceiveListener {
+        void onReceive(String cmd, String jsonData);
     }
 }

@@ -1,23 +1,11 @@
 package com.atgc.hd.comm.net;
 
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.text.TextUtils;
-import android.util.Log;
 
-import com.atgc.hd.comm.DeviceCmd;
-import com.atgc.hd.comm.Ip_Port;
-import com.atgc.hd.comm.ProtocolDecoder;
-import com.atgc.hd.comm.utils.DigitalUtils;
-import com.orhanobut.logger.Logger;
 import com.vilyever.socketclient.SocketClient;
 //import com.vilyever.socketclient.SocketResponsePacket;
 
 import java.util.Map;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.util.CharsetUtil;
 
 /**
  * 描述：socket通讯工具处理类
@@ -34,7 +22,7 @@ public class SocketClientHandler {
     }
 
     public SocketClientHandler() {
-//        socketClient = new SocketClient(Ip_Port.getHOST(), Ip_Port.getPORT());
+//        socketClient = new SocketClient(IPPort.getHOST(), IPPort.getPORT());
         init();
     }
 
