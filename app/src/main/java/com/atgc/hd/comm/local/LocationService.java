@@ -21,7 +21,7 @@ public class LocationService {
     private LocationClientOption mOption;
     private LocationClientOption DIYoption;
     private Object objLock = new Object();
-    private List<BDAbstractLocationListener> locationListeners;
+    private List<ILocationListener> locationListeners;
 
     private static LocationService locationService = new LocationService();
 
@@ -44,24 +44,19 @@ public class LocationService {
                     locationListeners = new ArrayList<>();
                 }
             }
+
         }
     }
 
     private BDAbstractLocationListener bdLocationListener = new BDAbstractLocationListener() {
         @Override
         public void onReceiveLocation(BDLocation bdLocation) {
+
             lastBDLocation = bdLocation;
 
-            double longitude = Double.valueOf(bdLocation.getLongitude());
-            double latitude = Double.valueOf(bdLocation.getLatitude());
-            Coordinate coordinate = CoordinateUtil.gcj02ToWbs84(longitude, latitude);
-            bdLocation.setLongitude(coordinate.getLongitude());
-            bdLocation.setLatitude(coordinate.getLatitude());
-
-            bdLocation.setCoorType("原gcj02，已转换为wgs84坐标系");
-//            for (BDAbstractLocationListener locationListener : locationListeners) {
-//                locationListener.onReceiveLocation(bdLocation);
-//            }
+            for (ILocationListener locationListener : locationListeners) {
+                locationListener.onReceiveLocation(bdLocation);
+            }
         }
     };
 
@@ -205,14 +200,46 @@ public class LocationService {
 
     /**
      * 注意返回null的情况
-     * @return
+     * @return 返回wbs84的坐标
      */
     public BDLocation getLastBDLocation() {
         if (lastBDLocation == null) {
             return null;
         } else {
-            return new BDLocation(lastBDLocation);
+            return gcj02ToWbs84(lastBDLocation);
         }
     }
 
+    /**
+     * 不再使用时调用{@link #unregisterLocationListener(ILocationListener)}注销
+     * @param listener
+     */
+    public void registerLocationListener(ILocationListener listener) {
+        locationListeners.add(listener);
+    }
+
+    /**
+     *
+     * @param listener
+     */
+    public void unregisterLocationListener(ILocationListener listener) {
+        locationListeners.remove(listener);
+    }
+
+    private BDLocation gcj02ToWbs84(BDLocation source) {
+        BDLocation target = new BDLocation(source);
+
+        double longitude = Double.valueOf(target.getLongitude());
+        double latitude = Double.valueOf(target.getLatitude());
+        Coordinate coordinate = CoordinateUtil.gcj02ToWbs84(longitude, latitude);
+        target.setLongitude(coordinate.getLongitude());
+        target.setLatitude(coordinate.getLatitude());
+
+        target.setCoorType("原gcj02，已转换为wgs84坐标系");
+        return target;
+    }
+
+    public interface ILocationListener{
+        void onReceiveLocation(BDLocation bdLocation);
+    }
 }

@@ -6,7 +6,7 @@ package com.atgc.hd.comm.net;
 public class PreRspPojo {
     public String Command="";
     public String Result = "";
-    public String Data;
+    public String[] Data;
     public String ErrorCode;
     public String ErrorMessage;
 

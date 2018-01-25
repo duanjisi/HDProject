@@ -77,21 +77,25 @@ public class InnerClock {
      * 设置提醒时间
      *
      * @param alarmTime 提醒时间（格式：yyyy-MM-dd HH:mm:ss）
-     * @param timerTask  时间到了之后的回调
-     * @return 返回一串serialnumber，用于取消提醒
+     * @param timerTask 时间到了之后的回调
      */
     public void schedule(String alarmTime, TimerTask timerTask) {
         Date date = DateUtil.dateParse(alarmTime, DateUtil.DATE_TIME_PATTERN);
 
         long delay = date.getTime() - serviceDate.getTime() - getTickCount();
 
-        Timer timer = new Timer();
+        if (delay < 0) {
 
-        timer.schedule(timerTask, delay);
+        } else {
+            new Timer().schedule(timerTask, delay);
+        }
+
+
     }
 
     /**
      * 获取内部时钟的日期时间
+     *
      * @return
      */
     public Date getInnerClockDate() {

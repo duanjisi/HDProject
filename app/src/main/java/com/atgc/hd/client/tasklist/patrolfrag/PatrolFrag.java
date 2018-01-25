@@ -1,4 +1,4 @@
-package com.atgc.hd.client.tasklist.tasklistfrag;
+package com.atgc.hd.client.tasklist.patrolfrag;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -8,25 +8,25 @@ import android.view.View;
 
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseFragment;
-import com.atgc.hd.client.tasklist.tasklistfrag.adapter.TaskEntity;
-import com.atgc.hd.client.tasklist.tasklistfrag.adapter.TaskListAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.atgc.hd.client.tasklist.TaskHandContract;
+import com.atgc.hd.client.tasklist.patrolfrag.adapter.TaskListAdapter;
+import com.atgc.hd.comm.net.response.TaskListResponse;
 
 /**
  * <p>描述： 当天巡更任务列表
  * <p>作者： liangguokui 2018/1/18
  */
-public class TaskListFrag extends BaseFragment {
+public class PatrolFrag extends BaseFragment implements PatrolContract.IView {
     private RecyclerView taskListRecyclerView;
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private TaskListAdapter taskListAdapter;
 
-    public static TaskListFrag createIntance() {
-        return new TaskListFrag();
+    private PatrolContract.IPresenterView iPresenter;
+
+    public static PatrolFrag createIntance() {
+        return new PatrolFrag();
     }
 
     @Override
@@ -39,6 +39,11 @@ public class TaskListFrag extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         initView();
+
+        iPresenter = new PatrolPresenter(this);
+        Bundle bundle = getArguments();
+        TaskHandContract taskHandContract = (TaskHandContract) bundle.getSerializable("taskHandContract");
+        iPresenter.setTaskHandContract(taskHandContract);
     }
 
     private void initView() {
@@ -50,15 +55,17 @@ public class TaskListFrag extends BaseFragment {
         taskListRecyclerView.setLayoutManager(manager);
         taskListAdapter = new TaskListAdapter(parentActivity, false);
         taskListRecyclerView.setAdapter(taskListAdapter);
-
-        List<TaskEntity> testData = new ArrayList<>();
-        TaskEntity entity;
-        for (int i = 0; i < 20; i++) {
-            entity = new TaskEntity();
-            entity.setPointArray("AS-湾流亭");
-            entity.setStartTime("17:53");
-            testData.add(entity);
-        }
-        taskListAdapter.setData(testData);
     }
+
+    @Override
+    public void refreshTaskList(TaskListResponse.TaskInfo taskInfo) {
+        taskListAdapter.setNewData(taskInfo.getPointArray());
+    }
+
+    @Override
+    public void onDestroy() {
+        iPresenter.onDestory();
+        super.onDestroy();
+    }
+
 }

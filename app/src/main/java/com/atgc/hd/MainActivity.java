@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
+import com.atgc.hd.activity.EmergencyEventActivity;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.client.tasklist.TaskListActivity;
 import com.atgc.hd.comm.Constants;

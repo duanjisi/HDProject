@@ -12,12 +12,12 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.atgc.hd.comm.ProtocolDecoder;
+import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * <p>描述：
@@ -35,17 +35,26 @@ public class TcpSocketClient implements Runnable {
     /**
      * <p>注册监听器，用于从网关发送数据过来时回调
      * <p>注：当不再使用时务必调用{@link #unregisterOnReceiveListener(String...)}注销
+     *
      * @param listener
-     * @param cmds 可填写多个接口命令字
+     * @param cmd      命令字，必填，不能为空
+     * @param cmds     可填写多个接口命令字
      */
-    public void registerOnReceiveListener(OnReceiveListener listener, String... cmds) {
-        for (String cmd : cmds) {
+    public void registerOnReceiveListener(OnReceiveListener listener, String cmd, String... cmds) {
+        if (cmd == null) {
+            throw new NullPointerException("注册监听命令字不能为空");
+        } else {
             mapListener.put(cmd, listener);
+        }
+
+        for (String temp : cmds) {
+            mapListener.put(temp, listener);
         }
     }
 
     /**
      * 注销监听
+     *
      * @param cmds
      */
     public void unregisterOnReceiveListener(String... cmds) {
@@ -87,6 +96,8 @@ public class TcpSocketClient implements Runnable {
                     if (bytes != null && bytes.length != 0) {
 
                         final String content = ProtocolDecoder.parseContent(bytes);
+
+                        Logger.e("content: " + content);
 
                         if (!TextUtils.isEmpty(content)) {
                             PreRspPojo preRspPojo = JSON.parseObject(content, PreRspPojo.class);
@@ -165,6 +176,6 @@ public class TcpSocketClient implements Runnable {
     }
 
     public interface OnReceiveListener {
-        void onReceive(String cmd, String jsonData);
+        void onReceive(String cmd, String[] jsonDatas);
     }
 }

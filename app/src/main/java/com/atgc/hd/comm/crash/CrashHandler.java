@@ -197,7 +197,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         BufferedWriter bufferedWriter = null;
         try {
 
-            String fileName = "crash-" + str + ".log";
+            String fileName = "crash-" + str + ".csv";
 //            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 
             String path = FileUtil.CRASH_LOG_ROOT;

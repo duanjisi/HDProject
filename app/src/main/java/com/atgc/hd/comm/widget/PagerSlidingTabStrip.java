@@ -318,7 +318,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
                 lineRight - indicatorPadding,
                 height - indicatorPaddingBottom,
                 rectPaint);
-        Logger.e("indicatorPaddingBottom:: " + indicatorPaddingBottom);
+
         // draw underline
         rectPaint.setColor(underlineColor);
         canvas.drawRect(0,

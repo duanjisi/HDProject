@@ -1,13 +1,10 @@
 package com.atgc.hd.client.widgethelper;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
 
 import com.atgc.hd.R;
-import com.atgc.hd.comm.utils.ImageUtil;
 import com.atgc.hd.comm.widget.VectorCompatTextView;
 
 /**
@@ -160,6 +157,42 @@ public class BarHelper {
     public BarHelper setActionRightListener(View.OnClickListener listener) {
         tvActionRight.setOnClickListener(listener);
         return this;
+    }
+
+    /**
+     * 左边按钮的显示/隐藏
+     * @param display
+     */
+    public void displayActionLeft(boolean display) {
+        if (display) {
+            tvActionLeft.setVisibility(View.VISIBLE);
+        } else {
+            tvActionLeft.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 右边按钮的显示/隐藏
+     * @param display
+     */
+    public void displayActionRight(boolean display) {
+        if (display) {
+            tvActionRight.setVisibility(View.VISIBLE);
+        } else {
+            tvActionRight.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * actionbar的显示/隐藏
+     * @param display
+     */
+    public void displayActionBar(boolean display) {
+        if (display) {
+            barView.setVisibility(View.VISIBLE);
+        } else {
+            barView.setVisibility(View.GONE);
+        }
     }
 
     private <T extends View> T findById(int id) {

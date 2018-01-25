@@ -1,4 +1,4 @@
-package com.atgc.hd.client.tasklist.historytaskfrag;
+package com.atgc.hd.client.tasklist.taskfrag;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -8,20 +8,17 @@ import android.view.View;
 
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseFragment;
-import com.atgc.hd.base.adapter.ViewHolder;
-import com.atgc.hd.base.adapter.interfaces.OnItemClickListener;
-import com.atgc.hd.client.tasklist.historytaskfrag.adapter.HistoryTaskEntity;
-import com.atgc.hd.client.tasklist.historytaskfrag.adapter.HistoryTaskListAdapter;
-import com.orhanobut.logger.Logger;
+import com.atgc.hd.client.tasklist.TaskHandContract;
+import com.atgc.hd.client.tasklist.taskfrag.adapter.HistoryTaskListAdapter;
+import com.atgc.hd.comm.net.response.TaskListResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * <p>描述： 历史巡更任务列表
  * <p>作者： liangguokui 2018/1/18
  */
-public class HistoryTaskListFrag extends BaseFragment {
+public class TaskListFrag extends BaseFragment implements TaskListContract.IView {
 
     private RecyclerView historyTaskRecyclerView;
 
@@ -29,8 +26,10 @@ public class HistoryTaskListFrag extends BaseFragment {
 
     private HistoryTaskListAdapter historyTaskListAdapter;
 
-    public static HistoryTaskListFrag createIntance() {
-        return new HistoryTaskListFrag();
+    private TaskListContract.IPresenterView iPresenter;
+
+    public static TaskListFrag createIntance() {
+        return new TaskListFrag();
     }
 
     @Override
@@ -43,6 +42,11 @@ public class HistoryTaskListFrag extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         initView();
+
+        iPresenter = new TaskListPresenter(this);
+        Bundle bundle = getArguments();
+        TaskHandContract taskHandContract = (TaskHandContract) bundle.getSerializable("taskHandContract");
+        iPresenter.setTaskHandContract(taskHandContract);
     }
 
     private void initView() {
@@ -54,25 +58,11 @@ public class HistoryTaskListFrag extends BaseFragment {
         historyTaskRecyclerView.setLayoutManager(manager);
         historyTaskListAdapter = new HistoryTaskListAdapter(parentActivity, false);
         historyTaskRecyclerView.setAdapter(historyTaskListAdapter);
+    }
 
-        List<HistoryTaskEntity> historyTaskEntities = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            HistoryTaskEntity entity = new HistoryTaskEntity();
-            entity.setHistoryTaskTitle("2018年1月19日");
-            entity.setTaskPeriod("08:00-10:15");
-            entity.setTaskStatus("全部打点");
-
-            historyTaskEntities.add(entity);
-        }
-
-        historyTaskListAdapter.setData(historyTaskEntities);
-
-        historyTaskListAdapter.setOnItemClickListener(new OnItemClickListener<HistoryTaskEntity>() {
-            @Override
-            public void onItemClick(ViewHolder viewHolder, HistoryTaskEntity data, int position) {
-                Logger.e("位置：" + position);
-            }
-        });
+    @Override
+    public void refreshTaskList(List<TaskListResponse.TaskInfo> taskArray) {
+        historyTaskListAdapter.setNewData(taskArray);
     }
 }
 

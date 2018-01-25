@@ -83,10 +83,9 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
         if ("0".equals(preRspPojo.Result)) {
             final T retT;
             if (isParse()) {
-                retT = JSON.parseObject(preRspPojo.Data, mGenericPojoClazz);
+                retT = JSON.parseObject(preRspPojo.Data[0], mGenericPojoClazz);
             } else {
                 retT = JSON.parseObject(preRspPojo.originJson, mGenericPojoClazz);
-//                retT = preRspPojo;
             }
             mHandler.post(new Runnable() {
                 @Override

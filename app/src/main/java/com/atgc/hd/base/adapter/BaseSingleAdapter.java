@@ -28,9 +28,9 @@ public abstract class BaseSingleAdapter<T> extends BaseAdapter<T> {
         super(context, isOpenLoadMore);
     }
 
-    protected abstract void convert(ViewHolder holder, T data, int position);
-
     protected abstract int getItemLayoutId();
+
+    protected abstract void convert(ViewHolder holder, T data, int position);
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

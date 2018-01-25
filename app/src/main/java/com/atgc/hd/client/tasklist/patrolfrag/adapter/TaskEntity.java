@@ -1,4 +1,4 @@
-package com.atgc.hd.client.tasklist.tasklistfrag.adapter;
+package com.atgc.hd.client.tasklist.patrolfrag.adapter;
 
 /**
  * <p>描述： 8.3.25	下发巡更任务

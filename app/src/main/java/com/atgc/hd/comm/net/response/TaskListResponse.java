@@ -1,15 +1,16 @@
 package com.atgc.hd.comm.net.response;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * <p>描述：网关下发的巡更任务
  * <p>作者：liangguokui 2018/1/23
  */
-public class TaskListResponse {
+public class TaskListResponse implements Serializable{
     private List<TaskInfo> TaskArray;
 
-    public static class TaskInfo {
+    public static class TaskInfo implements Serializable{
         // 设备编号
         private String deviceID;
         // 计划任务ID
@@ -72,7 +73,7 @@ public class TaskListResponse {
         }
     }
 
-    public static class PointInfo {
+    public static class PointInfo implements Serializable{
         // 巡更点ID
         private String pointId;
         // 巡更点名称
