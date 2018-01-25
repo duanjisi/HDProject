@@ -5,6 +5,8 @@ package com.atgc.hd.comm;
  * <p>作者：duanjisi 2018年 01月 15日
  */
 public class DeviceCmd {
+
+    //==============设备端请求命令字=============
     public static final String REGISTER = "COM_DEV_REGISTER";
     public static final String HEART_BEAT = "COM_HEARTBEAT";
     // 上报应急事件
@@ -14,4 +16,8 @@ public class DeviceCmd {
     public static final String PAT_UPLOAD_EMERGENCY = "PAT_UPLOAD_EMERGENCY";
     // 请求获取巡更任务
     public static final String PAT_GET_TASK_REQUEST = "PAT_GET_TASK_REQUEST";
+
+    //==============网关下发命令字===============
+    // 网关下发巡更任务
+    public static final String PAT_SEND_TASK = "PAT_SEND_TASK";
 }

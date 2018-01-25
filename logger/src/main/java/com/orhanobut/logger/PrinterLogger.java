@@ -120,9 +120,9 @@ class PrinterLogger implements Printer {
                 d(trimString(title) + message);
                 return;
             }
-            e("Invalid Json");
+            e("Invalid Json\n" + json);
         } catch (JSONException e) {
-            e("Invalid Json");
+            e("Invalid Json\n" + json);
         }
     }
 

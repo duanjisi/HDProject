@@ -54,7 +54,7 @@ public class HDApplication extends Application {
         if (header == null) {
             header = new Header();
             header.setVersion("HDXM");
-            header.setSrcID("10012017020000000000");
+            header.setSrcID("10012017f6d0101be5ed");
             header.setDestID("1004201658FCDBD8341E");
             header.setRequest("1");
             header.setHold("0");

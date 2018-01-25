@@ -90,6 +90,7 @@ public class TcpSocketClient implements Runnable {
 
                         if (!TextUtils.isEmpty(content)) {
                             PreRspPojo preRspPojo = JSON.parseObject(content, PreRspPojo.class);
+                            preRspPojo.originJson = content;
                             if (listener != null) {
                                 listener.onReceive(preRspPojo);
                             }

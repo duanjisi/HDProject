@@ -76,11 +76,12 @@ public class ProtocolDecoder {
         String hold = parseNumber(byteBuf, 2);
         String crc = parseNumber(byteBuf, 2);
         //内容长度
-        long length = Long.parseLong(contentLength);
+        int length = Integer.valueOf(contentLength);
         // 读取消息内容
-        String content = parseString(byteBuf, (int) length);
+        String content = parseString(byteBuf, length);
         byteBuf.readableBytes();
         byteBuf.clear();
         return content;
     }
+
 }

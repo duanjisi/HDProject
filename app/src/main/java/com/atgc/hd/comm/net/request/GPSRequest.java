@@ -62,7 +62,7 @@ public class GPSRequest extends BaseDataRequest<String> {
         map.put("needsResponse", needsResponse);
         map.put("remark", remark);
         map.put("userID", userID);
-        map.put("taskID", "暂无任务");
+        map.put("taskID", "");
         return map;
     }
 

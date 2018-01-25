@@ -110,7 +110,7 @@ public abstract class SocketTransceiver implements Runnable {
             public void run() {
                 if (outputStream != null) {
                     bufferedOutputStream = new BufferedOutputStream(outputStream);
-//                    Logger.e("连接状态：" + socket.isConnected());
+
                     try {
                         bufferedOutputStream.write(bytes, 0, bytes.length);
                         bufferedOutputStream.flush();
@@ -119,7 +119,10 @@ public abstract class SocketTransceiver implements Runnable {
                         onConnectBreak();
                         runFlag = false;
                         e.printStackTrace();
+                        Logger.e("发送异常。。。。");
                     }
+                } else {
+                    Logger.e("连接已断开，发送失败。。。。");
                 }
             }
         }).start();

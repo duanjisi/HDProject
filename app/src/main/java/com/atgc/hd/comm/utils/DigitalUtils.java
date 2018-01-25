@@ -185,8 +185,8 @@ public class DigitalUtils {
      */
     public static byte[] constructByteHead(int crcCode, int dataLength) {
         Header header = HDApplication.getInstance().getHeader();
-        byte[] b = "HDXM".getBytes();
-        byte[] b2 = "10012017020000000000".getBytes();
+        byte[] b = header.getVersion().getBytes();
+        byte[] b2 = header.getSrcID().getBytes();
         byte[] b3 = "00000000000000000000".getBytes();
 
 
