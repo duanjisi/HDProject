@@ -20,6 +20,10 @@ public class Constants {
 //    public static final String UP_LOAD_IMAGE = "http://172.16.10.115:8090/scp-imagemgmtcomponent/VIID/Images";
 
     /**
+     * demo模式，表示数据会从/src/assets文件夹读取
+     */
+    public static final boolean isDemo = false;
+    /**
      * 行为
      */
     public static final class Action {

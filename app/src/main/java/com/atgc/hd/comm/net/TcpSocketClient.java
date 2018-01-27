@@ -11,7 +11,10 @@ package com.atgc.hd.comm.net;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.ProtocolDecoder;
+import com.atgc.hd.comm.utils.FileUtil;
+import com.atgc.hd.comm.utils.StringUtils;
 import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
@@ -25,7 +28,7 @@ import java.util.Map;
  */
 
 public class TcpSocketClient implements Runnable {
-    private String IP;
+    private String ip;
     private int port;
     private SocketTransceiver transceiver;
     private Socket socket;
@@ -81,7 +84,7 @@ public class TcpSocketClient implements Runnable {
     }
 
     public void connect(String IP, int port) {
-        this.IP = IP;
+        this.ip = IP;
         this.port = port;
         new Thread(this).start();
     }
@@ -92,6 +95,7 @@ public class TcpSocketClient implements Runnable {
             transceiver = new SocketTransceiver() {
                 @Override
                 public void onReceive(byte[] bytes) {
+                    Logger.e("------------------------" + bytes.length);
 
                     if (bytes != null && bytes.length != 0) {
 
@@ -132,7 +136,7 @@ public class TcpSocketClient implements Runnable {
                     }
                 }
             };
-            socket = new Socket(IP, port);
+            socket = new Socket(ip, port);
 
             if (listener != null) {
                 listener.onConnect();
@@ -157,10 +161,26 @@ public class TcpSocketClient implements Runnable {
         }
     }
 
-    public SocketTransceiver getTransceiver() {
-        return transceiver;
+    public void sendMsg(byte[] bytes) {
+        transceiver.sendMSG(bytes);
     }
 
+    public void demoSendMsg(String cmd) {
+        if (!Constants.isDemo) {
+            return;
+        }
+        String demoResop = FileUtil.getAssets(cmd + "_req.txt");
+        if (StringUtils.isEmpty(demoResop)) {
+            return;
+        } else {
+            Logger.d("已找到配置文件：" + cmd + "_req.txt");
+        }
+        PreRspPojo preRspPojo = JSON.parseObject(demoResop, PreRspPojo.class);
+        if (mapListener.containsKey(preRspPojo.Command)) {
+            OnReceiveListener listener = mapListener.get(preRspPojo.Command);
+            listener.onReceive(preRspPojo.Command, preRspPojo.Data);
+        }
+    }
 
     public interface TcpListener {
 

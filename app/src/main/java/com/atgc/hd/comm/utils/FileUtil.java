@@ -8,12 +8,18 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.atgc.hd.HDApplication;
+import com.orhanobut.logger.Logger;
+
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 
 import static com.nostra13.universalimageloader.utils.StorageUtils.getCacheDirectory;
@@ -192,4 +198,54 @@ public class FileUtil {
             Log.d("delete", "删除成功");
         }
     }
+
+    public static String getAssets(String fileName) {
+        InputStream is = null;
+        try {
+            is = getAssetsInputStream(HDApplication.applicationContext(), fileName);
+            return stream2String(is);
+        } catch (Exception e) {
+            Logger.e(e, fileName + "解析失败");
+        } finally {
+            closeQuietly(is);
+        }
+
+        return "";
+    }
+
+    public static InputStream getAssetsInputStream(Context context, String fileName) {
+        InputStream is = null;
+        try {
+            is = context.getAssets().open(fileName);
+        } catch (IOException e) {
+            Logger.e(e, fileName + "打开失败");
+        }
+        return is;
+    }
+
+    public static String stream2String(InputStream is) {
+        if (is == null) {
+            return "";
+        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuffer strBuffer = new StringBuffer("");
+
+        try {
+            while (true) {
+                String line = reader.readLine();
+                if (line == null) {
+                    break;
+                }
+                strBuffer.append(line);
+                strBuffer.append("\n");
+            }
+        } catch (IOException e) {
+            Logger.e(e,"读取失败");
+        } finally {
+            closeQuietly(reader);
+
+        }
+        return strBuffer.toString();
+    }
+
 }

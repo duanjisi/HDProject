@@ -4,9 +4,10 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.alibaba.fastjson.JSON;
+import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.utils.DigitalUtils;
-import com.orhanobut.logger.Logger;
+import com.atgc.hd.comm.utils.FileUtil;
 
 import net.jodah.typetools.TypeResolver;
 
@@ -40,9 +41,14 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
     }
 
     public void send(final RequestCallback callback) {
-        this.callback = callback;
-        byte[] bytes = DigitalUtils.getBytes(getCommand(), getParams());
-        tcpSocketClient.getTransceiver().sendMSG(bytes);
+        if (Constants.isDemo) {
+            tcpSocketClient.demoSendMsg(getCommand());
+
+        } else {
+            this.callback = callback;
+            byte[] bytes = DigitalUtils.getBytes(getCommand(), getParams());
+            tcpSocketClient.sendMsg(bytes);
+        }
     }
 
     protected abstract boolean isParse();
