@@ -8,11 +8,10 @@
 
 package com.atgc.hd.comm.net;
 
-import android.text.TextUtils;
-
 import com.alibaba.fastjson.JSON;
 import com.atgc.hd.comm.Constants;
-import com.atgc.hd.comm.ProtocolDecoder;
+import com.atgc.hd.comm.protocol.ProtocolBody;
+import com.atgc.hd.comm.protocol.ProtocolDecoder;
 import com.atgc.hd.comm.utils.FileUtil;
 import com.atgc.hd.comm.utils.StringUtils;
 import com.orhanobut.logger.Logger;
@@ -95,21 +94,16 @@ public class TcpSocketClient implements Runnable {
             transceiver = new SocketTransceiver() {
                 @Override
                 public void onReceive(byte[] bytes) {
-                    Logger.e("------------------------" + bytes.length);
 
                     if (bytes != null && bytes.length != 0) {
 
-                        final String content = ProtocolDecoder.parseContent(bytes);
-
-                        Logger.e("content: " + content);
-
-                        if (!TextUtils.isEmpty(content)) {
-                            PreRspPojo preRspPojo = JSON.parseObject(content, PreRspPojo.class);
-                            preRspPojo.originJson = content;
+                        ProtocolBody protocolBody = ProtocolDecoder.decode(bytes);
+                        if (protocolBody != null) {
+                            PreRspPojo preRspPojo = JSON.parseObject(protocolBody.getContent(), PreRspPojo.class);
+                            preRspPojo.originJson = protocolBody.getContent();
                             if (listener != null) {
                                 listener.onReceive(preRspPojo);
                             }
-
                             onReceive(preRspPojo);
                         }
                     }
@@ -162,7 +156,11 @@ public class TcpSocketClient implements Runnable {
     }
 
     public void sendMsg(byte[] bytes) {
-        transceiver.sendMSG(bytes);
+        if (transceiver == null) {
+            Logger.e("发送失败，transceiver == null");
+        } else {
+            transceiver.sendMSG(bytes);
+        }
     }
 
     public void demoSendMsg(String cmd) {

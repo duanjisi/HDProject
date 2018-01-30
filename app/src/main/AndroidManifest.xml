@@ -56,7 +56,6 @@
         <activity android:name=".TestActivity"></activity>
         <activity android:name=".SecondActivity"></activity>
         <activity android:name=".FouthActivity"></activity>
-        <activity android:name=".LocationTestActivity"></activity>
 
         <activity android:name=".activity.ConversationActivity"></activity>
         <activity android:name=".activity.ChatActivity"></activity>

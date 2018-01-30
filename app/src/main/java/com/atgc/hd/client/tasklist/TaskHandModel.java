@@ -133,7 +133,9 @@ public class TaskHandModel implements TaskHandContract, PatrolContract.OnTaskAct
 
         onCurrentTaskListener.onReceiveCurrentTask(currentTaskInfo);
         onAllTaskLlistener.onReceiveAllTask(taskListResponse.getTaskArray());
-        onAllTaskLlistener.onCurrentTask(currentTaskInfo.getTaskID());
+
+        String taskId = (currentTaskInfo == null) ? "" : currentTaskInfo.getTaskID();
+        onAllTaskLlistener.onCurrentTask(taskId);
 
     }
 
@@ -205,8 +207,8 @@ public class TaskHandModel implements TaskHandContract, PatrolContract.OnTaskAct
 
     private Date currentTime() {
 
-//        String currentTime = DateUtil.currentTime();
-        String currentTime = "2018-01-27 09:00:05";
+        String currentTime = DateUtil.currentTime();
+//        String currentTime = "2018-01-27 09:00:05";
         Date currentDate = DateUtil.dateParse(currentTime, DateUtil.HOUR_PATTERN);
         return currentDate;
     }
