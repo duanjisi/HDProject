@@ -16,6 +16,10 @@ public class DeviceCmd {
     public static final String PAT_UPLOAD_EMERGENCY = "PAT_UPLOAD_EMERGENCY";
     // 请求获取巡更任务
     public static final String PAT_GET_TASK_REQUEST = "PAT_GET_TASK_REQUEST";
+    // 上报巡查点结果
+    public static final String PAT_POINT_RESULT = "PAT_POINT_RESULT";
+    // 上报巡查任务状态
+    public static final String PAT_TASK_STATUS = "PAT_TASK_STATUS";
 
     //==============网关下发命令字===============
     // 网关下发巡更任务

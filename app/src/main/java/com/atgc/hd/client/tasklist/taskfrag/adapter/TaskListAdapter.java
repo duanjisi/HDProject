@@ -7,13 +7,15 @@ import com.atgc.hd.base.adapter.BaseSingleAdapter;
 import com.atgc.hd.base.adapter.ViewHolder;
 import com.atgc.hd.comm.net.response.TaskListResponse.TaskInfo;
 
+import java.util.List;
+
 /**
  * <p>描述： 历史巡更任务适配器
  * <p>作者： liangguokui 2018/1/18
  */
-public class HistoryTaskListAdapter extends BaseSingleAdapter<TaskInfo> {
+public class TaskListAdapter extends BaseSingleAdapter<TaskInfo> {
 
-    public HistoryTaskListAdapter(Context context, boolean isOpenLoadMore) {
+    public TaskListAdapter(Context context, boolean isOpenLoadMore) {
         super(context, isOpenLoadMore);
     }
 
@@ -23,9 +25,9 @@ public class HistoryTaskListAdapter extends BaseSingleAdapter<TaskInfo> {
         String strPositioin = temp < 10 ? ("0" + temp + ".") : (temp + ".");
         holder.setText(R.id.tv_position, strPositioin);
 
-        holder.setText(R.id.tv_task_title, data.getStartTime() + "-" + data.getEndTime());
+        holder.setText(R.id.tv_task_title, data.getTaskName());
 
-        holder.setText(R.id.tv_task_period, data.getStartTime() + "-" + data.getEndTime());
+        holder.setText(R.id.tv_task_period, data.getTaskPeriod());
 
         holder.setText(R.id.tv_task_tag, "未知");
     }
@@ -34,4 +36,5 @@ public class HistoryTaskListAdapter extends BaseSingleAdapter<TaskInfo> {
     protected int getItemLayoutId() {
         return R.layout.item_history_tasklist;
     }
+
 }

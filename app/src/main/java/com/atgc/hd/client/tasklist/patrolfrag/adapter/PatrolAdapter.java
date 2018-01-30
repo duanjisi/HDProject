@@ -11,9 +11,9 @@ import com.atgc.hd.comm.net.response.TaskListResponse.PointInfo;
  * <p>描述： 当天巡更任务列表适配器
  * <p>作者： liangguokui 2018/1/18
  */
-public class TaskListAdapter extends BaseSingleAdapter<PointInfo> {
+public class PatrolAdapter extends BaseSingleAdapter<PointInfo> {
 
-    public TaskListAdapter(Context context, boolean isOpenLoadMore) {
+    public PatrolAdapter(Context context, boolean isOpenLoadMore) {
         super(context, isOpenLoadMore);
     }
 

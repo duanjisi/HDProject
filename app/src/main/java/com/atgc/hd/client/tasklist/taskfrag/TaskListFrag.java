@@ -8,8 +8,11 @@ import android.view.View;
 
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseFragment;
+import com.atgc.hd.base.adapter.ViewHolder;
+import com.atgc.hd.base.adapter.interfaces.OnItemClickListener;
 import com.atgc.hd.client.tasklist.TaskHandContract;
-import com.atgc.hd.client.tasklist.taskfrag.adapter.HistoryTaskListAdapter;
+import com.atgc.hd.client.tasklist.TaskListActivity;
+import com.atgc.hd.client.tasklist.taskfrag.adapter.TaskListAdapter;
 import com.atgc.hd.comm.net.response.TaskListResponse;
 
 import java.util.List;
@@ -18,13 +21,13 @@ import java.util.List;
  * <p>描述： 历史巡更任务列表
  * <p>作者： liangguokui 2018/1/18
  */
-public class TaskListFrag extends BaseFragment implements TaskListContract.IView {
+public class TaskListFrag extends BaseFragment implements TaskListContract.IView, OnItemClickListener<TaskListResponse.TaskInfo> {
 
     private RecyclerView historyTaskRecyclerView;
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    private HistoryTaskListAdapter historyTaskListAdapter;
+    private TaskListAdapter historyTaskListAdapter;
 
     private TaskListContract.IPresenterView iPresenter;
 
@@ -44,9 +47,6 @@ public class TaskListFrag extends BaseFragment implements TaskListContract.IView
         initView();
 
         iPresenter = new TaskListPresenter(this);
-        Bundle bundle = getArguments();
-        TaskHandContract taskHandContract = (TaskHandContract) bundle.getSerializable("taskHandContract");
-        iPresenter.setTaskHandContract(taskHandContract);
     }
 
     private void initView() {
@@ -56,13 +56,37 @@ public class TaskListFrag extends BaseFragment implements TaskListContract.IView
 
         LinearLayoutManager manager = new LinearLayoutManager(parentActivity);
         historyTaskRecyclerView.setLayoutManager(manager);
-        historyTaskListAdapter = new HistoryTaskListAdapter(parentActivity, false);
+        historyTaskListAdapter = new TaskListAdapter(parentActivity, false);
         historyTaskRecyclerView.setAdapter(historyTaskListAdapter);
+
+        historyTaskListAdapter.setOnItemClickListener(this);
     }
 
     @Override
-    public void refreshTaskList(List<TaskListResponse.TaskInfo> taskArray) {
-        historyTaskListAdapter.setNewData(taskArray);
+    public void onItemClick(ViewHolder viewHolder, TaskListResponse.TaskInfo data, int position) {
+        if (iPresenter.isCurrentTask(data.getTaskID())) {
+            TaskListActivity aty = (TaskListActivity) parentActivity;
+            aty.showCurrentTaskPage();
+        } else {
+
+        }
     }
+
+    @Override
+    public void registerOnAllTaskListener(TaskHandContract.OnAllTaskLlistener listener) {
+        TaskListActivity aty = (TaskListActivity) parentActivity;
+        aty.registerOnAllTaskListener(listener);
+    }
+
+    @Override
+    public void refreshTaskList(final List<TaskListResponse.TaskInfo> taskArray) {
+        parentActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                historyTaskListAdapter.setNewData(taskArray);
+            }
+        });
+    }
+
 }
 

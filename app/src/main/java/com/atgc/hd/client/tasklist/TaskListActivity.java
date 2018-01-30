@@ -2,6 +2,7 @@ package com.atgc.hd.client.tasklist;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
@@ -10,13 +11,13 @@ import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.base.BaseFragment;
 import com.atgc.hd.client.tasklist.adapter.ContentFragAdapter;
 import com.atgc.hd.client.tasklist.patrolfrag.PatrolFrag;
-import com.atgc.hd.client.tasklist.taskfrag.TaskListFrag;
 import com.atgc.hd.comm.net.BaseDataRequest;
-import com.atgc.hd.comm.net.request.GPSRequest;
+import com.atgc.hd.comm.net.request.ReportPointStatusRequest;
 import com.atgc.hd.comm.widget.PagerSlidingTabStrip;
+import com.orhanobut.logger.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * <p>描述： 任务列表界面
@@ -27,6 +28,7 @@ public class TaskListActivity extends BaseActivity {
 
     private ContentFragAdapter fragAdapter;
     private PagerSlidingTabStrip pagerTitle;
+    private ViewPager contentViewPager;
 
     private TaskHandContract taskHandContract;
 
@@ -43,53 +45,32 @@ public class TaskListActivity extends BaseActivity {
         taskHandContract = new TaskHandModel();
         initContentFragments();
 
-        taskHandContract.initData(new TaskHandContract.OnInitDataListener() {
+        FragmentManager manager = getSupportFragmentManager();
+        manager.registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
+            int numberFragmentViewCreated = 0;
+
             @Override
-            public void onInitData(boolean initSuccess) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        fragAdapter.addAll(getFragments());
-                        pagerTitle.notifyDataSetChanged();
-                    }
-                });
+            public void onFragmentViewCreated(FragmentManager fm, android.support.v4.app.Fragment f, View v, Bundle savedInstanceState) {
+                super.onFragmentViewCreated(fm, f, v, savedInstanceState);
+
+                if (f instanceof PatrolFrag) {
+                    PatrolFrag patrolFrag = (PatrolFrag) f;
+                    patrolFrag.registerTaskFinishListener(taskHandContract);
+                }
+
+                numberFragmentViewCreated++;
+                if (numberFragmentViewCreated >= fragAdapter.getCount()) {
+                    taskHandContract.initData();
+                }
             }
-        });
 
-        findViewById(R.id.btn_test).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fragAdapter.addAll(getFragments());
-                pagerTitle.notifyDataSetChanged();
-            }
-        });
+        }, false);
 
-        findViewById(R.id.btn_test2).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GPSRequest gpsRequest = new GPSRequest();
-                gpsRequest.setLongitude("23.65555");
-                gpsRequest.setLatitude("113.546841");
-
-                gpsRequest.send(new BaseDataRequest.RequestCallback() {
-                    @Override
-                    public void onSuccess(Object pojo) {
-
-                    }
-
-                    @Override
-                    public void onFailure(String msg) {
-
-                    }
-                });
-            }
-        });
     }
-
 
     private void initContentFragments() {
         pagerTitle = findViewById(R.id.topic_viewpager_title);
-        ViewPager contentViewPager = findViewById(R.id.content_viewpager);
+        contentViewPager = findViewById(R.id.content_viewpager);
 
         contentViewPager.setOffscreenPageLimit(3);
 
@@ -115,23 +96,25 @@ public class TaskListActivity extends BaseActivity {
         });
     }
 
-    private List<BaseFragment> getFragments() {
-        List<BaseFragment> fragments = new ArrayList<>();
-
-        PatrolFrag patrolFrag = PatrolFrag.createIntance();
-        Bundle bundle1 = new Bundle();
-        bundle1.putSerializable("taskHandContract", taskHandContract);
-        patrolFrag.setArguments(bundle1);
-
-        TaskListFrag taskListFrag = TaskListFrag.createIntance();
-        Bundle bundle2 = new Bundle();
-        bundle2.putSerializable("taskHandContract", taskHandContract);
-        taskListFrag.setArguments(bundle2);
-
-        fragments.add(patrolFrag);
-        fragments.add(taskListFrag);
-
-        return fragments;
+    public void showCurrentTaskPage() {
+        contentViewPager.setCurrentItem(0);
     }
 
+    /**
+     * 当前任务页注册监听
+     *
+     * @param listener
+     */
+    public void registerOnCurrentTaskListener(TaskHandContract.OnCurrentTaskListener listener) {
+        taskHandContract.registerOnCurrentTaskListener(listener);
+    }
+
+    /**
+     * 任务列表页面注册监听
+     *
+     * @param listener
+     */
+    public void registerOnAllTaskListener(TaskHandContract.OnAllTaskLlistener listener) {
+        taskHandContract.registerOnAllTaskListener(listener);
+    }
 }

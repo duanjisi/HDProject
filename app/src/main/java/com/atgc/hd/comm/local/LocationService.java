@@ -200,6 +200,7 @@ public class LocationService {
 
     /**
      * 注意返回null的情况
+     *
      * @return 返回wbs84的坐标
      */
     public BDLocation getLastBDLocation() {
@@ -212,6 +213,7 @@ public class LocationService {
 
     /**
      * 不再使用时调用{@link #unregisterLocationListener(ILocationListener)}注销
+     *
      * @param listener
      */
     public void registerLocationListener(ILocationListener listener) {
@@ -219,11 +221,14 @@ public class LocationService {
     }
 
     /**
-     *
      * @param listener
      */
     public void unregisterLocationListener(ILocationListener listener) {
-        locationListeners.remove(listener);
+        if (listener == null) {
+            return;
+        } else {
+            locationListeners.remove(listener);
+        }
     }
 
     private BDLocation gcj02ToWbs84(BDLocation source) {
@@ -239,7 +244,7 @@ public class LocationService {
         return target;
     }
 
-    public interface ILocationListener{
+    public interface ILocationListener {
         void onReceiveLocation(BDLocation bdLocation);
     }
 }

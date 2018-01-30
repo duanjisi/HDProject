@@ -16,11 +16,13 @@ public interface TaskListContract {
     }
 
     interface IView {
+        void registerOnAllTaskListener(TaskHandContract.OnAllTaskLlistener listener);
+
         void refreshTaskList(List<TaskListResponse.TaskInfo> taskArray);
     }
 
     interface IPresenterView {
-        void setTaskHandContract(TaskHandContract presenter);
+        boolean isCurrentTask(String currentTaskId);
 
         void onDestory();
     }

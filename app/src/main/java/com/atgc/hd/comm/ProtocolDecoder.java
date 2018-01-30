@@ -66,6 +66,7 @@ public class ProtocolDecoder {
      * @return String
      */
     public static String parseContent(byte[] bytes) {
+        ByteBuf byteBuf = Unpooled.buffer(bytes.length);
         byteBuf.writeBytes(bytes);
         String version = parseString(byteBuf, 4);
         String srcID = parseString(byteBuf, 20);

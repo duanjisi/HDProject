@@ -221,6 +221,21 @@ public class NiftyDialog extends Dialog implements DialogInterface {
         }
         return this;
     }
+    /**
+     * 必须放在 setCustomView() 后执行
+     *
+     * @param targetId
+     * @return
+     */
+    public NiftyDialog withCustomViewOnClick(int targetId, View.OnClickListener onClickListener) {
+        if (mFrameLayoutCustomView == null) {
+            return this;
+        } else {
+            View target = mFrameLayoutCustomView.findViewById(targetId);
+            target.setOnClickListener(onClickListener);
+        }
+        return this;
+    }
 
     public NiftyDialog withMessageColor(String colorString) {
         mMessage.setTextColor(Color.parseColor(colorString));

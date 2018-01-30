@@ -65,6 +65,10 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
 
     @Override
     public void onConnectBreak() {
+        if (callback == null) {
+            return;
+        }
+
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -75,6 +79,10 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
 
     @Override
     public void onConnectFalied() {
+        if (callback == null) {
+            return;
+        }
+
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -93,6 +101,10 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
             } else {
                 retT = JSON.parseObject(preRspPojo.originJson, mGenericPojoClazz);
             }
+
+            if (callback == null) {
+                return;
+            }
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -101,6 +113,9 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
             });
         } else {
             final PreRspPojo finalPreRspPojo = preRspPojo;
+            if (callback == null) {
+                return;
+            }
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {

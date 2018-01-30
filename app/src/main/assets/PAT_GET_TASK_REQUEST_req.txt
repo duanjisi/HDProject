@@ -1,0 +1,181 @@
+{
+    "Command": "PAT_SEND_TASK",
+    "Data": [
+        {
+            "TaskArray": [
+                {
+                    "PointArray": [
+                        {
+                            "interval": 20,
+                            "orderNo": 0,
+                            "pointName": "联调巡更点01",
+                            "resultType": "0",
+                            "taskPointID": "4c55fd6efc80434fbe8de60f25a039ad",
+                            "longitude":113.614227,
+                            "latitude":23.298972
+                        },
+                        {
+                            "cardNumber": "11",
+                            "interval": 20,
+                            "orderNo": 1,
+                            "pointName": "测试巡查点11",
+                            "resultType": "0",
+                            "taskPointID": "97fed561547547bb8cc80b52e420dca6"
+                        },
+                        {
+                            "cardNumber": "12",
+                            "interval": 20,
+                            "orderNo": 2,
+                            "pointName": "测试巡查点12",
+                            "resultType": "0",
+                            "taskPointID": "2d5b3ff7e4154bc8b55b1cf13da302dd"
+                        },
+                        {
+                            "cardNumber": "13",
+                            "interval": 20,
+                            "orderNo": 3,
+                            "pointName": "测试巡查点13",
+                            "resultType": "0",
+                            "taskPointID": "f2755f9734a74f0f90a6318e640eedc3"
+                        }
+                    ],
+                    "deviceID": "10012017020000000000",
+                    "startTime": "2018-01-27 00:30:00",
+                    "endTime": "2018-01-27 02:30:00",
+                    "taskID": "db2c8e017b724cbc9be5dbd6c1018076",
+                    "taskName": "联调测试计划1（请勿删除修改）965194c3e0fe4d42b96fbd6536c2b59d"
+                },
+                {
+                    "PointArray": [
+                        {
+                            "interval": 20,
+                            "orderNo": 0,
+                            "pointName": "联调巡更点01",
+                            "resultType": "0",
+                            "taskPointID": "ca484c9fe94c456d909ee5239b705651"
+                        },
+                        {
+                            "cardNumber": "11",
+                            "interval": 20,
+                            "orderNo": 1,
+                            "pointName": "测试巡查点11",
+                            "resultType": "0",
+                            "taskPointID": "5aca806447594624ba2267c911771d43"
+                        },
+                        {
+                            "cardNumber": "12",
+                            "interval": 20,
+                            "orderNo": 2,
+                            "pointName": "测试巡查点12",
+                            "resultType": "0",
+                            "taskPointID": "e405f54909984bbaa2f27fbe0d0fef80"
+                        },
+                        {
+                            "cardNumber": "13",
+                            "interval": 20,
+                            "orderNo": 3,
+                            "pointName": "测试巡查点13",
+                            "resultType": "0",
+                            "taskPointID": "4f94ed04b30a4ac9b9b439b38d2e1c1f"
+                        }
+                    ],
+                    "deviceID": "10012017020000000000",
+                    "startTime": "2018-01-27 03:30:00",
+                    "endTime": "2018-01-27 04:30:00",
+                    "taskID": "1bd1eb9c0c814994a7d12125030d69f2",
+                    "taskName": "联调测试计划1（请勿删除修改）24ce9daf897c418782aec47eb1c7e6fc"
+                },
+                {
+                    "PointArray": [
+                        {
+                            "interval": 20,
+                            "orderNo": 0,
+                            "pointName": "联调巡更点01",
+                            "resultType": "0",
+                            "taskPointID": "34c35155079742369507506d1a543a84"
+                        },
+                        {
+                            "cardNumber": "11",
+                            "interval": 20,
+                            "orderNo": 1,
+                            "pointName": "测试巡查点11",
+                            "resultType": "0",
+                            "taskPointID": "e27ea482c32b4c3ea2299c957fd852d3"
+                        },
+                        {
+                            "cardNumber": "12",
+                            "interval": 20,
+                            "orderNo": 2,
+                            "pointName": "测试巡查点12",
+                            "resultType": "0",
+                            "taskPointID": "8ddb00e070e345b4a7d7574bfdc26739"
+                        },
+                        {
+                            "cardNumber": "13",
+                            "interval": 20,
+                            "orderNo": 3,
+                            "pointName": "测试巡查点13",
+                            "resultType": "0",
+                            "taskPointID": "201790a118414a62b7b05f5b1af36f64"
+                        }
+                    ],
+                    "deviceID": "10012017020000000000",
+                    "startTime": "2018-01-27 06:30:00",
+                    "endTime": "2018-01-27 08:30:00",
+                    "taskID": "c596cd909f004616842faa079e5a80a8",
+                    "taskName": "联调测试计划1（请勿删除修改）da27c5ecd6e04ed3869cba07cbf4538a"
+                },
+                {
+                    "PointArray": [
+                        {
+                            "interval": 20,
+                            "orderNo": 0,
+                            "pointName": "联调巡更点01",
+                            "resultType": "0",
+                            "taskPointID": "97ca43129d3b41699addacd0efe80087",
+                            "longitude":113.614227,
+                            "latitude":23.298972
+                        },
+                        {
+                            "cardNumber": "11",
+                            "interval": 20,
+                            "orderNo": 1,
+                            "pointName": "测试巡查点11",
+                            "resultType": "0",
+                            "taskPointID": "8eadc80b9fc14347aac7d54f31f54d04"
+                        },
+                        {
+                            "cardNumber": "12",
+                            "interval": 20,
+                            "orderNo": 2,
+                            "pointName": "测试巡查点12",
+                            "resultType": "2",
+                            "taskPointID": "361594084bc44ea18974370f398b1146"
+                        },
+                        {
+                            "cardNumber": "13",
+                            "interval": 20,
+                            "orderNo": 3,
+                            "pointName": "测试巡查点13",
+                            "resultType": "0",
+                            "taskPointID": "90a75854e5cd4d4c9a96fb08f9c1d28a"
+                        }
+                    ],
+                    "deviceID": "10012017020000000000",
+                    "startTime": "2018-01-27 09:00:00",
+                    "endTime": "2018-01-27 09:00:10",
+                    "taskID": "87f4586086ca4ed2a9d4dddf76776b4c",
+                    "taskName": "联调测试计划1（请勿删除修改）b0ae5c734abe4ee7861f87ac9a081a75"
+                },
+                {
+                    "PointArray": [],
+                    "deviceID": "10012017020000000000",
+                    "startTime": "2018-01-27 09:32:40",
+                    "endTime": "2018-01-27 09:33:10",
+                    "taskID": "2232343432423432",
+                    "taskName": "测试任务"
+                }
+            ]
+        }
+    ]
+}

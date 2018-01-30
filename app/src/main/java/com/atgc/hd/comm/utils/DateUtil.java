@@ -85,6 +85,17 @@ public class DateUtil {
 
     /**
      * 字符串解析成时间对象
+     * <p>默认解析格式：yyyy-MM-dd HH:mm:ss</p>
+     * @param dateTimeString String
+     * @return
+     * @throws ParseException
+     */
+    public static Date dateParse(String dateTimeString) {
+        return dateParse(dateTimeString, DATE_TIME_PATTERN);
+    }
+
+    /**
+     * 字符串解析成时间对象
      *
      * @param dateTimeString String
      * @param pattern        StrUtils.DATE_TIME_PATTERN || StrUtils.DATE_PATTERN，如果为空，则为yyyy-MM-dd
