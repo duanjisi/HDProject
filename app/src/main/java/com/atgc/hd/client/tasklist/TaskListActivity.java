@@ -10,16 +10,13 @@ import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.base.BaseFragment;
 import com.atgc.hd.client.tasklist.adapter.ContentFragAdapter;
-import com.atgc.hd.client.tasklist.patrolfrag.PatrolFrag;
 import com.atgc.hd.comm.widget.PagerSlidingTabStrip;
-
-import de.greenrobot.event.EventBus;
 
 /**
  * <p>描述： 任务列表界面
  * <p>作者： liangguokui 2018/1/17
  */
-public class TaskListActivity extends BaseActivity implements TaskHandContract.IView{
+public class TaskListActivity extends BaseActivity implements TaskHandContract.IView {
     private int currentFragmentPosition;
 
     private ContentFragAdapter fragAdapter;
@@ -30,7 +27,7 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
 
     @Override
     public String toolBarTitle() {
-        return "巡更";
+        return "手持智能终端";
     }
 
     @Override
@@ -39,25 +36,12 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
         setContentView(R.layout.activity_tasklist);
 
         taskHandContract = new TaskHandModel(this);
+
+        init();
+
         initContentFragments();
 
-        FragmentManager manager = getSupportFragmentManager();
-        manager.registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
-            int numberFragmentViewCreated = 0;
-
-            @Override
-            public void onFragmentViewCreated(FragmentManager fm, android.support.v4.app.Fragment f, View v, Bundle savedInstanceState) {
-                super.onFragmentViewCreated(fm, f, v, savedInstanceState);
-
-                numberFragmentViewCreated++;
-                if (numberFragmentViewCreated >= fragAdapter.getCount()) {
-                    showProgressDialog();
-                    taskHandContract.initData();
-
-                }
-            }
-
-        }, false);
+        addFragmentInitListener();
 
     }
 
@@ -89,6 +73,58 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
         });
     }
 
+    private void init() {
+        barHelper.setActionLeftDrawable(R.drawable.ic_setting);
+        barHelper.setActionRightDrawable(R.drawable.ic_bell);
+        barHelper.setActionLeftListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO 跳转到设置页面
+            }
+        });
+
+        barHelper.setActionRightListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO 跳转到系统消息页面
+            }
+        });
+
+        findViewById(R.id.iv_refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO 调用接口刷新巡更数据
+            }
+        });
+
+        findViewById(R.id.iv_emergency).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO 应急事件
+            }
+        });
+    }
+
+    private void addFragmentInitListener() {
+        FragmentManager manager = getSupportFragmentManager();
+        manager.registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
+            int numberFragmentViewCreated = 0;
+
+            @Override
+            public void onFragmentViewCreated(FragmentManager fm, android.support.v4.app.Fragment f, View v, Bundle savedInstanceState) {
+                super.onFragmentViewCreated(fm, f, v, savedInstanceState);
+
+                numberFragmentViewCreated++;
+                if (numberFragmentViewCreated >= fragAdapter.getCount()) {
+                    showProgressDialog();
+                    taskHandContract.initData();
+
+                }
+            }
+
+        }, false);
+    }
+
     public void showCurrentTaskPage() {
         contentViewPager.setCurrentItem(0);
     }
@@ -113,7 +149,7 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
 
     @Override
     public void dimssProgressDialog() {
-//        dismissProgressBarDialog();
+        dismissProgressBarDialog();
     }
 
     @Override
