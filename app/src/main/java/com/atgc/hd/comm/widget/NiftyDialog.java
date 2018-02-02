@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -64,6 +65,8 @@ public class NiftyDialog extends Dialog implements DialogInterface {
     private TextView mTitle;
 
     private TextView mMessage;
+
+    private ProgressBar mProgress;
 
     private ImageView mIcon;
 
@@ -129,6 +132,7 @@ public class NiftyDialog extends Dialog implements DialogInterface {
         mTitle = (TextView) mDialogView.findViewById(R.id.alertTitle);
         mMessage = (TextView) mDialogView.findViewById(R.id.message);
         mIcon = (ImageView) mDialogView.findViewById(R.id.icon);
+        mProgress = (ProgressBar) mDialogView.findViewById(R.id.progressBar);
 
         mButton1 = (Button) mDialogView.findViewById(R.id.button1);
         mButton2 = (Button) mDialogView.findViewById(R.id.button2);
@@ -169,6 +173,15 @@ public class NiftyDialog extends Dialog implements DialogInterface {
         mTitle.setTextColor(Color.parseColor(defTextColor));
         mMessage.setTextColor(Color.parseColor(defMsgColor));
         mLinearLayoutView.setBackgroundColor(Color.parseColor(defDialogColor));
+    }
+
+    public NiftyDialog withProgress(boolean visibility) {
+        if (visibility) {
+            mProgress.setVisibility(View.VISIBLE);
+        } else {
+            mProgress.setVisibility(View.GONE);
+        }
+        return this;
     }
 
     public NiftyDialog withTitle(CharSequence title) {
@@ -221,6 +234,7 @@ public class NiftyDialog extends Dialog implements DialogInterface {
         }
         return this;
     }
+
     /**
      * 必须放在 setCustomView() 后执行
      *
@@ -391,6 +405,7 @@ public class NiftyDialog extends Dialog implements DialogInterface {
     @Override
     public void dismiss() {
         super.dismiss();
+        mProgress.setVisibility(View.GONE);
         mButton1.setVisibility(View.GONE);
         mButton2.setVisibility(View.GONE);
     }

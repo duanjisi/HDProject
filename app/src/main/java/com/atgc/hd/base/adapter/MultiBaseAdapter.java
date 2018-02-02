@@ -24,9 +24,9 @@ public abstract class MultiBaseAdapter<T> extends BaseAdapter<T> {
         super(context, isOpenLoadMore);
     }
 
-    protected abstract void convert(ViewHolder holder, T data, int position, int viewType);
-
     protected abstract int getItemLayoutId(int viewType);
+
+    protected abstract void convert(ViewHolder holder, T data, int position, int viewType);
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

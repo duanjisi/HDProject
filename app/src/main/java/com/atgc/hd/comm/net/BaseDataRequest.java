@@ -7,9 +7,12 @@ import com.alibaba.fastjson.JSON;
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.utils.DigitalUtils;
-import com.atgc.hd.comm.utils.FileUtil;
 
 import net.jodah.typetools.TypeResolver;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -128,6 +131,24 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
     @Override
     public void onSendSuccess(byte[] s) {
 
+    }
+
+    public String jsonData() {
+        String jsonMsg = "";
+        JSONObject object = new JSONObject();
+        try {
+            object.put("Command", getCommand());
+
+            JSONArray array = new JSONArray();
+            array.put(new JSONObject(getParams()));
+
+            object.put("Data", array);
+
+            jsonMsg = object.toString(2);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonMsg;
     }
 
     public interface RequestCallback<T> {

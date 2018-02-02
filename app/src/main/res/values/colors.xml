@@ -45,4 +45,9 @@
 
     <!--所有页面的背景颜色-->
     <color name="color_theme_background">#FFE4E4E4</color>
+
+    <color name="dark_blue">#1b70ff</color>
+    <color name="transparent_green">#6f27cc55</color>
+    <color name="transparent_gray">#6fcecece</color>
+    <color name="transparent_red">#6ff94848</color>
 </resources>

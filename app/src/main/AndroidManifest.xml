@@ -67,6 +67,7 @@
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".client.tasklist.TaskListActivity" />
+        <activity android:name=".client.demo.DemoRequestActivity" />
 
         <service android:name=".comm.service.DeviceBootService"></service>
 

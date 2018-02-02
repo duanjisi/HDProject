@@ -1,6 +1,7 @@
 package com.atgc.hd.client.tasklist.patrolfrag;
 
 import com.atgc.hd.client.tasklist.TaskHandContract;
+import com.atgc.hd.client.tasklist.taskfrag.adapter.TaskListEntity;
 import com.atgc.hd.comm.clock.InnerClock;
 import com.atgc.hd.comm.local.Coordinate;
 import com.atgc.hd.comm.local.LocationService;
@@ -11,12 +12,17 @@ import com.atgc.hd.comm.net.request.ReportTaskStatusRequest;
 import com.atgc.hd.comm.net.response.TaskListResponse;
 import com.atgc.hd.comm.net.response.TaskListResponse.PointInfo;
 import com.atgc.hd.comm.utils.CoordinateUtil;
+import com.atgc.hd.entity.EventMessage;
 import com.baidu.location.BDLocation;
 import com.orhanobut.logger.Logger;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * <p>描述：巡更任务presenter层
@@ -34,8 +40,6 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
 
     private TaskListResponse.PointInfo currentPointInfo = null;
 
-    private PatrolContract.OnTaskActionListener onTaskActionListener;
-
     private Timer countdownTimer;
     private TimerTask countdownTimerTask;
 
@@ -51,10 +55,10 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
                     currentLocation.getLongitude()
             );
 
-            Logger.e(currentPointInfo.getLatitude() + "\n" +
-                    currentPointInfo.getLongitude() + "\n" +
-                    currentLocation.getLatitude() + "\n" +
-                    currentLocation.getLongitude());
+//            Logger.e(currentPointInfo.getLatitude() + "\n" +
+//                    currentPointInfo.getLongitude() + "\n" +
+//                    currentLocation.getLatitude() + "\n" +
+//                    currentLocation.getLongitude());
             iView.showTips(currentPointInfo.getPointName() + "\n" + bdLocation.getLongitude() + "\n" + bdLocation.getLatitude() + "\n" + (float) distance + "米");
 
             if (distance < POINT_RANGE) {
@@ -69,6 +73,11 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
                 } else {
                     // 最后一个点，上报巡查任务状态
                     iView.showFillReasonDialog("2", "");
+
+                    // TaskHandModel.onTaskFinish()接收
+                    EventMessage msg = new EventMessage("on_task_finish");
+                    msg.object = taskInfoProxy.getTaskInfo().getTaskID();
+                    EventBus.getDefault().post(msg);
                 }
             }
         }
@@ -111,7 +120,18 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
             reportTaskStatus("1", "0", "");
         }
 
-        iView.refreshTaskList(taskInfoProxy.getPointInfos());
+        List<TaskListEntity> entities = new ArrayList<>();
+        entities.add(new TaskListEntity(taskInfo));
+        for (int i = 0, count = taskInfo.getPointArray().size(); i < count; i++) {
+            PointInfo info = taskInfo.getPointArray().get(i);
+            TaskListEntity entity = new TaskListEntity(info);
+
+            entity.setFirstPointInfo(i == 0);
+            entity.setLastPointInfo(i == (count - 1));
+
+            entities.add(entity);
+        }
+        iView.refreshTaskList(entities);
 
         startPointTimeOutCountDown(taskInfoProxy.getCurrentPointInfo());
 
@@ -129,6 +149,7 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
 
     /**
      * 用于巡更点超时上报
+     *
      * @param pointInfo
      */
     private void startPointTimeOutCountDown(final PointInfo pointInfo) {
@@ -146,7 +167,7 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
             @Override
             public void run() {
                 // 上报巡查点超时未巡查
-                pointInfo.setCheckedTime(pointTimeLine.toString());
+                pointInfo.setPointTime(pointTimeLine.toString());
                 pointInfo.setResultType("2");
                 reportPointStatus(pointInfo);
             }
@@ -166,7 +187,7 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
 
         request.setTaskID(taskInfoProxy.getTaskInfo().getTaskID());
         request.setTaskPointID(pointInfo.getTaskPointId());
-        request.setPointTime(pointInfo.getCheckedTime());
+        request.setPointTime(pointInfo.getPointTime());
         request.setHistoryPointStatus(pointInfo.getResultType());
         request.send(new BaseDataRequest.RequestCallback<String>() {
             @Override
@@ -181,12 +202,6 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
         });
     }
 
-    // TaskHandModel会注册此监听
-    @Override
-    public void registerTaskFinishListener(PatrolContract.OnTaskActionListener onTaskActionListener) {
-        this.onTaskActionListener = onTaskActionListener;
-    }
-
     /**
      * @param taskStatus
      * @param carryStatus
@@ -197,6 +212,7 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
         ReportTaskStatusRequest request = new ReportTaskStatusRequest();
         request.setDeviceID("10012017020000000000");
 
+        request.setUserId(taskInfoProxy.getTaskInfo().getUserId());
         request.setTaskID(taskInfoProxy.getTaskInfo().getTaskID());
 
         request.setTaskStatus(taskStatus);

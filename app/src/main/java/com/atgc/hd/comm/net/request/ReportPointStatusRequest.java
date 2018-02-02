@@ -19,6 +19,8 @@ public class ReportPointStatusRequest extends BaseDataRequest<String> {
     private String taskPointID;
     // 发生时间，格式 “yyyy-MM-dd HH:mm:ss”
     private String pointTime;
+
+    private String planTime;
     // 结果类型 2.已巡查 3：超时未巡查 4.超时已巡查
     private String historyPointStatus;
 
@@ -35,6 +37,7 @@ public class ReportPointStatusRequest extends BaseDataRequest<String> {
         map.put("taskPointID", taskPointID);
         map.put("pointTime", pointTime);
         map.put("historyPointStatus", historyPointStatus);
+        map.put("planTime", planTime);
 
         return map;
     }
@@ -82,5 +85,13 @@ public class ReportPointStatusRequest extends BaseDataRequest<String> {
 
     public void setHistoryPointStatus(String historyPointStatus) {
         this.historyPointStatus = historyPointStatus;
+    }
+
+    public String getPlanTime() {
+        return planTime;
+    }
+
+    public void setPlanTime(String planTime) {
+        this.planTime = planTime;
     }
 }

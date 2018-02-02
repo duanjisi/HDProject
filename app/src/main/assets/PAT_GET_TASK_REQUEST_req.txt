@@ -9,7 +9,7 @@
                             "interval": 20,
                             "orderNo": 0,
                             "pointName": "联调巡更点01",
-                            "resultType": "0",
+                            "resultType": "1",
                             "taskPointID": "4c55fd6efc80434fbe8de60f25a039ad",
                             "longitude":113.614227,
                             "latitude":23.298972
@@ -19,7 +19,7 @@
                             "interval": 20,
                             "orderNo": 1,
                             "pointName": "测试巡查点11",
-                            "resultType": "0",
+                            "resultType": "1",
                             "taskPointID": "97fed561547547bb8cc80b52e420dca6"
                         },
                         {
@@ -27,7 +27,7 @@
                             "interval": 20,
                             "orderNo": 2,
                             "pointName": "测试巡查点12",
-                            "resultType": "0",
+                            "resultType": "2",
                             "taskPointID": "2d5b3ff7e4154bc8b55b1cf13da302dd"
                         },
                         {
@@ -175,6 +175,42 @@
                     "taskID": "2232343432423432",
                     "taskName": "测试任务"
                 }
+                ,
+                                {
+                                    "PointArray": [],
+                                    "deviceID": "10012017020000000000",
+                                    "startTime": "2018-01-27 09:32:40",
+                                    "endTime": "2018-01-27 09:33:10",
+                                    "taskID": "2232343432423432",
+                                    "taskName": "测试任务"
+                                }
+                ,
+                                {
+                                    "PointArray": [],
+                                    "deviceID": "10012017020000000000",
+                                    "startTime": "2018-01-27 09:32:40",
+                                    "endTime": "2018-01-27 09:33:10",
+                                    "taskID": "2232343432423432",
+                                    "taskName": "测试任务"
+                                }
+                ,
+                                {
+                                    "PointArray": [],
+                                    "deviceID": "10012017020000000000",
+                                    "startTime": "2018-01-27 09:32:40",
+                                    "endTime": "2018-01-27 09:33:10",
+                                    "taskID": "2232343432423432",
+                                    "taskName": "测试任务"
+                                }
+                ,
+                                {
+                                    "PointArray": [],
+                                    "deviceID": "10012017020000000000",
+                                    "startTime": "2018-01-27 09:32:40",
+                                    "endTime": "2018-01-27 09:33:10",
+                                    "taskID": "2232343432423432",
+                                    "taskName": "测试任务"
+                                }
             ]
         }
     ]

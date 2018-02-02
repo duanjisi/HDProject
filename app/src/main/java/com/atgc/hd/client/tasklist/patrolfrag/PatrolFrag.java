@@ -13,10 +13,15 @@ import com.atgc.hd.base.BaseFragment;
 import com.atgc.hd.client.tasklist.TaskHandContract;
 import com.atgc.hd.client.tasklist.TaskListActivity;
 import com.atgc.hd.client.tasklist.patrolfrag.adapter.PatrolAdapter;
+import com.atgc.hd.client.tasklist.taskfrag.adapter.TaskListEntity;
 import com.atgc.hd.comm.net.response.TaskListResponse;
 import com.atgc.hd.comm.widget.NiftyDialog;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
 /**
  * <p>描述： 当天巡更任务列表
@@ -88,15 +93,15 @@ public class PatrolFrag extends BaseFragment implements PatrolContract.IView {
     }
 
     @Override
-    public void refreshTaskList(final List<TaskListResponse.PointInfo> pointInfos) {
+    public void refreshTaskList(final List<TaskListEntity> entities) {
         parentActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (pointInfos == null || pointInfos.isEmpty()) {
+                if (entities == null || entities.isEmpty()) {
                     patrolAdapter.setNewData(null);
                     Toast.makeText(parentActivity, "该时间点暂无任务...", Toast.LENGTH_LONG).show();
                 } else {
-                    patrolAdapter.setNewData(pointInfos);
+                    patrolAdapter.setNewData(entities);
                 }
             }
         });
@@ -108,14 +113,9 @@ public class PatrolFrag extends BaseFragment implements PatrolContract.IView {
         aty.registerOnCurrentTaskListener(listener);
     }
 
-    public void registerTaskFinishListener(PatrolContract.OnTaskActionListener listener) {
-        iPresenter.registerTaskFinishListener(listener);
-    }
-
     @Override
     public void onDestroy() {
         iPresenter.onDestory();
         super.onDestroy();
     }
-
 }

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/spacing_3x"
+    android:layout_marginRight="@dimen/spacing_3x">
+
+
+    <ImageView
+        android:id="@+id/iv_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/spacing_3x"
+        android:background="@drawable/item_spot_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_point_position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="24dp"
+        android:text="08:05"
+        android:textColor="@color/dark_blue"
+        android:textSize="@dimen/text_size_xxxlarge"
+        android:textStyle="bold"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_point_status"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginRight="2.3dp"
+        android:background="@color/transparent_green"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="2"
+        android:paddingLeft="@dimen/spacing_8x"
+        android:text="已打点"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_medium"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_dot0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/iv_line2"
+        app:layout_constraintTop_toTopOf="@+id/iv_dot0" />
+
+    <TextView
+        android:id="@+id/tv_timeline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/spacing_2x"
+        android:drawableRight="@drawable/pic_last_time"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/spacing_8x"
+        android:text="08:10"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_dot1"
+        app:layout_constraintStart_toStartOf="@+id/iv_line2"
+        app:layout_constraintTop_toTopOf="@+id/iv_dot1"
+        tools:layout_editor_absoluteX="190dp" />
+
+    <TextView
+        android:id="@+id/tv_location_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/spacing_8x"
+        android:paddingLeft="@dimen/spacing_8x"
+        android:paddingRight="@dimen/spacing_1x"
+        android:text="A区住宅群143楼"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/iv_line2"
+        app:layout_constraintTop_toBottomOf="@+id/tv_timeline" />
+
+    <ImageView
+        android:id="@+id/iv_line1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/iv_line2"
+        app:layout_constraintStart_toStartOf="@+id/iv_line2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_vertical_line" />
+
+    <ImageView
+        android:id="@+id/iv_line2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/iv_dot0"
+        app:layout_constraintStart_toStartOf="@+id/iv_dot0"
+        app:layout_constraintTop_toTopOf="@+id/iv_dot0"
+        app:srcCompat="@drawable/ic_vertical_line2" />
+
+    <ImageView
+        android:id="@+id/iv_line3"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_vertical_line"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_location_name"
+        app:layout_constraintEnd_toEndOf="@+id/iv_line2"
+        app:layout_constraintStart_toStartOf="@+id/iv_line2"
+        app:layout_constraintTop_toTopOf="@+id/iv_dot2" />
+
+    <ImageView
+        android:id="@+id/iv_dot0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_point_position"
+        app:layout_constraintStart_toEndOf="@+id/tv_point_position"
+        app:layout_constraintTop_toTopOf="@+id/tv_point_position"
+        app:srcCompat="@drawable/ic_green_checked" />
+
+    <ImageView
+        android:id="@+id/iv_dot1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_line2"
+        app:layout_constraintEnd_toEndOf="@+id/iv_line2"
+        app:layout_constraintStart_toStartOf="@+id/iv_line2"
+        app:layout_constraintTop_toTopOf="@+id/iv_line2"
+        app:layout_constraintVertical_bias="0.55"
+        app:srcCompat="@drawable/ic_gray_dot" />
+
+    <ImageView
+        android:id="@+id/iv_dot2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_line2"
+        app:layout_constraintEnd_toEndOf="@+id/iv_dot1"
+        app:layout_constraintStart_toStartOf="@+id/iv_dot1"
+        app:srcCompat="@drawable/ic_gray_dot" />
+
+    <ImageView
+        android:id="@+id/iv_tag_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_point_position"
+        app:layout_constraintStart_toStartOf="@+id/tv_point_position"
+        app:layout_constraintTop_toBottomOf="@+id/tv_point_position"
+        android:src="@drawable/location_start" />
+
+</android.support.constraint.ConstraintLayout>

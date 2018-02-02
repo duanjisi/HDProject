@@ -1,6 +1,7 @@
 package com.atgc.hd.client.tasklist.patrolfrag;
 
 import com.atgc.hd.client.tasklist.TaskHandContract;
+import com.atgc.hd.client.tasklist.taskfrag.adapter.TaskListEntity;
 import com.atgc.hd.comm.net.response.TaskListResponse;
 
 import java.util.List;
@@ -20,15 +21,12 @@ public interface PatrolContract {
 
         void showFillReasonDialog(String taskStatus, String carryStatus);
 
-        void refreshTaskList(List<TaskListResponse.PointInfo> pointInfos);
+        void refreshTaskList(List<TaskListEntity> entities);
 
         void registerOnCurrentTaskListener(TaskHandContract.OnCurrentTaskListener listener);
     }
 
     interface IPresenterView {
-
-        void registerTaskFinishListener(OnTaskActionListener onTaskActionListener);
-
         void reportTaskStatus(String taskStatus, String carryStatus, String reason);
 
         void onDestory();
@@ -37,7 +35,4 @@ public interface PatrolContract {
     interface IPresenterModel {
     }
 
-    interface OnTaskActionListener {
-        void onTaskFinish(String taskId);
-    }
 }

@@ -31,20 +31,23 @@ public class TaskListResponse implements Serializable {
 
         // 设备编号
         private String deviceID;
+        // 用户id
+        private String userId;
         // 计划任务ID
         private String taskID;
+        // 任务名称
+        private String taskName;
         // 开始时间，格式“yyyy-MM-dd HH:mm:ss”
         private String startTime;
         // 结束时间，格式“yyyy-MM-dd HH:mm:ss”
         private String endTime;
-        // 任务名称
-        private String taskName;
         // 巡更点信息
         private List<PointInfo> PointArray;
 
         private String taskPeriod;
 
-        private boolean isChecked;
+        // 0-有部分点未巡查 1-所有点已正常巡查 2-所有点已巡查但有异常点
+        private String inspectStatus = "1";
 
         public String getDeviceID() {
             return deviceID;
@@ -52,6 +55,14 @@ public class TaskListResponse implements Serializable {
 
         public void setDeviceID(String deviceID) {
             this.deviceID = deviceID;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
         }
 
         public String getTaskID() {
@@ -86,14 +97,6 @@ public class TaskListResponse implements Serializable {
             PointArray = pointArray;
         }
 
-        public boolean isChecked() {
-            return isChecked;
-        }
-
-        public void setChecked(boolean checked) {
-            isChecked = checked;
-        }
-
         public String getTaskName() {
             return taskName;
         }
@@ -109,6 +112,14 @@ public class TaskListResponse implements Serializable {
 
         public void setTaskPeriod(String taskPeriod) {
             this.taskPeriod = taskPeriod;
+        }
+
+        public String getInspectStatus() {
+            return inspectStatus;
+        }
+
+        public void setInspectStatus(String inspectStatus) {
+            this.inspectStatus = inspectStatus;
         }
 
         public void initTaskPeriod() {
@@ -167,8 +178,10 @@ public class TaskListResponse implements Serializable {
         // 结果类型 0：未巡查1：正常（已巡查） 2：超时未巡查 3：超时已巡查
         private String resultType;
 
-        // 实际打点时间
-        private String checkedTime;
+        // 实际打点时间 yyyy-MM-dd HH:mm:ss
+        private String pointTime = "--:--";
+        // 最迟打点时间 yyyy-MM-dd HH:mm:ss
+        private String planTime = "--:--";
 
         private boolean isChecked;
 
@@ -244,12 +257,20 @@ public class TaskListResponse implements Serializable {
             isChecked = checked;
         }
 
-        public String getCheckedTime() {
-            return checkedTime;
+        public String getPointTime() {
+            return pointTime;
         }
 
-        public void setCheckedTime(String checkedTime) {
-            this.checkedTime = checkedTime;
+        public void setPointTime(String pointTime) {
+            this.pointTime = pointTime;
+        }
+
+        public String getPlanTime() {
+            return planTime;
+        }
+
+        public void setPlanTime(String planTime) {
+            this.planTime = planTime;
         }
 
         @Override

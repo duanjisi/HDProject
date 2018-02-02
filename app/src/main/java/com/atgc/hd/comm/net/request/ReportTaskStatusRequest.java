@@ -13,13 +13,15 @@ import java.util.Map;
 public class ReportTaskStatusRequest extends BaseDataRequest<String> {
     // 设备ID
     private String deviceID;
+    // 用户ID
+    private String userId;
     // 任务ID
     private String taskID;
     // 任务状态1：正在执行 2：时间范围内结束任务 3超出时间，强制结束
     private String taskStatus;
     // 结果状态 0正常  1异常（巡查点有超时）
     private String carryStatus;
-    // 结果类型 2.已巡查 3：超时未巡查 4.超时已巡查
+    // 异常原因
     private String abnormalReason;
 
     @Override
@@ -31,6 +33,7 @@ public class ReportTaskStatusRequest extends BaseDataRequest<String> {
     protected Map<String, String> getParams() {
         Map<String, String> map = new HashMap<>();
         map.put("deviceID", deviceID);
+        map.put("userId", userId);
         map.put("taskID", taskID);
         map.put("taskStatus", taskStatus);
         map.put("carryStatus", carryStatus);
@@ -50,6 +53,14 @@ public class ReportTaskStatusRequest extends BaseDataRequest<String> {
 
     public void setDeviceID(String deviceID) {
         this.deviceID = deviceID;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getTaskID() {

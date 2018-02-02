@@ -1,13 +1,13 @@
 package com.atgc.hd.client.tasklist;
 
 import com.alibaba.fastjson.JSON;
-import com.atgc.hd.client.tasklist.patrolfrag.PatrolContract;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.net.BaseDataRequest;
 import com.atgc.hd.comm.net.TcpSocketClient;
 import com.atgc.hd.comm.net.request.GetTaskRequest;
 import com.atgc.hd.comm.net.response.TaskListResponse;
 import com.atgc.hd.comm.utils.DateUtil;
+import com.atgc.hd.entity.EventMessage;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -19,12 +19,15 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
+
 /**
  * <p>描述：
  * <p>作者：liangguokui 2018/1/25
  */
 
-public class TaskHandModel implements TaskHandContract, PatrolContract.OnTaskActionListener {
+public class TaskHandModel implements TaskHandContract {
 
     private OnCurrentTaskListener onCurrentTaskListener;
     private OnAllTaskLlistener onAllTaskLlistener;
@@ -33,9 +36,14 @@ public class TaskHandModel implements TaskHandContract, PatrolContract.OnTaskAct
 
     private Map<String, TimerTask> mapStopTimerTask;
 
-    public TaskHandModel() {
+    private TaskHandContract.IView iView;
+
+    public TaskHandModel(TaskHandContract.IView iView) {
+        this.iView = iView;
         mapTaskInfos = new HashMap<>();
         mapStopTimerTask = new HashMap<>();
+
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -52,6 +60,11 @@ public class TaskHandModel implements TaskHandContract, PatrolContract.OnTaskAct
     @Override
     public void registerOnAllTaskListener(OnAllTaskLlistener listener) {
         this.onAllTaskLlistener = listener;
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
     }
 
 
@@ -89,6 +102,8 @@ public class TaskHandModel implements TaskHandContract, PatrolContract.OnTaskAct
                 TaskListResponse taskListResponse = JSON.parseObject(jsonData[0], TaskListResponse.class);
 
                 handTaskData(taskListResponse);
+
+                iView.dimssProgressDialog();
 
             }
         }, DeviceCmd.PAT_SEND_TASK);
@@ -207,15 +222,18 @@ public class TaskHandModel implements TaskHandContract, PatrolContract.OnTaskAct
 
     private Date currentTime() {
 
-        String currentTime = DateUtil.currentTime();
-//        String currentTime = "2018-01-27 09:00:05";
+//        String currentTime = DateUtil.currentTime();
+        String currentTime = "2018-01-27 01:30:30";
         Date currentDate = DateUtil.dateParse(currentTime, DateUtil.HOUR_PATTERN);
         return currentDate;
     }
 
     // 当PatrolPresenter的所有点都巡查完毕，将会回调此方法
-    @Override
-    public void onTaskFinish(String taskId) {
-        actionStopTask(taskId);
+    @Subscribe
+    public void onTaskFinish(EventMessage eventMessage) {
+        if ("on_task_finish".equals(eventMessage.eventTag)) {
+            String taskId = (String) eventMessage.object;
+            actionStopTask(taskId);
+        }
     }
 }

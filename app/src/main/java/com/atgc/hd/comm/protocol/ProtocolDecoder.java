@@ -30,9 +30,9 @@ public class ProtocolDecoder {
      */
     public static String parseString(ByteBuf buffer, int length) {
         byte[] bytes = new byte[length];
-        buffer.readBytes(bytes);
         String str = null;
         try {
+            buffer.readBytes(bytes);
             str = new String(bytes, "utf-8");
         } catch (Exception e) {
             Logger.d("时间为" + DateUtil.getDate(new Date()) + "解码器转换字符串发生异常:" + e.getMessage());

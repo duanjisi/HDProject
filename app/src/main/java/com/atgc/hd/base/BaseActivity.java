@@ -19,6 +19,7 @@ import com.atgc.hd.R;
 import com.atgc.hd.client.widgethelper.BarHelper;
 
 import com.atgc.hd.comm.utils.SysManager;
+import com.atgc.hd.comm.widget.NiftyDialog;
 
 /**
  * Created by duanjisi on 2018/1/15.
@@ -34,6 +35,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     private TextView tvAtyTips;
 
     protected BarHelper barHelper;
+
+    private NiftyDialog progressDialog;
 
     @Override
     public void setContentView(int layoutResID) {
@@ -173,6 +176,26 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public String toolBarTitle() {
         return getString(R.string.app_name);
+    }
+
+
+    public void showProgressDialog() {
+        showProgressDialog("请稍候...");
+    }
+
+    public void showProgressDialog(String msg) {
+        progressDialog = NiftyDialog.create(this);
+        progressDialog
+                .isCancelableOnTouchOutside(true)
+                .setCustomView(R.layout.request_progress_layout, this)
+                .withCustomViewMessage(R.id.tv_content, msg)
+                .show();
+    }
+
+    public void dismissProgressBarDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 
     public static <T extends View> T findViewById(View view, int id) {

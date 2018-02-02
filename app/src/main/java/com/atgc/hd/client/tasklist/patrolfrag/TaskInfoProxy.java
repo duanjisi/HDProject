@@ -78,7 +78,7 @@ public class TaskInfoProxy {
         PointInfo currentPointInfo = getPointInfos().get(currentPointIndex);
 
         String lastPointCheckedTime = InnerClock.instance().getInnerClockDate().toString();
-        currentPointInfo.setCheckedTime(lastPointCheckedTime);
+        currentPointInfo.setPointTime(lastPointCheckedTime);
 
         String pointStatus = pointStatus();
         currentPointInfo.setResultType(pointStatus);

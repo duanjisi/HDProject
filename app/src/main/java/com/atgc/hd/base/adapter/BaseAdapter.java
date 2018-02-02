@@ -327,6 +327,10 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         notifyDataSetChanged();
     }
 
+    public List<T> getAllData() {
+        return mDatas;
+    }
+
     public void remove(int position) {
         mDatas.remove(position);
         notifyDataSetChanged();

@@ -217,14 +217,18 @@ public class LocationService {
      * @param listener
      */
     public void registerLocationListener(ILocationListener listener) {
-        locationListeners.add(listener);
+        if (locationListeners == null) {
+            return;
+        } else {
+            locationListeners.add(listener);
+        }
     }
 
     /**
      * @param listener
      */
     public void unregisterLocationListener(ILocationListener listener) {
-        if (listener == null) {
+        if (locationListeners == null || listener == null) {
             return;
         } else {
             locationListeners.remove(listener);

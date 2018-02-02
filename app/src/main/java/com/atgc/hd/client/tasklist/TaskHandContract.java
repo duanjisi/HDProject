@@ -10,12 +10,14 @@ import java.util.List;
  * <p>描述：
  * <p>作者：liangguokui 2018/1/25
  */
-public interface TaskHandContract extends PatrolContract.OnTaskActionListener {
+public interface TaskHandContract {
     void initData();
 
     void registerOnCurrentTaskListener(OnCurrentTaskListener listener);
 
     void registerOnAllTaskListener(OnAllTaskLlistener listener);
+
+    void onDestroy();
 
     interface OnCurrentTaskListener {
         void onReceiveCurrentTask(TaskListResponse.TaskInfo taskInfo);
@@ -27,5 +29,10 @@ public interface TaskHandContract extends PatrolContract.OnTaskActionListener {
         void onReceiveAllTask(List<TaskListResponse.TaskInfo> taskInfos);
 
         void onCurrentTask(String taskId);
+    }
+
+    interface IView{
+        void showProgressDialog(String msg);
+        void dimssProgressDialog();
     }
 }

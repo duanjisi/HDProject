@@ -10,7 +10,7 @@ import com.atgc.hd.comm.utils.PreferenceUtils;
  */
 
 public class IPPort {
-    private static final String HOST = "172.16.10.80";
+    private static final String HOST = "172.16.10.127";
     private static final int PORT = 20001;
 
     public static String getHOST() {

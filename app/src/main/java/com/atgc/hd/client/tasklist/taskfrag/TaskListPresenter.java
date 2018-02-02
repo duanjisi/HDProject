@@ -1,8 +1,10 @@
 package com.atgc.hd.client.tasklist.taskfrag;
 
 import com.atgc.hd.client.tasklist.TaskHandContract;
+import com.atgc.hd.client.tasklist.taskfrag.adapter.TaskListEntity;
 import com.atgc.hd.comm.net.response.TaskListResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,11 +35,22 @@ public class TaskListPresenter implements TaskListContract.IPresenterView, TaskL
 
     /**
      * TaskHandModel处理完数据后，将会回调该方法
+     *
      * @param taskInfos
      */
     @Override
     public void onReceiveAllTask(List<TaskListResponse.TaskInfo> taskInfos) {
-        iView.refreshTaskList(taskInfos);
+
+        List<TaskListEntity> entities = new ArrayList<>();
+
+        for (int i = 0; i < taskInfos.size(); i++) {
+            TaskListResponse.TaskInfo taskInfo = taskInfos.get(i);
+            TaskListEntity entity = new TaskListEntity(taskInfo);
+            entity.setGroupPosition(i + 1);
+            entities.add(entity);
+        }
+
+        iView.refreshTaskList(entities);
     }
 
     @Override

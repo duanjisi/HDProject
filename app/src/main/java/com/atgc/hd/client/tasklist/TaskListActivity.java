@@ -11,19 +11,15 @@ import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.base.BaseFragment;
 import com.atgc.hd.client.tasklist.adapter.ContentFragAdapter;
 import com.atgc.hd.client.tasklist.patrolfrag.PatrolFrag;
-import com.atgc.hd.comm.net.BaseDataRequest;
-import com.atgc.hd.comm.net.request.ReportPointStatusRequest;
 import com.atgc.hd.comm.widget.PagerSlidingTabStrip;
-import com.orhanobut.logger.Logger;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import de.greenrobot.event.EventBus;
 
 /**
  * <p>描述： 任务列表界面
  * <p>作者： liangguokui 2018/1/17
  */
-public class TaskListActivity extends BaseActivity {
+public class TaskListActivity extends BaseActivity implements TaskHandContract.IView{
     private int currentFragmentPosition;
 
     private ContentFragAdapter fragAdapter;
@@ -42,7 +38,7 @@ public class TaskListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasklist);
 
-        taskHandContract = new TaskHandModel();
+        taskHandContract = new TaskHandModel(this);
         initContentFragments();
 
         FragmentManager manager = getSupportFragmentManager();
@@ -53,14 +49,11 @@ public class TaskListActivity extends BaseActivity {
             public void onFragmentViewCreated(FragmentManager fm, android.support.v4.app.Fragment f, View v, Bundle savedInstanceState) {
                 super.onFragmentViewCreated(fm, f, v, savedInstanceState);
 
-                if (f instanceof PatrolFrag) {
-                    PatrolFrag patrolFrag = (PatrolFrag) f;
-                    patrolFrag.registerTaskFinishListener(taskHandContract);
-                }
-
                 numberFragmentViewCreated++;
                 if (numberFragmentViewCreated >= fragAdapter.getCount()) {
+                    showProgressDialog();
                     taskHandContract.initData();
+
                 }
             }
 
@@ -116,5 +109,16 @@ public class TaskListActivity extends BaseActivity {
      */
     public void registerOnAllTaskListener(TaskHandContract.OnAllTaskLlistener listener) {
         taskHandContract.registerOnAllTaskListener(listener);
+    }
+
+    @Override
+    public void dimssProgressDialog() {
+//        dismissProgressBarDialog();
+    }
+
+    @Override
+    protected void onDestroy() {
+        taskHandContract.onDestroy();
+        super.onDestroy();
     }
 }
