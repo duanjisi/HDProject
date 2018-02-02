@@ -1,4 +1,4 @@
-package com.atgc.hd.comm;
+package com.atgc.hd.comm.protocol;
 
 /**
  * Created by duanjisi on 2018/1/12.

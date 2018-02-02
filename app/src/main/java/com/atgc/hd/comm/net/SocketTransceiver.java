@@ -13,7 +13,6 @@ import com.orhanobut.logger.Logger;
 
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -60,9 +59,9 @@ public abstract class SocketTransceiver implements Runnable {
             e.printStackTrace();
         }
         byte[] datas;
-        while (runFlag) {
-            //线程死循环  不停的从服务器端读回数据,并通过onReceiver()方法回传显示到UI
-            try {
+        try {
+            while (runFlag) {
+                //线程死循环  不停的从服务器端读回数据,并通过onReceiver()方法回传显示到UI
 //                String s = dataInputStream.readUTF();
                 int lenth = dataInputStream.available();
                 if (lenth > 0) {
@@ -71,11 +70,10 @@ public abstract class SocketTransceiver implements Runnable {
                         this.onReceive(datas);
                     }
                 }
-//                this.onReceive(s);
-            } catch (IOException e) {
-                runFlag = false;
-                e.printStackTrace();
             }
+        } catch (IOException e) {
+            runFlag = false;
+            e.printStackTrace();
         }
         //断开连接
         FileUtil.closeQuietly(inputStream);
@@ -89,20 +87,6 @@ public abstract class SocketTransceiver implements Runnable {
         this.onConnectBreak();//连接被动断开
     }
 
-//    public void sendMSG(String s) {
-//        if (outputStream != null) {
-//            dataOutputStream = new DataOutputStream(outputStream);
-//            try {
-//                dataOutputStream.writeUTF(s);
-//                dataOutputStream.flush();
-//                this.onSendSuccess(s.getBytes());
-//            } catch (IOException e) {
-//                onConnectBreak();
-//                runFlag = false;
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 
     public void sendMSG(final byte[] bytes) {
         new Thread(new Runnable() {

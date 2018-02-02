@@ -2,6 +2,7 @@ package com.atgc.hd.client.tasklist;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
@@ -9,30 +10,24 @@ import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.base.BaseFragment;
 import com.atgc.hd.client.tasklist.adapter.ContentFragAdapter;
-import com.atgc.hd.client.tasklist.patrolfrag.PatrolFrag;
-import com.atgc.hd.client.tasklist.taskfrag.TaskListFrag;
-import com.atgc.hd.comm.net.BaseDataRequest;
-import com.atgc.hd.comm.net.request.GPSRequest;
 import com.atgc.hd.comm.widget.PagerSlidingTabStrip;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>描述： 任务列表界面
  * <p>作者： liangguokui 2018/1/17
  */
-public class TaskListActivity extends BaseActivity {
+public class TaskListActivity extends BaseActivity implements TaskHandContract.IView {
     private int currentFragmentPosition;
 
     private ContentFragAdapter fragAdapter;
     private PagerSlidingTabStrip pagerTitle;
+    private ViewPager contentViewPager;
 
     private TaskHandContract taskHandContract;
 
     @Override
     public String toolBarTitle() {
-        return "巡更";
+        return "手持智能终端";
     }
 
     @Override
@@ -40,56 +35,19 @@ public class TaskListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasklist);
 
-        taskHandContract = new TaskHandModel();
+        taskHandContract = new TaskHandModel(this);
+
+        init();
+
         initContentFragments();
 
-        taskHandContract.initData(new TaskHandContract.OnInitDataListener() {
-            @Override
-            public void onInitData(boolean initSuccess) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        fragAdapter.addAll(getFragments());
-                        pagerTitle.notifyDataSetChanged();
-                    }
-                });
-            }
-        });
+        addFragmentInitListener();
 
-        findViewById(R.id.btn_test).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fragAdapter.addAll(getFragments());
-                pagerTitle.notifyDataSetChanged();
-            }
-        });
-
-        findViewById(R.id.btn_test2).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GPSRequest gpsRequest = new GPSRequest();
-                gpsRequest.setLongitude("23.65555");
-                gpsRequest.setLatitude("113.546841");
-
-                gpsRequest.send(new BaseDataRequest.RequestCallback() {
-                    @Override
-                    public void onSuccess(Object pojo) {
-
-                    }
-
-                    @Override
-                    public void onFailure(String msg) {
-
-                    }
-                });
-            }
-        });
     }
-
 
     private void initContentFragments() {
         pagerTitle = findViewById(R.id.topic_viewpager_title);
-        ViewPager contentViewPager = findViewById(R.id.content_viewpager);
+        contentViewPager = findViewById(R.id.content_viewpager);
 
         contentViewPager.setOffscreenPageLimit(3);
 
@@ -115,23 +73,88 @@ public class TaskListActivity extends BaseActivity {
         });
     }
 
-    private List<BaseFragment> getFragments() {
-        List<BaseFragment> fragments = new ArrayList<>();
+    private void init() {
+        barHelper.setActionLeftDrawable(R.drawable.ic_setting);
+        barHelper.setActionRightDrawable(R.drawable.ic_bell);
+        barHelper.setActionLeftListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO 跳转到设置页面
+            }
+        });
 
-        PatrolFrag patrolFrag = PatrolFrag.createIntance();
-        Bundle bundle1 = new Bundle();
-        bundle1.putSerializable("taskHandContract", taskHandContract);
-        patrolFrag.setArguments(bundle1);
+        barHelper.setActionRightListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO 跳转到系统消息页面
+            }
+        });
 
-        TaskListFrag taskListFrag = TaskListFrag.createIntance();
-        Bundle bundle2 = new Bundle();
-        bundle2.putSerializable("taskHandContract", taskHandContract);
-        taskListFrag.setArguments(bundle2);
+        findViewById(R.id.iv_refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO 调用接口刷新巡更数据
+            }
+        });
 
-        fragments.add(patrolFrag);
-        fragments.add(taskListFrag);
-
-        return fragments;
+        findViewById(R.id.iv_emergency).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO 应急事件
+            }
+        });
     }
 
+    private void addFragmentInitListener() {
+        FragmentManager manager = getSupportFragmentManager();
+        manager.registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
+            int numberFragmentViewCreated = 0;
+
+            @Override
+            public void onFragmentViewCreated(FragmentManager fm, android.support.v4.app.Fragment f, View v, Bundle savedInstanceState) {
+                super.onFragmentViewCreated(fm, f, v, savedInstanceState);
+
+                numberFragmentViewCreated++;
+                if (numberFragmentViewCreated >= fragAdapter.getCount()) {
+                    showProgressDialog();
+                    taskHandContract.initData();
+
+                }
+            }
+
+        }, false);
+    }
+
+    public void showCurrentTaskPage() {
+        contentViewPager.setCurrentItem(0);
+    }
+
+    /**
+     * 当前任务页注册监听
+     *
+     * @param listener
+     */
+    public void registerOnCurrentTaskListener(TaskHandContract.OnCurrentTaskListener listener) {
+        taskHandContract.registerOnCurrentTaskListener(listener);
+    }
+
+    /**
+     * 任务列表页面注册监听
+     *
+     * @param listener
+     */
+    public void registerOnAllTaskListener(TaskHandContract.OnAllTaskLlistener listener) {
+        taskHandContract.registerOnAllTaskListener(listener);
+    }
+
+    @Override
+    public void dimssProgressDialog() {
+        dismissProgressBarDialog();
+    }
+
+    @Override
+    protected void onDestroy() {
+        taskHandContract.onDestroy();
+        super.onDestroy();
+    }
 }

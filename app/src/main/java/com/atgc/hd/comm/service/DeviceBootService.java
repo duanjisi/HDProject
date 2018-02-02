@@ -91,7 +91,7 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
     private void sendRegisterMsg() {
         HashMap<String, String> map = new HashMap<>();
         map.put("Type", "1");
-        map.put("deviceID", "10012017f6d0101be5ed");
+        map.put("deviceID", "10012017020000000000");
         map.put("manufacturer", "XXX厂商");
         map.put("macNO", "102");
         map.put("locationAddr", "南门停车场入口");
@@ -102,12 +102,12 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
         map.put("mask", "255.255.255.0");
         map.put("version", "V1.0.16_20171225001");
         byte[] datas = DigitalUtils.getBytes(DeviceCmd.REGISTER, map);
-        tcpSocketClient.getTransceiver().sendMSG(datas);
+        tcpSocketClient.sendMsg(datas);
     }
 
     private void sendHeatBeat() {
         byte[] datas = DigitalUtils.getBytes(DeviceCmd.HEART_BEAT, null);
-        tcpSocketClient.getTransceiver().sendMSG(datas);
+        tcpSocketClient.sendMsg(datas);
     }
 
     private void startHeartBeat() {

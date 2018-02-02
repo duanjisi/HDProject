@@ -1,7 +1,6 @@
 package com.atgc.hd.client.tasklist;
 
-import android.os.Parcelable;
-
+import com.atgc.hd.client.tasklist.patrolfrag.PatrolContract;
 import com.atgc.hd.comm.net.response.TaskListResponse;
 
 import java.io.Serializable;
@@ -11,14 +10,29 @@ import java.util.List;
  * <p>描述：
  * <p>作者：liangguokui 2018/1/25
  */
-public interface TaskHandContract extends Serializable {
-    void initData(OnInitDataListener listener);
+public interface TaskHandContract {
+    void initData();
 
-    TaskListResponse.TaskInfo getCurrentTask();
+    void registerOnCurrentTaskListener(OnCurrentTaskListener listener);
 
-    List<TaskListResponse.TaskInfo> getAllTask();
+    void registerOnAllTaskListener(OnAllTaskLlistener listener);
 
-    interface OnInitDataListener {
-        void onInitData(boolean initSuccess);
+    void onDestroy();
+
+    interface OnCurrentTaskListener {
+        void onReceiveCurrentTask(TaskListResponse.TaskInfo taskInfo);
+
+        TaskListResponse.TaskInfo stopTask();
+    }
+
+    interface OnAllTaskLlistener {
+        void onReceiveAllTask(List<TaskListResponse.TaskInfo> taskInfos);
+
+        void onCurrentTask(String taskId);
+    }
+
+    interface IView{
+        void showProgressDialog(String msg);
+        void dimssProgressDialog();
     }
 }

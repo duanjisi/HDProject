@@ -85,6 +85,17 @@ public class DateUtil {
 
     /**
      * 字符串解析成时间对象
+     * <p>默认解析格式：yyyy-MM-dd HH:mm:ss</p>
+     * @param dateTimeString String
+     * @return
+     * @throws ParseException
+     */
+    public static Date dateParse(String dateTimeString) {
+        return dateParse(dateTimeString, DATE_TIME_PATTERN);
+    }
+
+    /**
+     * 字符串解析成时间对象
      *
      * @param dateTimeString String
      * @param pattern        StrUtils.DATE_TIME_PATTERN || StrUtils.DATE_PATTERN，如果为空，则为yyyy-MM-dd
@@ -431,23 +442,6 @@ public class DateUtil {
         int value = cal.getActualMinimum(Calendar.DATE);
         return dateParse(dateFormat(date, MONTH_PATTERN) + "-" + value, null);
     }
-
-    public static void main(String[] args) throws Exception {
-        /*System.out.println(dateTimeToDate(new Date()));
-        System.out.println(dateParse("2017-02-04 14:58:20", null));
-		System.out.println(dateTimeToDateStringIfTimeEndZero(new Date()));
-		System.out.println(dateTimeToDateStringIfTimeEndZero(dateTimeToDate(new Date())));*/
-        //System.out.println(dateBetween(dateParse("2017-01-30", null), dateParse("2017-02-01", null)));
-        //System.out.println(dateBetweenIncludeToday(dateParse("2017-01-30", null), dateParse("2017-02-01", null)));
-        System.out.println(getDate(dateParse("2017-01-17", null)));
-		/*
-		System.out.println(getDaysOfMonth(dateParse("2017-02-01", null)));
-		System.out.println(getDaysOfYear(dateParse("2017-01-30", null)));*/
-        //System.out.println(dateFormat(dateAddMonths(dateParse("2017-02-07", StrUtils.MONTH_PATTERN), -12), StrUtils.MONTH_PATTERN));
-		/*System.out.println(dateFormat(maxDateOfMonth(dateParse("2016-02", "yyyy-MM")), null));
-		System.out.println(dateFormat(minDateOfMonth(dateParse("2016-03-31", null)), null));*/
-    }
-
 
 }
 

@@ -9,7 +9,7 @@
         android:id="@+id/view_status_bar"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:background="@color/theme_color"
+        android:background="@drawable/title_bar_background"
         android:clipToPadding="true"
         android:fitsSystemWindows="true" />
 

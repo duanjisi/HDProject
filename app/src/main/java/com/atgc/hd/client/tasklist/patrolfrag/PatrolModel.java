@@ -10,7 +10,7 @@ public class PatrolModel implements PatrolContract.IModel {
 
     public PatrolModel(PatrolContract.IPresenterModel iPresenter) {
         this.iPresenter = iPresenter;
-//        TcpSocketClient.getInstance().registerOnReceiveListener(this);
+
     }
 
 

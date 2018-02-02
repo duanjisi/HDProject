@@ -317,9 +317,18 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         if (isReset) {
             isReset = false;
         }
+
         mDatas.clear();
-        mDatas.addAll(datas);
+
+        if (datas == null || datas.isEmpty()) {
+        } else {
+            mDatas.addAll(datas);
+        }
         notifyDataSetChanged();
+    }
+
+    public List<T> getAllData() {
+        return mDatas;
     }
 
     public void remove(int position) {

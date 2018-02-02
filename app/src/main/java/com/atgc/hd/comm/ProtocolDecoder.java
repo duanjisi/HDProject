@@ -1,4 +1,3 @@
-package com.atgc.hd.comm;
 
 import com.atgc.hd.comm.utils.DateUtil;
 import com.atgc.hd.comm.utils.StringUtils;

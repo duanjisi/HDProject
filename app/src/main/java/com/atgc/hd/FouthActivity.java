@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.atgc.hd.comm.ProtocolDecoder;
 import com.atgc.hd.comm.utils.DigitalUtils;
 import com.atgc.hd.comm.utils.Int2ByteUtil;
 import com.atgc.hd.entity.Header;

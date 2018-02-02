@@ -4,6 +4,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.atgc.hd.base.BaseFragment;
+import com.atgc.hd.client.tasklist.patrolfrag.PatrolFrag;
+import com.atgc.hd.client.tasklist.taskfrag.TaskListFrag;
 import com.atgc.hd.comm.widget.PagerSlidingTabStrip;
 
 import java.util.ArrayList;
@@ -25,8 +27,8 @@ public class ContentFragAdapter extends FragmentStatePagerAdapter implements Pag
         fragments = new ArrayList<>();
         titles = new ArrayList<>();
 
-//        fragments.add(PatrolFrag.createIntance());
-//        fragments.add(TaskListFrag.createIntance());
+        fragments.add(PatrolFrag.createIntance());
+        fragments.add(TaskListFrag.createIntance());
 
         titles.add("当前任务");
         titles.add("任务列表");

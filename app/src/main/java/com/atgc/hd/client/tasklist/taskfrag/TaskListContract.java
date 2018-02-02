@@ -1,6 +1,7 @@
 package com.atgc.hd.client.tasklist.taskfrag;
 
 import com.atgc.hd.client.tasklist.TaskHandContract;
+import com.atgc.hd.client.tasklist.taskfrag.adapter.TaskListEntity;
 import com.atgc.hd.comm.net.response.TaskListResponse;
 
 import java.util.List;
@@ -16,11 +17,13 @@ public interface TaskListContract {
     }
 
     interface IView {
-        void refreshTaskList(List<TaskListResponse.TaskInfo> taskArray);
+        void registerOnAllTaskListener(TaskHandContract.OnAllTaskLlistener listener);
+
+        void refreshTaskList(List<TaskListEntity> taskArray);
     }
 
     interface IPresenterView {
-        void setTaskHandContract(TaskHandContract presenter);
+        boolean isCurrentTask(String currentTaskId);
 
         void onDestory();
     }

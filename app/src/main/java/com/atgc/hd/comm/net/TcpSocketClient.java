@@ -13,6 +13,11 @@ import android.text.TextUtils;
 import com.alibaba.fastjson.JSON;
 import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.ProtocolDecoder;
+import com.atgc.hd.comm.Constants;
+import com.atgc.hd.comm.protocol.ProtocolBody;
+import com.atgc.hd.comm.protocol.ProtocolDecoder;
+import com.atgc.hd.comm.utils.FileUtil;
+import com.atgc.hd.comm.utils.StringUtils;
 import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
@@ -187,8 +192,30 @@ public class TcpSocketClient implements Runnable {
 
     public SocketTransceiver getTransceiver() {
         return transceiver;
+    public void sendMsg(byte[] bytes) {
+        if (transceiver == null) {
+            Logger.e("发送失败，transceiver == null");
+        } else {
+            transceiver.sendMSG(bytes);
+        }
     }
 
+    public void demoSendMsg(String cmd) {
+        if (!Constants.isDemo) {
+            return;
+        }
+        String demoResop = FileUtil.getAssets(cmd + "_req.txt");
+        if (StringUtils.isEmpty(demoResop)) {
+            return;
+        } else {
+            Logger.d("已找到配置文件：" + cmd + "_req.txt");
+        }
+        PreRspPojo preRspPojo = JSON.parseObject(demoResop, PreRspPojo.class);
+        if (mapListener.containsKey(preRspPojo.Command)) {
+            OnReceiveListener listener = mapListener.get(preRspPojo.Command);
+            listener.onReceive(preRspPojo.Command, preRspPojo.Data);
+        }
+    }
 
     public interface TcpListener {
 

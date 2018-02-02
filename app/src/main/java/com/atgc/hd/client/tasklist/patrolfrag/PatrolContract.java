@@ -1,7 +1,10 @@
 package com.atgc.hd.client.tasklist.patrolfrag;
 
 import com.atgc.hd.client.tasklist.TaskHandContract;
+import com.atgc.hd.client.tasklist.taskfrag.adapter.TaskListEntity;
 import com.atgc.hd.comm.net.response.TaskListResponse;
+
+import java.util.List;
 
 /**
  * <p>描述：当前巡更任务契约
@@ -13,16 +16,23 @@ public interface PatrolContract {
     }
 
     interface IView {
-        void refreshTaskList(TaskListResponse.TaskInfo taskInfo);
+
+        void showTips(String tips);
+
+        void showFillReasonDialog(String taskStatus, String carryStatus);
+
+        void refreshTaskList(List<TaskListEntity> entities);
+
+        void registerOnCurrentTaskListener(TaskHandContract.OnCurrentTaskListener listener);
     }
 
     interface IPresenterView {
-
-        void setTaskHandContract(TaskHandContract presenter);
+        void reportTaskStatus(String taskStatus, String carryStatus, String reason);
 
         void onDestory();
     }
 
     interface IPresenterModel {
     }
+
 }

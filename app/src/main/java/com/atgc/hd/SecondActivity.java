@@ -10,21 +10,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.atgc.hd.comm.ProtocolDecoder;
+import com.atgc.hd.comm.protocol.ProtocolDecoder;
 import com.atgc.hd.comm.utils.DigitalUtils;
 import com.atgc.hd.comm.utils.Int2ByteUtil;
 import com.atgc.hd.entity.Header;
 import com.orhanobut.logger.Logger;
-import com.vilyever.socketclient.SocketClient;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;

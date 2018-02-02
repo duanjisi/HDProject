@@ -11,6 +11,7 @@ import java.util.Map;
  */
 
 public class RegisterRequest extends BaseDataRequest<String> {
+
     @Override
     protected boolean isParse() {
         return false;

@@ -4,11 +4,15 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.alibaba.fastjson.JSON;
+import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.utils.DigitalUtils;
-import com.orhanobut.logger.Logger;
 
 import net.jodah.typetools.TypeResolver;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -40,9 +44,14 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
     }
 
     public void send(final RequestCallback callback) {
-        this.callback = callback;
-        byte[] bytes = DigitalUtils.getBytes(getCommand(), getParams());
-        tcpSocketClient.getTransceiver().sendMSG(bytes);
+        if (Constants.isDemo) {
+            tcpSocketClient.demoSendMsg(getCommand());
+
+        } else {
+            this.callback = callback;
+            byte[] bytes = DigitalUtils.getBytes(getCommand(), getParams());
+            tcpSocketClient.sendMsg(bytes);
+        }
     }
 
     protected abstract boolean isParse();
@@ -59,6 +68,10 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
 
     @Override
     public void onConnectBreak() {
+        if (callback == null) {
+            return;
+        }
+
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -69,6 +82,10 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
 
     @Override
     public void onConnectFalied() {
+        if (callback == null) {
+            return;
+        }
+
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -79,37 +96,59 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
 
     @Override
     public void onReceive(PreRspPojo preRspPojo) {
-        Logger.i("onReceive：" + preRspPojo.Result);
-        if (preRspPojo.Command.equals(getCommand())) {
-            if (preRspPojo.Result.equals("0")) {
-                final T retT;
-                if (isParse()) {
-                    retT = JSON.parseObject(preRspPojo.Data[0], mGenericPojoClazz);
-                } else {
-                    retT = JSON.parseObject(preRspPojo.originJson, mGenericPojoClazz);
-//                retT = preRspPojo;
-                }
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onSuccess(retT);
-                    }
-                });
+
+        if ("0".equals(preRspPojo.Result)) {
+            final T retT;
+            if (isParse()) {
+                retT = JSON.parseObject(preRspPojo.Data[0], mGenericPojoClazz);
             } else {
-                final PreRspPojo finalPreRspPojo = preRspPojo;
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onFailure(finalPreRspPojo.ErrorMessage);
-                    }
-                });
+                retT = JSON.parseObject(preRspPojo.originJson, mGenericPojoClazz);
             }
+
+            if (callback == null) {
+                return;
+            }
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onSuccess(retT);
+                }
+            });
+        } else {
+            final PreRspPojo finalPreRspPojo = preRspPojo;
+            if (callback == null) {
+                return;
+            }
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onFailure(finalPreRspPojo.ErrorMessage);
+                }
+            });
         }
     }
 
     @Override
     public void onSendSuccess(byte[] s) {
 
+    }
+
+    public String jsonData() {
+        String jsonMsg = "";
+        JSONObject object = new JSONObject();
+        try {
+            object.put("Command", getCommand());
+
+            JSONArray array = new JSONArray();
+            array.put(new JSONObject(getParams()));
+
+            object.put("Data", array);
+
+            jsonMsg = object.toString(2);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonMsg;
     }
 
     public interface RequestCallback<T> {
