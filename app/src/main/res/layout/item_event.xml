@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_22"
+        android:layout_marginRight="@dimen/dp_22"
+        android:layout_marginTop="17.5dp"
+        android:background="@drawable/bg_round_white">
+
+        <TextView
+            android:id="@+id/tv_descrip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="28dp"
+            android:drawableLeft="@drawable/pic_event_list"
+            android:gravity="center"
+            android:text="上报事件文字内容"
+            android:textSize="@dimen/text_size_xlarge" />
+
+        <ImageView
+            android:id="@+id/tv_go"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tv_descrip"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/tv_descrip"
+            android:layout_marginRight="38dp"
+            android:src="@drawable/scan" />
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_alignLeft="@+id/tv_descrip"
+            android:layout_alignRight="@+id/tv_go"
+            android:layout_below="@+id/tv_descrip"
+            android:background="@color/line_color_gray_d1"></View>
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="62dp"
+            android:layout_alignRight="@+id/tv_go"
+            android:layout_below="@+id/line"
+            android:gravity="center_vertical"
+            android:text="2018/02/26"
+            android:textSize="@dimen/text_size_large" />
+    </RelativeLayout>
+</RelativeLayout>

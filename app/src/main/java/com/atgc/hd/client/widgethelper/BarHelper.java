@@ -84,7 +84,7 @@ public class BarHelper {
      * @param character
      * @return
      */
-    public BarHelper setActionRightText(Character character) {
+    public BarHelper setActionRightText(String character) {
         tvActionRight.setText(character);
         return this;
     }

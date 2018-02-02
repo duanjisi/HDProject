@@ -33,13 +33,8 @@ import butterknife.OnClick;
 
 public class ConversationActivity extends BaseActivity {
 
-    @BindView(R.id.tv_back)
-    TextView tvBack;
-    @BindView(R.id.tv_book)
-    TextView tvBook;
     @BindView(R.id.listview)
     ListView listview;
-
     private MemberAdapter adapter;
 
     @Override
@@ -52,10 +47,25 @@ public class ConversationActivity extends BaseActivity {
     }
 
     private void intiListView() {
+        barHelper.setTitleColor(getResources().getColor(R.color.white));
+        barHelper.setActionRightText("通讯录");
+        barHelper.setActionRightTextColor(getResources().getColor(R.color.white));
+        barHelper.setActionRightListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         adapter = new MemberAdapter(context);
         listview.setAdapter(adapter);
         listview.setOnItemClickListener(new ItemClickListener());
         listview.setOnItemLongClickListener(new ItemLongClickListener());
+    }
+
+
+    @Override
+    public String toolBarTitle() {
+        return getString(R.string.conversation);
     }
 
     private void testDatas() {
@@ -91,18 +101,6 @@ public class ConversationActivity extends BaseActivity {
         members.add(m3);
         adapter.initData(members);
     }
-
-    @OnClick({R.id.tv_back, R.id.tv_book})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.tv_back:
-                finish();
-                break;
-            case R.id.tv_book:
-                break;
-        }
-    }
-
 
     private class ItemClickListener implements AdapterView.OnItemClickListener {
         @Override

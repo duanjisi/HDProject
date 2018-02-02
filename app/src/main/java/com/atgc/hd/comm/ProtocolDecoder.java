@@ -83,5 +83,4 @@ public class ProtocolDecoder {
         byteBuf.clear();
         return content;
     }
-
 }

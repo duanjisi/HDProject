@@ -49,33 +49,28 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
             sendHeatBeat();
         }
     };
+
     private TimerTask gpsTimerTask = new TimerTask() {
         @Override
         public void run() {
             sendGps();
         }
     };
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
-
     @Override
     public void onCreate() {
         super.onCreate();
-
         timer = new Timer();
-
         tcpSocketClient = TcpSocketClient.getInstance();
         tcpSocketClient.setListener(this);
         if (!tcpSocketClient.isConnected()) {
             tcpSocketClient.connect(IPPort.getHOST(), IPPort.getPORT());
         }
-
         Logger.e("开机广播服务");
-
         locationService = LocationService.intance();
         locationService.initService(this);
         locationService.start();

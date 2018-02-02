@@ -11,13 +11,20 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
+import com.atgc.hd.activity.ConversationActivity;
 import com.atgc.hd.activity.EmergencyEventActivity;
+import com.atgc.hd.activity.EmergencyEventActivity;
+import com.atgc.hd.activity.EmergencyListActivity;
+import com.atgc.hd.activity.SettingActivity;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.client.tasklist.TaskListActivity;
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.PrefKey;
+import com.atgc.hd.comm.Utils;
 import com.atgc.hd.comm.local.GPSLocationTool;
 import com.atgc.hd.comm.local.LocationService;
+import com.atgc.hd.comm.net.BaseDataRequest;
+import com.atgc.hd.comm.net.request.RegisterRequest;
 import com.atgc.hd.comm.service.DeviceBootService;
 import com.atgc.hd.comm.utils.PreferenceUtils;
 import com.atgc.hd.entity.ActionEntity;
@@ -29,10 +36,8 @@ import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
 public class MainActivity extends BaseActivity {
-    private TextView tv_net, tvResult, tvState;
-
+    private TextView tv_net, tvResult, tvState, tv_register;
     private Handler mHandler = new Handler();
-
     private WifiManager my_wifiManager;
     private WifiInfo wifiInfo;
     private DhcpInfo dhcpInfo;
@@ -48,7 +53,6 @@ public class MainActivity extends BaseActivity {
         dhcpInfo = my_wifiManager.getDhcpInfo();
         wifiInfo = my_wifiManager.getConnectionInfo();
         initViews();
-
         Logger.e("MainActivity----------------------------------");
 //        testGPSLocation();
 //        testLocation();
@@ -97,14 +101,6 @@ public class MainActivity extends BaseActivity {
         return "sdfasdf";
     }
 
-//    LocationService service;
-
-    private void testLocation() {
-//        service = HDApplication.locationService();
-//        service.registerListener(listener);
-//        service.setLocationOption(service.getDefaultLocationClientOption());
-//        service.start();
-    }
 
     private BDAbstractLocationListener listener = new BDAbstractLocationListener() {
         @Override
@@ -167,62 +163,57 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
-//        service.unregisterListener(listener);
-//        service.stop();
-
         super.onDestroy();
     }
 
     private void initViews() {
         tvResult = findViewById(R.id.tv_net);
         tv_net = findViewById(R.id.tv_start);
+        tv_register = findViewById(R.id.tv_register);
         tvState = findViewById(R.id.tv_device_state);
-        boolean isRegister = PreferenceUtils.getBoolean(this, PrefKey.REGISTER, false);
-        if (!isRegister) {
-            Intent intent = new Intent(context, DeviceBootService.class);
-            startService(intent);
-        }
+
+//        boolean isRegister = PreferenceUtils.getBoolean(this, PrefKey.REGISTER, false);
+//        if (!isRegister) {
+//            Intent intent = new Intent(context, DeviceBootService.class);
+//            startService(intent);
+//        }
+
         tv_net.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, EmergencyEventActivity.class));
+                startActivity(new Intent(MainActivity.this, EmergencyListActivity.class));
+            }
+        });
+
+        tv_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                getMac();
+                register();
             }
         });
 //        Utils.printIpAddress();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        StringBuilder sb = new StringBuilder();
-//        sb.append("网络信息：");
-////        sb.append("\nipAddress：" + Utils.getLocalInetAddress().toString());
-////        sb.append("\nMac：" + Utils.getLocalMacAddressFromIp(MainActivity.this));
-////        sb.append("\nGateWay：" + Utils.getGateway());
-//        sb.append("\nipAddress：" + intToIp(dhcpInfo.ipAddress));
-//        sb.append("\nnetmask：" + intToIp(dhcpInfo.netmask));
-//        sb.append("\ngateway：" + intToIp(dhcpInfo.gateway));
-//        sb.append("\nserverAddress：" + intToIp(dhcpInfo.serverAddress));
-//        sb.append("\ndns1：" + intToIp(dhcpInfo.dns1));
-//        sb.append("\ndns2：" + intToIp(dhcpInfo.dns2));
-//        sb.append("\n");
-////        System.out.println(intToIp(dhcpInfo.ipAddress));
-////        System.out.println(intToIp(dhcpInfo.netmask));
-////        System.out.println(intToIp(dhcpInfo.gateway));
-////        System.out.println(intToIp(dhcpInfo.serverAddress));
-////        System.out.println(intToIp(dhcpInfo.dns1));
-////        System.out.println(intToIp(dhcpInfo.dns2));
-////        System.out.println(dhcpInfo.leaseDuration);
-//        sb.append("Wifi信息：");
-//        sb.append("\nIpAddress：" + intToIp(wifiInfo.getIpAddress()));
-//        sb.append("\nMacAddress：" + wifiInfo.getMacAddress());
-//        tvResult.setText(sb.toString());
+    private void getMac() {
+        String mac = Utils.getMac();
+        showToast(mac);
     }
 
-    private String intToIp(int paramInt) {
 
-        return (paramInt & 0xFF) + "." + (0xFF & paramInt >> 8) + "." + (0xFF & paramInt >> 16) + "."
-                + (0xFF & paramInt >> 24);
+    private void register() {
+        RegisterRequest request = new RegisterRequest();
+        request.send(new BaseDataRequest.RequestCallback<String>() {
+            @Override
+            public void onSuccess(String json) {
+                showToast(json);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                showToast(msg);
+            }
+        });
     }
 
 

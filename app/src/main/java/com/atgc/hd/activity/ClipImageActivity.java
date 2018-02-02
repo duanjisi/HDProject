@@ -35,7 +35,7 @@ import java.io.IOException;
 /**
  * 图片裁剪
  */
-public class ClipImageActivity extends BaseActivity implements View.OnClickListener {
+public class ClipImageActivity extends Activity implements View.OnClickListener {
 
     private ClipImageView mClipImageView;
     private TextView mCancel;

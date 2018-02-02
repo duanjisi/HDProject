@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/line_color_gray_c7">
+
+    <RelativeLayout
+        android:id="@+id/rl_00"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_round_white">
+
+        <EditText
+            android:id="@+id/tv_write"
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_round_edit"
+            android:gravity="start"
+            android:hint="文字描述应急事件..."
+            android:paddingLeft="11dp"
+            android:paddingTop="10dp"
+            android:textSize="@dimen/text_size_small" />
+
+        <ImageView
+            android:id="@+id/iv"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignLeft="@+id/tv_write"
+            android:layout_below="@+id/tv_write"
+            android:layout_marginBottom="40dp"
+            android:layout_marginTop="22dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/cover_default"
+            android:visibility="gone" />
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tv_write"
+            android:layout_alignRight="@+id/tv_write"
+            android:layout_below="@+id/tv_write"
+            android:layout_marginBottom="40dp"
+            android:layout_marginTop="22dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/ll_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+        <com.atgc.hd.widget.MyGridView
+            android:id="@+id/grid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tv_write"
+            android:layout_alignRight="@+id/tv_write"
+            android:layout_below="@+id/tv_write"
+            android:layout_marginBottom="40dp"
+            android:layout_marginTop="22dp"
+            android:horizontalSpacing="16.5dp"
+            android:numColumns="4"
+            android:scrollbars="none"
+            android:verticalSpacing="16.5dp"
+            android:visibility="gone">
+
+        </com.atgc.hd.widget.MyGridView>
+    </RelativeLayout>
+
+
+    <Button
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_below="@+id/rl_00"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginTop="38dp"
+        android:background="@drawable/bg_frame_bule"
+        android:text="上报事件"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_medium" />
+</RelativeLayout>

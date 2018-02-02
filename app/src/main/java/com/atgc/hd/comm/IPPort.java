@@ -10,8 +10,11 @@ import com.atgc.hd.comm.utils.PreferenceUtils;
  */
 
 public class IPPort {
-    private static final String HOST = "172.16.10.80";
-    private static final int PORT = 20001;
+    //    private static final String HOST = "172.16.10.80";
+//    private static final String HOST = "172.16.10.127";
+//    private static final String PORT = "20001";
+    private static final String HOST = "172.16.10.127";
+    private static final String PORT = "20001";
 
     public static String getHOST() {
         String ip = PreferenceUtils.getString(HDApplication.getInstance(), PrefKey.HOST, "");
@@ -22,9 +25,9 @@ public class IPPort {
         }
     }
 
-    public static int getPORT() {
-        int port = PreferenceUtils.getInt(HDApplication.getInstance(), PrefKey.PORT, 0);
-        if (port != 0) {
+    public static String getPORT() {
+        String port = PreferenceUtils.getString(HDApplication.getInstance(), PrefKey.PORT, "");
+        if (!TextUtils.isEmpty(port)) {
             return port;
         } else {
             return PORT;

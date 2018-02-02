@@ -5,6 +5,8 @@ import android.annotation.TargetApi;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -12,10 +14,14 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
@@ -301,6 +307,22 @@ public class Utils {
         return null;
     }
 
+    public static String getMacAddress() {
+        String result = "";
+        String Mac = "";
+        result = callCmd("busybox ifconfig", "HWaddr");
+        if (result == null) {
+            return "网络出错，请检查网络";
+        }
+        if (result.length() > 0 && result.contains("HWaddr")) {
+            Mac = result.substring(result.indexOf("HWaddr") + 6, result.length() - 1);
+            if (Mac.length() > 1) {
+                result = Mac.toLowerCase();
+            }
+        }
+        return result.trim();
+    }
+
     public static String getLocalMacAddressFromBusybox() {
         String result = "";
         String Mac = "";
@@ -352,6 +374,124 @@ public class Utils {
             e.printStackTrace();
         }
         return result;
+    }
+
+    /**
+     * 这是使用adb shell命令来获取mac地址的方式
+     *
+     * @return
+     */
+    public static String getMac() {
+        String macSerial = null;
+        String str = "";
+        try {
+            Process pp = Runtime.getRuntime().exec("cat /sys/class/net/wlan0/address");
+            InputStreamReader ir = new InputStreamReader(pp.getInputStream());
+            LineNumberReader input = new LineNumberReader(ir);
+            for (; null != str; ) {
+                str = input.readLine();
+                if (str != null) {
+                    macSerial = str.trim();// 去空格
+                    break;
+                }
+            }
+        } catch (IOException ex) {
+            // 赋予默认值
+            ex.printStackTrace();
+        }
+        return macSerial;
+    }
+
+    public static String getMacAddressFromIp(Context context) {
+        String mac_s = "";
+        StringBuilder buf = new StringBuilder();
+        try {
+            byte[] mac;
+            NetworkInterface ne = NetworkInterface.getByInetAddress(InetAddress.getByName(getIpAddress(context)));
+            mac = ne.getHardwareAddress();
+            for (byte b : mac) {
+                buf.append(String.format("%02X:", b));
+            }
+            if (buf.length() > 0) {
+                buf.deleteCharAt(buf.length() - 1);
+            }
+            mac_s = buf.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return replaceStr(mac_s);
+    }
+
+    private static String replaceStr(String mac) {
+        if (!TextUtils.isEmpty(mac)) {
+            return mac.replaceAll(":", "");
+        } else {
+            return "";
+        }
+    }
+
+
+    public static String getIpAddress(Context context) {
+        NetworkInfo info = ((ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        if (info != null && info.isConnected()) {
+            // 3/4g网络
+            if (info.getType() == ConnectivityManager.TYPE_MOBILE) {
+                try {
+                    for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                        NetworkInterface intf = en.nextElement();
+                        for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                            InetAddress inetAddress = enumIpAddr.nextElement();
+                            if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                                return inetAddress.getHostAddress();
+                            }
+                        }
+                    }
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
+
+            } else if (info.getType() == ConnectivityManager.TYPE_WIFI) {
+                //  wifi网络
+                WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                String ipAddress = intIP2StringIP(wifiInfo.getIpAddress());
+                return ipAddress;
+            } else if (info.getType() == ConnectivityManager.TYPE_ETHERNET) {
+                // 有限网络
+                return getLocalIp();
+            }
+        }
+        return null;
+    }
+
+    private static String intIP2StringIP(int ip) {
+        return (ip & 0xFF) + "." +
+                ((ip >> 8) & 0xFF) + "." +
+                ((ip >> 16) & 0xFF) + "." +
+                (ip >> 24 & 0xFF);
+    }
+
+    // 获取有限网IP
+    private static String getLocalIp() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface
+                    .getNetworkInterfaces(); en.hasMoreElements(); ) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf
+                        .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress()
+                            && inetAddress instanceof Inet4Address) {
+                        return inetAddress.getHostAddress();
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+
+        }
+        return "0.0.0.0";
+
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)

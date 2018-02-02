@@ -20,7 +20,8 @@ public class RegisterRequest extends BaseDataRequest<String> {
     protected Map<String, String> getParams() {
         HashMap<String, String> map = new HashMap<>();
         map.put("Type", "1");
-        map.put("deviceID", "10012017020000000000");
+//        map.put("deviceID", "10012017020000000000");
+        map.put("deviceID", "10012017f6d0101be5ed");
         map.put("manufacturer", "XXX厂商");
         map.put("macNO", "102");
         map.put("locationAddr", "南门停车场入口");

@@ -19,7 +19,7 @@ public class Constants {
     public static final String UP_LOAD_IMAGE = "http://192.168.0.242:39047/VIID/Images";
 //    public static final String UP_LOAD_IMAGE = "http://172.16.10.115:8090/scp-imagemgmtcomponent/VIID/Images";
 
-    /**
+    /**192
      * 行为
      */
     public static final class Action {
@@ -27,5 +27,6 @@ public class Constants {
         public static final String HEART_BEAT = "com.atgc.hd.HEART_BEAT";
         public static final String CONNECT_BREAK = "com.atgc.hd.CONNECT_BREAK";
         public static final String CONNECT_FALIED = "com.atgc.hd.CONNECT_FALIED";
+        public static final String EXIT_ACTIVITY = "com.atgc.hd.EXIT_ACTIVITY";
     }
 }

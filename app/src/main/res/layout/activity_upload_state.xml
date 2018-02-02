@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pannel_bg">
+
+    <ImageView
+        android:id="@+id/iv_tag"
+        android:layout_width="150dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/pic_upload_suc" />
+
+    <TextView
+        android:id="@+id/tv_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_tag"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="26dp"
+        android:text="已提交"
+        android:textColor="@color/actionsheet_blue"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_asd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_tag"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="11dp"
+        android:text="你的应急事件已上报平台"
+        android:textColor="@color/top_bar_bg"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_asd"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="11dp"
+        android:text="3秒后返回首页"
+        android:textColor="@color/top_bar_bg"
+        android:textSize="14sp" />
+</RelativeLayout>

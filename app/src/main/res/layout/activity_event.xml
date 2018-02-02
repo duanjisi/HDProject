@@ -5,42 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/line_color_gray_c7">
-    <!--<RelativeLayout-->
-    <!--android:id="@+id/rl_top_bar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="@dimen/top_bar_height"-->
-    <!--android:background="@color/top_bar_bg">-->
 
-    <!--<TextView-->
-    <!--android:id="@+id/tv_back"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:gravity="center"-->
-    <!--android:paddingLeft="11dp"-->
-    <!--android:paddingRight="11dp"-->
-    <!--android:text="返回"-->
-    <!--android:textColor="@color/white"-->
-    <!--android:textSize="@dimen/text_size_medium" />-->
-
-    <!--<TextView-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_centerInParent="true"-->
-    <!--android:gravity="center"-->
-    <!--android:paddingLeft="11dp"-->
-    <!--android:paddingRight="11dp"-->
-    <!--android:text="应急事件"-->
-    <!--android:textColor="@color/white"-->
-    <!--android:textSize="@dimen/text_size_xxlarge" />-->
-    <!--</RelativeLayout>-->
-
-    <!--<RelativeLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_below="@+id/rl_top_bar"-->
-    <!--android:background="@color/line_color_gray_c7">-->
-    <!---->
-    <!--</RelativeLayout>-->
     <RelativeLayout
         android:id="@+id/rl_00"
         android:layout_width="match_parent"
@@ -48,10 +13,44 @@
         android:layout_margin="8dp"
         android:background="@drawable/bg_round_white">
 
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="22dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/ll_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+        <EditText
+            android:id="@+id/tv_place"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/horizontalScrollView"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_round_edit"
+            android:gravity="start|center_vertical"
+            android:hint="输入地址..."
+            android:paddingLeft="11dp"
+            android:paddingTop="10dp"
+            android:textSize="@dimen/text_size_small" />
+
         <EditText
             android:id="@+id/tv_write"
             android:layout_width="match_parent"
-            android:layout_height="260dp"
+            android:layout_height="180dp"
+            android:layout_below="@+id/tv_place"
+            android:layout_marginBottom="30dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="10dp"
@@ -60,7 +59,8 @@
             android:hint="文字描述应急事件..."
             android:paddingLeft="11dp"
             android:paddingTop="10dp"
-            android:textSize="@dimen/text_size_small" />
+            android:textSize="@dimen/text_size_small"
+            android:visibility="visible" />
 
         <ImageView
             android:id="@+id/iv"
@@ -73,24 +73,6 @@
             android:scaleType="centerCrop"
             android:src="@drawable/cover_default"
             android:visibility="gone" />
-
-        <HorizontalScrollView
-            android:id="@+id/horizontalScrollView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/tv_write"
-            android:layout_alignRight="@+id/tv_write"
-            android:layout_below="@+id/tv_write"
-            android:layout_marginBottom="40dp"
-            android:layout_marginTop="22dp"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:id="@+id/ll_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </HorizontalScrollView>
 
         <com.atgc.hd.widget.MyGridView
             android:id="@+id/grid"
@@ -120,7 +102,7 @@
         android:layout_marginRight="18dp"
         android:layout_marginTop="38dp"
         android:background="@drawable/bg_frame_bule"
-        android:text="提交"
+        android:text="上报事件"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_medium" />
 </RelativeLayout>

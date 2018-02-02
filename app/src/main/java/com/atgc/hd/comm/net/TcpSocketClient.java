@@ -11,6 +11,7 @@ package com.atgc.hd.comm.net;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.ProtocolDecoder;
 import com.orhanobut.logger.Logger;
 
@@ -26,7 +27,7 @@ import java.util.Map;
 
 public class TcpSocketClient implements Runnable {
     private String IP;
-    private int port;
+    private String port;
     private SocketTransceiver transceiver;
     private Socket socket;
     private TcpListener listener;
@@ -80,7 +81,7 @@ public class TcpSocketClient implements Runnable {
         return tcpSocketClient;
     }
 
-    public void connect(String IP, int port) {
+    public void connect(String IP, String port) {
         this.IP = IP;
         this.port = port;
         new Thread(this).start();
@@ -92,20 +93,16 @@ public class TcpSocketClient implements Runnable {
             transceiver = new SocketTransceiver() {
                 @Override
                 public void onReceive(byte[] bytes) {
-
                     if (bytes != null && bytes.length != 0) {
-
                         final String content = ProtocolDecoder.parseContent(bytes);
-
                         Logger.e("content: " + content);
-
                         if (!TextUtils.isEmpty(content)) {
                             PreRspPojo preRspPojo = JSON.parseObject(content, PreRspPojo.class);
                             preRspPojo.originJson = content;
                             if (listener != null) {
+                                preRspPojo.originJson = content;
                                 listener.onReceive(preRspPojo);
                             }
-
                             onReceive(preRspPojo);
                         }
                     }
@@ -132,7 +129,7 @@ public class TcpSocketClient implements Runnable {
                     }
                 }
             };
-            socket = new Socket(IP, port);
+            socket = new Socket(IP, Integer.valueOf(port));
 
             if (listener != null) {
                 listener.onConnect();
@@ -154,6 +151,37 @@ public class TcpSocketClient implements Runnable {
         if (transceiver != null) {
             transceiver.stop();
             transceiver = null;
+        }
+    }
+
+    public void resetSocket() {
+//        while (!isConnected()) {
+//            try {
+//                disConnected();
+//                socket = new Socket(IPPort.getHOST(), Integer.valueOf(IPPort.getPORT()));
+//                transceiver.start(socket);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+        if (isConnected()) {
+            disConnected();
+        }
+        connect(IPPort.getHOST(), IPPort.getPORT());
+    }
+
+    /**
+     * 判断是否断开连接，断开返回true,没有返回false
+     *
+     * @param socket
+     * @return
+     */
+    public Boolean isServerClose(Socket socket) {
+        try {
+            socket.sendUrgentData(0);//发送1个字节的紧急数据，默认情况下，服务器端没有开启紧急数据处理，不影响正常通信
+            return false;
+        } catch (Exception se) {
+            return true;
         }
     }
 

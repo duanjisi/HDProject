@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.atgc.hd.MainActivity;
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.client.tasklist.TaskListActivity;
@@ -23,20 +24,16 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
-        barHelper.displayActionBar(false);
-
-        Intent i = new Intent(context, DeviceBootService.class);
-        context.startService(i);
-
+//        barHelper.displayActionBar(false);
+//        Intent i = new Intent(context, DeviceBootService.class);
+//        context.startService(i);
         //TODO 检查服务是否已开启
         //TODO 校时功能
-
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Intent intent = new Intent(SplashActivity.this, TaskListActivity.class);
+                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }

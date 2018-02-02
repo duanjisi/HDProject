@@ -11,6 +11,7 @@ package com.atgc.hd.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.media.MediaFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ import com.atgc.hd.TestActivity;
 import com.atgc.hd.adapter.PictureAdapter;
 import com.atgc.hd.adapter.UpdateCallback;
 import com.atgc.hd.base.BaseActivity;
+import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.Utils;
 import com.atgc.hd.comm.net.BaseDataRequest;
 import com.atgc.hd.comm.net.http.MyTask;
@@ -52,6 +54,9 @@ import com.atgc.hd.comm.utils.PhotoAlbumUtil.MultiImageSelector;
 import com.atgc.hd.comm.utils.PhotoAlbumUtil.MultiImageSelectorActivity;
 import com.atgc.hd.comm.utils.PreferenceUtils;
 import com.atgc.hd.comm.utils.UIUtils;
+import com.atgc.hd.db.dao.EventDao;
+import com.atgc.hd.entity.ActionEntity;
+import com.atgc.hd.entity.EventEntity;
 import com.atgc.hd.entity.UploadEntity;
 import com.atgc.hd.widget.ActionSheet;
 import com.atgc.hd.widget.MyGridView;
@@ -71,6 +76,8 @@ import java.util.HashMap;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
 /**
  * <p>描述：应急事件
@@ -93,6 +100,8 @@ public class EmergencyEventActivity extends BaseActivity implements
     private String mOutputPath;
     @BindView(R.id.tv_write)
     EditText tvWrite;
+    @BindView(R.id.tv_place)
+    EditText tvPlace;
     @BindView(R.id.iv)
     ImageView iv;
     @BindView(R.id.btn_submit)
@@ -103,19 +112,22 @@ public class EmergencyEventActivity extends BaseActivity implements
     LinearLayout ll_image;
     private Handler handler = new Handler();
     private PermissionListener permissionListener;
-    //    private PictureAdapter pictureAdapter;
     private int mImageHeight;
+    private int imageCount = 0;
+    private int videoCount = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         if (Build.VERSION.SDK_INT == 19 || Build.VERSION.SDK_INT == 20) {
             savePath = getFilesDir().getPath() + "/";
         } else {
             savePath = Environment.getExternalStorageDirectory() + "/HDProject/";
         }
+//        btnSubmit.setEnabled(false);
 //        mOutputPath = new File(getExternalCacheDir(), "chosen.jpg").getPath();
         barHelper.setTitleColor(getResources().getColor(R.color.white));
         mImageHeight = (UIUtils.getScreenWidth(context) - UIUtils.dip2px(context, 60)) / 4;
@@ -147,6 +159,21 @@ public class EmergencyEventActivity extends BaseActivity implements
         }
     }
 
+    @Subscribe
+    public void onMessageEvent(ActionEntity event) {
+        if (event != null) {
+            String action = event.getAction();
+            if (action.equals(Constants.Action.EXIT_ACTIVITY)) {
+                finish();
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 
     private class itemClickListener implements AdapterView.OnItemClickListener {
         @Override
@@ -179,45 +206,82 @@ public class EmergencyEventActivity extends BaseActivity implements
     public void onClick(int which) {
         switch (which) {
             case 1:
-                cameraType = OPEN_ALBUM;
-                getPermission();
+                if (imageCount < 3) {
+                    cameraType = OPEN_ALBUM;
+                    getPermission();
+                } else {
+                    showToast("最多传三张图片");
+                }
                 break;
             case 2:
-                cameraType = OPEN_CAMERA;
-                getPermission();
+                if (imageCount < 3) {
+                    cameraType = OPEN_CAMERA;
+                    getPermission();
+                } else {
+                    showToast("最多传三张图片");
+                }
                 break;
             case 3:
-                cameraType = LOCAL_VIDEO;
-                openActvityForResult(LocalVideoFilesActivity.class, LOCAL_VIDEO);
+                if (videoCount < 1) {
+                    cameraType = LOCAL_VIDEO;
+                    openActvityForResult(LocalVideoFilesActivity.class, LOCAL_VIDEO);
+                } else {
+                    showToast("最多传一个视频");
+                }
                 break;
             case 4:
-                cameraType = RECORD_VIDEO;
-                getPermission();
+                if (videoCount < 1) {
+                    cameraType = RECORD_VIDEO;
+                    getPermission();
+                } else {
+                    showToast("最多传一个视频");
+                }
                 break;
         }
     }
 
     private void submit() {
-//        String urls = getImageUrls();
-        String description = getText(tvWrite);
+        final String urls = getImageUrls();
+        final String videos = getVideoUrls();
+        final String description = getText(tvWrite);
+        final String place = getText(tvPlace);
+
+        if (TextUtils.isEmpty(place)) {
+            showToast("地址不能为空!");
+            return;
+        }
+
+        if (TextUtils.isEmpty(description)) {
+            showToast("描述内容为空!");
+            return;
+        }
+
         HashMap<String, String> map = new HashMap<>();
+        final String time = DateUtil.currentTime();
 //        map.put("userID", "");
         map.put("deviceID", "10012017020000000000");
         map.put("longitude", "108.6");
         map.put("latitude", "110");
-        map.put("uploadTime", DateUtil.currentTime());
-        map.put("description", "着火啦~!");
-        map.put("picUrl", "http://192.168.0.246:8888/group1/M00/0A/1A/wKgA9lpnAL-AWoinAAC7fMwiVhY271.jpg");
-        map.put("videoUrl", "");
-        map.put("place", "恒大山水城");
+        map.put("uploadTime", time);
+        map.put("description", description);
+        map.put("picUrl", urls);
+        map.put("videoUrl", videos);
+        map.put("place", place);
         map.put("eventType", "");
 //        map.put("eventStatus", "");
         UploadEventRequest request = new UploadEventRequest(TAG, map);
         request.send(new BaseDataRequest.RequestCallback<String>() {
             @Override
             public void onSuccess(String json) {
-                Logger.i(json);
-                showToast(json);
+//                showToast(json);
+                String url = urls + "," + videos;
+                EventEntity entity = new EventEntity();
+                entity.setTime(time);
+                entity.setDescription(description);
+                entity.setPlace(place);
+                entity.setUrls(url);
+                EventDao.getInstance().save(entity);
+                openActvityForResult(UploadStateActivity.class, 100);
             }
 
             @Override
@@ -226,6 +290,7 @@ public class EmergencyEventActivity extends BaseActivity implements
             }
         });
     }
+
 
     private void getPermission() {
         permissionListener = new PermissionListener() {
@@ -379,6 +444,8 @@ public class EmergencyEventActivity extends BaseActivity implements
                 String videoPath = data.getStringExtra("filePath");
                 uploadVideoFile(videoPath);
             }
+        } else if (requestCode == 100 && resultCode == RESULT_OK) {
+            finish();
         }
     }
 
@@ -413,10 +480,12 @@ public class EmergencyEventActivity extends BaseActivity implements
 //        UploadEntity entity = new UploadEntity();
 //        entity.setLocalPath(path);
 //        pictureAdapter.addItem2(entity);
+        imageCount++;
         addView(path);
     }
 
     private void uploadVideoFile(final String path) {
+        videoCount++;
         addView(path);
     }
 
@@ -460,6 +529,12 @@ public class EmergencyEventActivity extends BaseActivity implements
         return sb.toString();
     }
 
+    private StringBuilder sb2 = new StringBuilder();
+
+    private String getVideoUrls() {
+        return sb2.toString();
+    }
+
     private View insertImage(String localPath, int position) {
         final LinearLayout layout = new LinearLayout(getApplicationContext());
         layout.setLayoutParams(new LinearLayout.LayoutParams(mImageHeight, mImageHeight));
@@ -473,8 +548,14 @@ public class EmergencyEventActivity extends BaseActivity implements
             child.setCallback(new MyView.callback() {
                 @Override
                 public void getFileUrl(String url) {
-                    sb.append(url);
-                    sb.append(",");
+                    String fileName = FileUtil.getFileName(url);
+                    if (fileName.contains(".mp4")) {
+                        sb2.append(url);
+                        sb2.append(",");
+                    } else {
+                        sb.append(url);
+                        sb.append(",");
+                    }
                 }
             });
             child.setCloseListener(new View.OnClickListener() {
@@ -483,7 +564,6 @@ public class EmergencyEventActivity extends BaseActivity implements
                     deleteView((String) layout.getTag());
                 }
             });
-            child.startUpload(localPath);
         } else {
             child.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -492,6 +572,7 @@ public class EmergencyEventActivity extends BaseActivity implements
                 }
             });
         }
+        child.startUpload(localPath);
         layout.addView(child);
         return layout;
     }

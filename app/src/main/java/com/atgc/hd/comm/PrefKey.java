@@ -17,4 +17,6 @@ public class PrefKey {
     public static final String REGISTER = "com.atgc.hd.register";
     public static final String HOST = "com.atgc.hd.host";
     public static final String PORT = "com.atgc.hd.port";
+    public static final String HOST_IMAGE = "com.atgc.hd.host.image";
+    public static final String PORT_IMAGE = "com.atgc.hd.port.image";
 }

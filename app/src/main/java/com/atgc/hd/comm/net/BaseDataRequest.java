@@ -79,28 +79,31 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
 
     @Override
     public void onReceive(PreRspPojo preRspPojo) {
-
-        if ("0".equals(preRspPojo.Result)) {
-            final T retT;
-            if (isParse()) {
-                retT = JSON.parseObject(preRspPojo.Data[0], mGenericPojoClazz);
+        Logger.i("onReceive：" + preRspPojo.Result);
+        if (preRspPojo.Command.equals(getCommand())) {
+            if (preRspPojo.Result.equals("0")) {
+                final T retT;
+                if (isParse()) {
+                    retT = JSON.parseObject(preRspPojo.Data[0], mGenericPojoClazz);
+                } else {
+                    retT = JSON.parseObject(preRspPojo.originJson, mGenericPojoClazz);
+//                retT = preRspPojo;
+                }
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onSuccess(retT);
+                    }
+                });
             } else {
-                retT = JSON.parseObject(preRspPojo.originJson, mGenericPojoClazz);
+                final PreRspPojo finalPreRspPojo = preRspPojo;
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onFailure(finalPreRspPojo.ErrorMessage);
+                    }
+                });
             }
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onSuccess(retT);
-                }
-            });
-        } else {
-            final PreRspPojo finalPreRspPojo = preRspPojo;
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onFailure(finalPreRspPojo.ErrorMessage);
-                }
-            });
         }
     }
 

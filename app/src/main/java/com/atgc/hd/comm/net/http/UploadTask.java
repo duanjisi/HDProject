@@ -10,11 +10,15 @@ package com.atgc.hd.comm.net.http;
 
 import android.content.Context;
 import android.os.Handler;
+
 import com.atgc.hd.comm.Constants;
+import com.atgc.hd.comm.utils.FileUtil;
 import com.atgc.hd.comm.utils.StringUtils;
 import com.orhanobut.logger.Logger;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
@@ -57,6 +61,8 @@ public class UploadTask implements Runnable {
         String result = "";
         String param = StringUtils.getJson(filePath);
         final long total = param.getBytes().length;
+        String size = FileUtil.getFormatSize(total);
+
         try {
             URL realUrl = new URL(Constants.UP_LOAD_IMAGE);
             // 打开和URL之间的连接
@@ -90,7 +96,7 @@ public class UploadTask implements Runnable {
                     }
                 });
                 //这里是测试时为了演示进度,休眠500毫秒，正常应去掉
-                Thread.sleep(200);
+                Thread.sleep(50);
             }
             // flush输出流的缓冲
             out.flush();

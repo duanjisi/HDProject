@@ -9,6 +9,7 @@
 package com.atgc.hd.widget;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +22,13 @@ import com.atgc.hd.comm.net.http.MyTask;
 import com.atgc.hd.comm.net.http.UploadTask;
 import com.bumptech.glide.Glide;
 
+
 /**
  * <p>描述：
  * <p>作者：duanjisi 2018年 01月 22日
  */
 
-public class MyView extends RelativeLayout {
+public class MyView extends RelativeLayout implements UploadTask.updateProgressCallback {
     private ImageView ivClose;
     private RoundImageView ivPic;
     private RoundImageView ivBg;
@@ -36,6 +38,7 @@ public class MyView extends RelativeLayout {
     public boolean isLoading = false;
     public boolean loaded = false;
     private callback callback;
+    private Handler handler = new Handler();
 
     public void setCallback(MyView.callback callback) {
         this.callback = callback;
@@ -70,10 +73,15 @@ public class MyView extends RelativeLayout {
 
     public void startUpload(String path) {
         if (path.equals("lastItem")) {
-            tvProgress.setVisibility(View.GONE);
-            ivBg.setVisibility(View.GONE);
-            ivClose.setVisibility(View.GONE);
-            ivPic.setImageResource(R.drawable.person);
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    tvProgress.setVisibility(View.GONE);
+                    ivBg.setVisibility(View.GONE);
+                    ivClose.setVisibility(View.GONE);
+                    ivPic.setImageResource(R.drawable.btn_photo);
+                }
+            });
         } else {
             Glide.with(context).load(path).
                     placeholder(R.drawable.zf_default_message_image).
@@ -85,24 +93,7 @@ public class MyView extends RelativeLayout {
                     ivClose.setVisibility(View.GONE);
                     tvProgress.setText("开始上传");
                     task = new UploadTask(context, path);
-                    task.setCallback(new UploadTask.updateProgressCallback() {
-                        @Override
-                        public void onPostExecute(String string) {
-                            loaded = true;
-                            tvProgress.setVisibility(View.GONE);
-                            ivBg.setVisibility(View.GONE);
-                            ivClose.setVisibility(View.VISIBLE);
-                            if (callback != null) {
-                                callback.getFileUrl(string);
-                            }
-                        }
-
-                        @Override
-                        public void onProgressUpdate(int progress) {
-                            isLoading = true;
-                            tvProgress.setText("   " + progress + "%   " + "\n" + "正在上传");
-                        }
-                    });
+                    task.setCallback(this);
                     new Thread(task).start();
                 }
             } else {
@@ -117,17 +108,21 @@ public class MyView extends RelativeLayout {
         void getFileUrl(String url);
     }
 
-//    @Override
-//    public void onPostExecute(String string) {
-//        loaded = true;
-//        tvProgress.setVisibility(View.GONE);
-//        ivBg.setVisibility(View.GONE);
-//        ivClose.setVisibility(View.VISIBLE);
-//    }
-//
-//    @Override
-//    public void onProgressUpdate(int progress) {
-//        isLoading = true;
-//        tvProgress.setText("  " + progress + "%  " + "\n" + "正在上传");
-//    }
+    @Override
+    public void onPostExecute(String string) {
+        loaded = true;
+        tvProgress.setVisibility(View.GONE);
+        ivBg.setVisibility(View.GONE);
+        ivClose.setVisibility(View.VISIBLE);
+        if (callback != null) {
+            callback.getFileUrl(string);
+        }
+    }
+
+    @Override
+    public void onProgressUpdate(int progress) {
+        isLoading = true;
+        tvProgress.setText("   " + progress + "%   " + "\n" + "正在上传");
+    }
+
 }

@@ -3,11 +3,17 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-
+    <color name="btn_white_pressed">#b5b5b6</color>
     <color name="actionsheet_blue">#037BFF</color>
     <color name="actionsheet_red">#FD4A2E</color>
     <color name="actionsheet_gray">#8F8F8F</color>
-
+    <color name="semi_transparent_w">#7fffffff</color>
+    <color name="chat_time">#ffffffff</color>
+    <color name="color_hei">#ff000000</color>
+    <color name="color_hei_8">#00000000</color>
+    <color name="thirty_transparent_black">#4d000000</color>
+    <color name="chat_color">#ebebeb</color>
+    <color name="top_bar_color">#fd2741</color>
     <color name="bt_bg_gray">#DFDFDF</color>
     <color name="top_bar_bg">#1B82D2</color>
     <color name="white">#ffffff</color>

@@ -13,9 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atgc.hd.base.BaseActivity;
+import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.PrefKey;
 import com.atgc.hd.comm.net.BaseDataRequest;
+import com.atgc.hd.comm.net.TcpSocketClient;
 import com.atgc.hd.comm.net.request.GPSRequest;
+import com.atgc.hd.comm.net.request.GetTaskRequest;
 import com.atgc.hd.comm.net.request.HeartBeatRequest;
 import com.atgc.hd.comm.net.request.RegisterRequest;
 import com.orhanobut.logger.Logger;
@@ -33,7 +36,7 @@ import java.util.regex.Pattern;
 public class TestActivity extends BaseActivity {
     private final String Tag = TestActivity.class.getSimpleName();
     private TextView tv_msg;
-    private Button btn, btn_beat;
+    private Button btn, btn_beat, btn_test2;
     private EditText etHost, etPort;
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
@@ -43,6 +46,7 @@ public class TestActivity extends BaseActivity {
         setContentView(R.layout.activity_test);
         btn = findViewById(R.id.btn_test);
         btn_beat = findViewById(R.id.btn_beat);
+        btn_test2 = findViewById(R.id.btn_test2);
         etHost = findViewById(R.id.et_ip);
         etPort = findViewById(R.id.et_Port);
         tv_msg = findViewById(R.id.tv_msg);
@@ -54,6 +58,7 @@ public class TestActivity extends BaseActivity {
                 testRegister();
             }
         });
+
         btn_beat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,6 +67,37 @@ public class TestActivity extends BaseActivity {
             }
         });
 
+        btn_test2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GetTaskRequest request = new GetTaskRequest();
+                request.setDeviceID("10012017f6d0101be5ed");
+                request.send(new BaseDataRequest.RequestCallback<String>() {
+                    @Override
+                    public void onSuccess(String pojo) {
+                        showToast(pojo);
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+
+                    }
+                });
+            }
+        });
+
+        TcpSocketClient.getInstance().registerOnReceiveListener(new TcpSocketClient.OnReceiveListener() {
+            @Override
+            public void onReceive(String cmd, final String[] jsonDatas) {
+//                Logger.e("jsonData : " + jsonDatas);
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        showToast("jsonData : " + jsonDatas[0]);
+                    }
+                });
+            }
+        }, DeviceCmd.PAT_SEND_TASK);
     }
 
     private StringBuilder sb = new StringBuilder();
@@ -187,6 +223,7 @@ public class TestActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        TcpSocketClient.getInstance().unregisterOnReceiveListener(DeviceCmd.PAT_SEND_TASK);
     }
 
     private boolean isHostMatcher(String str) {

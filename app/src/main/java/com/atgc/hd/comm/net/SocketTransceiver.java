@@ -123,6 +123,7 @@ public abstract class SocketTransceiver implements Runnable {
                     }
                 } else {
                     Logger.e("连接已断开，发送失败。。。。");
+                    SocketTransceiver.this.onConnectBreak();//连接被动断开
                 }
             }
         }).start();
