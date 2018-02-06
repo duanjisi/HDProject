@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.atgc.hd.R;
 import com.atgc.hd.comm.net.http.MyTask;
 import com.atgc.hd.comm.net.http.UploadTask;
+import com.atgc.hd.comm.utils.FileUtil;
 import com.bumptech.glide.Glide;
 
 
@@ -30,6 +31,7 @@ import com.bumptech.glide.Glide;
 
 public class MyView extends RelativeLayout implements UploadTask.updateProgressCallback {
     private ImageView ivClose;
+    private ImageView ivPlay;
     private RoundImageView ivPic;
     private RoundImageView ivBg;
     private TextView tvProgress;
@@ -54,6 +56,7 @@ public class MyView extends RelativeLayout implements UploadTask.updateProgressC
         // 加载布局
         LayoutInflater.from(context).inflate(R.layout.item_picture2, this);
         this.ivClose = findViewById(R.id.iv_close);
+        this.ivPlay = findViewById(R.id.iv_play);
         this.ivPic = findViewById(R.id.iv_image);
         this.ivBg = findViewById(R.id.iv_bg);
         this.tvProgress = findViewById(R.id.tv_progress);
@@ -66,6 +69,7 @@ public class MyView extends RelativeLayout implements UploadTask.updateProgressC
         // 加载布局
         LayoutInflater.from(context).inflate(R.layout.item_picture2, this);
         this.ivClose = findViewById(R.id.iv_close);
+        this.ivPlay = findViewById(R.id.iv_play);
         this.ivPic = findViewById(R.id.iv_image);
         this.ivBg = findViewById(R.id.iv_bg);
         this.tvProgress = findViewById(R.id.tv_progress);
@@ -83,6 +87,10 @@ public class MyView extends RelativeLayout implements UploadTask.updateProgressC
                 }
             });
         } else {
+            String fileName = FileUtil.getFileName(path);
+            if (fileName.contains(".mp4") || fileName.contains(".MP4")) {
+                ivPlay.setVisibility(VISIBLE);
+            }
             Glide.with(context).load(path).
                     placeholder(R.drawable.zf_default_message_image).
                     crossFade().into(ivPic);

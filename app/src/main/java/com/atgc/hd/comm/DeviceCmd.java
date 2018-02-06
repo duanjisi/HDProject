@@ -24,4 +24,8 @@ public class DeviceCmd {
     //==============网关下发命令字===============
     // 网关下发巡更任务
     public static final String PAT_SEND_TASK = "PAT_SEND_TASK";
+
+
+    // 下发文本消息
+    public static final String PAT_SEND_MESSAGE = "PAT_SEND_MESSAGE";
 }

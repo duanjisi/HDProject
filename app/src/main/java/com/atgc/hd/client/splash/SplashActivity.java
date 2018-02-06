@@ -6,9 +6,14 @@ import android.support.annotation.Nullable;
 
 import com.atgc.hd.MainActivity;
 import com.atgc.hd.R;
+import com.atgc.hd.activity.SettingActivity;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.client.tasklist.TaskListActivity;
+import com.atgc.hd.comm.PrefKey;
+import com.atgc.hd.comm.Utils;
 import com.atgc.hd.comm.service.DeviceBootService;
+import com.atgc.hd.comm.utils.PreferenceUtils;
+import com.atgc.hd.widget.xlistview.Util;
 import com.orhanobut.logger.Logger;
 
 import java.util.Timer;
@@ -28,6 +33,12 @@ public class SplashActivity extends BaseActivity {
 //        Intent i = new Intent(context, DeviceBootService.class);
 //        context.startService(i);
         //TODO 检查服务是否已开启
+
+        if (!Utils.isServiceRunning(context, "com.atgc.hd.comm.service.DeviceBootService")) {
+            Intent i = new Intent(context, DeviceBootService.class);
+            context.startService(i);
+        }
+
         //TODO 校时功能
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -38,5 +49,14 @@ public class SplashActivity extends BaseActivity {
                 finish();
             }
         }, 1 * 5000);
+    }
+
+    private void goNextPager() {
+        boolean isSetted = PreferenceUtils.getBoolean(context, PrefKey.SETTED, false);
+        if (!isSetted) {
+            openActivity(SettingActivity.class);
+        } else {
+            openActivity(TaskListActivity.class);
+        }
     }
 }

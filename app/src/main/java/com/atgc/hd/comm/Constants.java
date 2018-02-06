@@ -8,6 +8,8 @@
 
 package com.atgc.hd.comm;
 
+import com.atgc.hd.comm.utils.PreferenceUtils;
+
 /**
  * <p>描述：常量类
  * <p>作者：duanjisi 2018年 01月 16日
@@ -18,11 +20,11 @@ public class Constants {
     public static final String IMAGE_HEADER = "http://192.168.0.246:8888/";
     public static final String UP_LOAD_IMAGE = "http://192.168.0.242:39047/VIID/Images";
 //    public static final String UP_LOAD_IMAGE = "http://172.16.10.115:8090/scp-imagemgmtcomponent/VIID/Images";
-
     /**
      * demo模式，表示数据会从/src/assets文件夹读取
      */
     public static final boolean isDemo = false;
+
     /**
      * 行为
      */

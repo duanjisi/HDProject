@@ -135,6 +135,7 @@ public class SettingActivity extends BaseActivity {
             showToast("图片端口为空");
             return;
         }
+        PreferenceUtils.putBoolean(context, PrefKey.SETTED, true);
         TcpSocketClient.getInstance().resetSocket();
         finish();
     }

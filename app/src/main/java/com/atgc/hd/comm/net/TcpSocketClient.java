@@ -12,7 +12,6 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.atgc.hd.comm.IPPort;
-import com.atgc.hd.comm.ProtocolDecoder;
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.protocol.ProtocolBody;
 import com.atgc.hd.comm.protocol.ProtocolDecoder;
@@ -192,6 +191,8 @@ public class TcpSocketClient implements Runnable {
 
     public SocketTransceiver getTransceiver() {
         return transceiver;
+    }
+
     public void sendMsg(byte[] bytes) {
         if (transceiver == null) {
             Logger.e("发送失败，transceiver == null");

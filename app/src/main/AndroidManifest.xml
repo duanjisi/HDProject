@@ -63,6 +63,7 @@
         <activity android:name=".activity.EmergencyDetailsActivity"></activity>
         <activity android:name=".activity.ImagePagerActivity"></activity>
         <activity android:name=".activity.VideoPlayerActivity"></activity>
+        <activity android:name=".activity.PlatformInfoActivity"></activity>
 
         <activity android:name=".activity.ClipImageActivity"></activity>
         <activity android:name=".activity.LocalVideoFilesActivity"></activity>

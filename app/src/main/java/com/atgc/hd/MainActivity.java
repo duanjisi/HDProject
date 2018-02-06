@@ -15,12 +15,14 @@ import com.atgc.hd.activity.ConversationActivity;
 import com.atgc.hd.activity.EmergencyEventActivity;
 import com.atgc.hd.activity.EmergencyEventActivity;
 import com.atgc.hd.activity.EmergencyListActivity;
+import com.atgc.hd.activity.PlatformInfoActivity;
 import com.atgc.hd.activity.SettingActivity;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.client.tasklist.TaskListActivity;
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.PrefKey;
 import com.atgc.hd.comm.Utils;
+import com.atgc.hd.comm.config.DeviceParams;
 import com.atgc.hd.comm.local.GPSLocationTool;
 import com.atgc.hd.comm.local.LocationService;
 import com.atgc.hd.comm.net.BaseDataRequest;
@@ -93,7 +95,6 @@ public class MainActivity extends BaseActivity {
                 Logger.e("状态变化：" + provider + " " + status);
             }
         });
-
     }
 
     @Override
@@ -181,22 +182,22 @@ public class MainActivity extends BaseActivity {
         tv_net.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, EmergencyListActivity.class));
+                startActivity(new Intent(MainActivity.this, PlatformInfoActivity.class));
             }
         });
 
         tv_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                getMac();
-                register();
+                getMac();
+//                register();
             }
         });
 //        Utils.printIpAddress();
     }
 
     private void getMac() {
-        String mac = Utils.getMac();
+        String mac = DeviceParams.getInstance().getDeviceId();
         showToast(mac);
     }
 

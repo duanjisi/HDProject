@@ -1,6 +1,5 @@
 package com.atgc.hd;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -11,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.PrefKey;
@@ -21,10 +19,9 @@ import com.atgc.hd.comm.net.request.GPSRequest;
 import com.atgc.hd.comm.net.request.GetTaskRequest;
 import com.atgc.hd.comm.net.request.HeartBeatRequest;
 import com.atgc.hd.comm.net.request.RegisterRequest;
-import com.orhanobut.logger.Logger;
 import com.atgc.hd.comm.net.request.UploadEventRequest;
 import com.atgc.hd.comm.utils.PreferenceUtils;
-
+import com.orhanobut.logger.Logger;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -93,7 +90,7 @@ public class TestActivity extends BaseActivity {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        showToast("jsonData : " + jsonDatas[0]);
+                        showToast("jsonData : " + jsonDatas);
                     }
                 });
             }

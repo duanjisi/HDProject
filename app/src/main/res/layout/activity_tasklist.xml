@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -44,8 +45,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/spacing_4x"
         android:layout_marginBottom="120dp"
+        android:layout_marginRight="@dimen/spacing_4x"
         android:src="@drawable/ic_emergency" />
 
     <ImageView
@@ -56,5 +57,6 @@
         android:layout_alignLeft="@+id/iv_emergency"
         android:layout_alignRight="@+id/iv_emergency"
         android:layout_marginBottom="@dimen/spacing_6x"
-        android:src="@drawable/ic_refresh" />
+        android:src="@drawable/ic_refresh"
+        tools:ignore="UnknownId" />
 </RelativeLayout>

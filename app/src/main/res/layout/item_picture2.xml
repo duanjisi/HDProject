@@ -31,6 +31,14 @@
             roundiv:round_borderRadius="6dp"
             roundiv:round_type="1" />
 
+        <ImageView
+            android:id="@+id/iv_play"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/btn_play"
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/tv_progress"
             android:layout_width="wrap_content"

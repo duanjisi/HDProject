@@ -7,6 +7,9 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.atgc.hd.R;
+import com.atgc.hd.activity.EmergencyListActivity;
+import com.atgc.hd.activity.PlatformInfoActivity;
+import com.atgc.hd.activity.SettingActivity;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.base.BaseFragment;
 import com.atgc.hd.client.tasklist.adapter.ContentFragAdapter;
@@ -80,6 +83,7 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
             @Override
             public void onClick(View v) {
                 // TODO 跳转到设置页面
+                openActivity(SettingActivity.class);
             }
         });
 
@@ -87,6 +91,7 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
             @Override
             public void onClick(View v) {
                 // TODO 跳转到系统消息页面
+                openActivity(PlatformInfoActivity.class);
             }
         });
 
@@ -101,6 +106,7 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
             @Override
             public void onClick(View v) {
                 // TODO 应急事件
+                openActivity(EmergencyListActivity.class);
             }
         });
     }
@@ -113,7 +119,6 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
             @Override
             public void onFragmentViewCreated(FragmentManager fm, android.support.v4.app.Fragment f, View v, Bundle savedInstanceState) {
                 super.onFragmentViewCreated(fm, f, v, savedInstanceState);
-
                 numberFragmentViewCreated++;
                 if (numberFragmentViewCreated >= fragAdapter.getCount()) {
                     showProgressDialog();
@@ -121,7 +126,6 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
 
                 }
             }
-
         }, false);
     }
 

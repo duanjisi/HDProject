@@ -139,6 +139,11 @@ public abstract class ABaseAdapter<T> extends BaseAdapter {
         this.notifyDataSetChanged();
     }
 
+    public void addData(T mode) {
+        mList.add(mode);
+        this.notifyDataSetChanged();
+    }
+
     public void initData(List<T> list) {
         mList.clear();
         mList.addAll(list);

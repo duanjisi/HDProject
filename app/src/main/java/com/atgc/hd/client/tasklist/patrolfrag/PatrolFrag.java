@@ -48,9 +48,7 @@ public class PatrolFrag extends BaseFragment implements PatrolContract.IView {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         initView();
-
         iPresenter = new PatrolPresenter(this);
     }
 

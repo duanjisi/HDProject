@@ -25,7 +25,8 @@ public abstract class DatabaseColumn implements BaseColumns {
     public static final String AVATAR = "avatar";
 
     public static final String[] SUBCLASSES = new String[]{
-            "com.atgc.hd.db.EventEntityColumn"
+            "com.atgc.hd.db.EventEntityColumn",
+            "com.atgc.hd.db.PlatformInfoColumn"
     };
 
     public String getTableCreateor() {

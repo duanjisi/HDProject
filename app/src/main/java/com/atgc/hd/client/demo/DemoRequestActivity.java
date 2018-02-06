@@ -50,9 +50,7 @@ public class DemoRequestActivity extends BaseActivity implements OnItemClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo_request);
         ButterKnife.bind(this);
-
         init();
-
         initView();
     }
 
@@ -62,7 +60,10 @@ public class DemoRequestActivity extends BaseActivity implements OnItemClickList
             tcpSocketClient.connect(IPPort.getHOST(), IPPort.getPORT());
         }
 
-        tcpSocketClient.registerOnReceiveListener(this, DeviceCmd.PAT_SEND_TASK);
+        tcpSocketClient.registerOnReceiveListener(this,
+                DeviceCmd.PAT_SEND_TASK,
+                DeviceCmd.HEART_BEAT,
+                DeviceCmd.PAT_SEND_MESSAGE);
     }
 
     private void initView() {
@@ -105,6 +106,8 @@ public class DemoRequestActivity extends BaseActivity implements OnItemClickList
         if (DeviceCmd.PAT_SEND_TASK.equals(cmd)) {
             String msg = niftyJson(jsonDatas[0]);
             showMsg(msg);
+        } else if (DeviceCmd.PAT_SEND_MESSAGE.equals(cmd)) {
+
         }
     }
 
@@ -210,6 +213,7 @@ public class DemoRequestActivity extends BaseActivity implements OnItemClickList
             }
         });
     }
+
     private void launchDialog(final String title,
                               final String msg,
                               final String btnTitle,

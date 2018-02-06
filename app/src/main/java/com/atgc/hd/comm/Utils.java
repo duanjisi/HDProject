@@ -2,6 +2,7 @@ package com.atgc.hd.comm;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -402,6 +403,7 @@ public class Utils {
         return macSerial;
     }
 
+
     public static String getMacAddressFromIp(Context context) {
         String mac_s = "";
         StringBuilder buf = new StringBuilder();
@@ -424,7 +426,7 @@ public class Utils {
 
     private static String replaceStr(String mac) {
         if (!TextUtils.isEmpty(mac)) {
-            return mac.replaceAll(":", "");
+            return "10012017" + mac.replaceAll(":", "");
         } else {
             return "";
         }
@@ -615,5 +617,27 @@ public class Utils {
                 cursor.close();
         }
         return null;
+    }
+
+
+    /*
+     * 判断服务是否启动,context上下文对象 ，className服务的name
+     */
+    public static boolean isServiceRunning(Context mContext, String className) {
+        boolean isRunning = false;
+        ActivityManager activityManager = (ActivityManager) mContext
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> serviceList = activityManager
+                .getRunningServices(30);
+        if (!(serviceList.size() > 0)) {
+            return false;
+        }
+        for (int i = 0; i < serviceList.size(); i++) {
+            if (serviceList.get(i).service.getClassName().equals(className) == true) {
+                isRunning = true;
+                break;
+            }
+        }
+        return isRunning;
     }
 }
