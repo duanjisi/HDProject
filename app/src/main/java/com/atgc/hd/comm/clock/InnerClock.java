@@ -98,8 +98,13 @@ public class InnerClock {
      *
      * @return
      */
-    public Date getInnerClockDate() {
-        return DateUtil.dateAddSeconds(serviceDate, period);
+    public Date nowDate() {
+//        String currentTime = "2018-02-07 16:23:41";
+//        Date currentDate = DateUtil.dateParse(currentTime, DateUtil.HOUR_PATTERN);
+//        return currentDate;
+
+//        return DateUtil.dateAddSeconds(serviceDate, period);
+        return DateUtil.currentDate();
     }
 
 }

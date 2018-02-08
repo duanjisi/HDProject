@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
@@ -19,6 +21,7 @@ import com.atgc.hd.comm.net.request.GetTaskRequest;
 import com.atgc.hd.comm.net.request.RegisterRequest;
 import com.atgc.hd.comm.net.request.ReportPointStatusRequest;
 import com.atgc.hd.comm.net.request.ReportTaskStatusRequest;
+import com.atgc.hd.comm.utils.StringUtils;
 import com.atgc.hd.comm.widget.NiftyDialog;
 import com.orhanobut.logger.Logger;
 
@@ -27,6 +30,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,10 +46,18 @@ public class DemoRequestActivity extends BaseActivity implements OnItemClickList
     @BindView(R.id.recyclerview)
     RecyclerView recyclerView;
 
-    DemoRequestAdapter demoRequestAdapter;
+    private DemoRequestAdapter demoRequestAdapter;
 
     private TcpSocketClient tcpSocketClient = null;
 
+    private String deviceID = "10032017784f4586ee3f";
+    //    private String deviceID = "10012017f6d0101be5ed";
+//    private String deviceID = "10012017f6d0101be5ed";
+//    b35f71f73db14e34a0c3900050a3436c
+//132654c184df4c348c9f51e06abd4e8a
+//06d78f166cd84353b7a23176cb9eaff5
+    private String taskID = "5e914e05308d4986b479f7d2ea61e879";
+    private String userID = "a9abc433ae8d5281f60";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +97,59 @@ public class DemoRequestActivity extends BaseActivity implements OnItemClickList
         data.add("上报巡查任务状态");
 
         demoRequestAdapter.setNewData(data);
+
+        demotest();
+    }
+
+    private Timer timer;
+    private TimerTask timerTask;
+    private String srcLongitude = "112.33";
+    private String srcLatitude = "39.80";
+
+    private void demotest() {
+        timer = new Timer();
+        final EditText edt = findViewById(R.id.editText);
+        final TextView tvTips = findViewById(R.id.textView);
+
+        edt.setText("10");
+        tvTips.setText("设备ID：" + deviceID + "\n经纬度：" + srcLongitude + "    " + srcLatitude);
+
+        findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int period = Integer.valueOf(edt.getText().toString());
+
+                timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        String NLongitude = srcLongitude + getRandomString(4);
+                        String NLatitude = srcLatitude + getRandomString(4);
+
+                        uploadGps(NLongitude, NLatitude, true);
+
+                        updateText(tvTips, "设备ID：" + deviceID + "\n经纬度：\n" + NLongitude + "\n" + NLatitude);
+                    }
+                };
+
+                timer.schedule(timerTask, 500, period * 1000);
+            }
+        });
+
+        findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                timerTask.cancel();
+            }
+        });
+    }
+
+    private void updateText(final TextView textView, final String text) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textView.setText(text);
+            }
+        });
     }
 
     @Override
@@ -96,7 +163,7 @@ public class DemoRequestActivity extends BaseActivity implements OnItemClickList
         } else if (position == 3) {
             reportPointStatus();
         } else if (position == 4) {
-            reportTastStatus();
+            reportTaskStatus();
         }
     }
 
@@ -113,6 +180,7 @@ public class DemoRequestActivity extends BaseActivity implements OnItemClickList
 
     private void registerDevice() {
         final RegisterRequest request = new RegisterRequest();
+        request.setDeviceID(deviceID);
         String jsonData = request.jsonData();
 
         launchDialog("设备注册", jsonData, "发送", request, new BaseDataRequest.RequestCallback() {
@@ -129,27 +197,47 @@ public class DemoRequestActivity extends BaseActivity implements OnItemClickList
     }
 
     private void uploadGps() {
+        uploadGps("113.248159", "23.152168", false);
+    }
+
+    private void uploadGps(final String longitude, final String latitude, boolean now) {
         GPSRequest gpsRequest = new GPSRequest();
-        gpsRequest.setLongitude("113.620759");
-        gpsRequest.setLatitude("23.305057");
+        gpsRequest.setDeviceID(deviceID);
+        gpsRequest.setTaskId(taskID);
+        gpsRequest.setUserID(userID);
+        gpsRequest.setLongitude(longitude);
+        gpsRequest.setLatitude(latitude);
         String jsonData = gpsRequest.jsonData();
 
-        launchDialog("GPS上传", jsonData, "发送", gpsRequest, new BaseDataRequest.RequestCallback() {
-            @Override
-            public void onSuccess(Object pojo) {
-                showMsg("上传成功");
-            }
+        if (now) {
+            gpsRequest.send(new BaseDataRequest.RequestCallback() {
+                @Override
+                public void onSuccess(Object pojo) {
+                    Logger.e("上传成功：" + longitude + " " + latitude);
+                }
 
-            @Override
-            public void onFailure(String msg) {
-                showMsg("上传失败：" + msg);
-            }
-        });
+                @Override
+                public void onFailure(String msg) {
+                    Logger.e("上传失败：" + longitude + " " + latitude);
+                }
+            });
+        } else {
+            launchDialog("GPS上传", jsonData, "发送", gpsRequest, new BaseDataRequest.RequestCallback() {
+                @Override
+                public void onSuccess(Object pojo) {
+                    showMsg("上传成功");
+                }
+
+                @Override
+                public void onFailure(String msg) {
+                    showMsg("上传失败：" + msg);
+                }
+            });
+        }
     }
 
     private void requestTaskList() {
         GetTaskRequest taskRequest = new GetTaskRequest();
-        String deviceID = "10012017020000000000";
         taskRequest.setDeviceID(deviceID);
         String jsonData = taskRequest.jsonData();
 
@@ -169,12 +257,13 @@ public class DemoRequestActivity extends BaseActivity implements OnItemClickList
 
     private void reportPointStatus() {
         ReportPointStatusRequest request = new ReportPointStatusRequest();
-        request.setDeviceID("10012017f6d0101be5ed");
+        request.setDeviceID(deviceID);
 
-        request.setTaskID("95eba80212e04bc8aadfa3715bafb3c9");
-        request.setTaskPointID("55b152d4a294491590858f70bc460fd8");
-        request.setPointTime("2018-2-1 17:16:21");
-        request.setPlanTime("2018-2-1 17:17:26");
+        request.setTaskID(taskID);
+        request.setTaskPointID("2406077b13f14eafa26087aecabf0eba");
+
+        request.setPointTime("2018-2-2 16:33:08");
+        request.setPlanTime("2018-2-2 16:35:29");
         request.setHistoryPointStatus("2");
         String jsonData = request.jsonData();
 
@@ -191,13 +280,13 @@ public class DemoRequestActivity extends BaseActivity implements OnItemClickList
         });
     }
 
-    private void reportTastStatus() {
+    private void reportTaskStatus() {
         ReportTaskStatusRequest request = new ReportTaskStatusRequest();
-        request.setDeviceID("10012017020000000000");
-        request.setUserId("");
-        request.setTaskID("95eba80212e04bc8aadfa3715bafb3c9");
+        request.setDeviceID(deviceID);
+        request.setUserId(userID);
+        request.setTaskID(taskID);
         request.setTaskStatus("2");
-        request.setCarryStatus("1");
+        request.setCarryStatus("0");
         request.setAbnormalReason("处理紧急情况");
         String jsonData = request.jsonData();
 
@@ -273,5 +362,16 @@ public class DemoRequestActivity extends BaseActivity implements OnItemClickList
         }
 
         return message;
+    }
+
+    private static final String str = "0123456789";
+    public static String getRandomString(int length) {
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(10);
+            sb.append(str.charAt(number));
+        }
+        return sb.toString();
     }
 }

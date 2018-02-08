@@ -19,12 +19,4 @@
             android:dividerHeight="0dp" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <TextView
-        android:id="@+id/tv_error_tips"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_medium"
-        android:background="@color/white"
-        />
 </RelativeLayout>

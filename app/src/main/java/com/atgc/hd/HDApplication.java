@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
+import com.atgc.hd.comm.config.DeviceParams;
 import com.atgc.hd.comm.crash.CrashHandler;
 import com.atgc.hd.comm.local.LocationService;
 import com.atgc.hd.comm.utils.FileUtil;
@@ -54,12 +55,12 @@ public class HDApplication extends Application {
         if (header == null) {
             header = new Header();
             header.setVersion("HDXM");
-            header.setSrcID("10012017020000000000");
-            header.setDestID("1004201658FCDBD8341E");
+            header.setSrcID(DeviceParams.getInstance().getDeviceId());
+            header.setDestID("00000000000000000000");
             header.setRequest("1");
             header.setHold("0");
             header.setPackNo("172");
-            header.setCrc("42027");
+            header.setCrc("");
         }
         return header;
     }

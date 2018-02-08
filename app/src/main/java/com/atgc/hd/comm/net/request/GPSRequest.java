@@ -35,7 +35,7 @@ public class GPSRequest extends BaseDataRequest<String> {
     private String needsResponse = "1";
     private String remark = "";
     private String userID = "";
-    private String taskI = "";
+    private String taskId = "";
 
     public GPSRequest() {
         this.uploadTime = DateUtil.currentTime();
@@ -62,7 +62,7 @@ public class GPSRequest extends BaseDataRequest<String> {
         map.put("needsResponse", needsResponse);
         map.put("remark", remark);
         map.put("userID", userID);
-        map.put("taskID", "");
+        map.put("taskID", taskId);
         return map;
     }
 
@@ -175,11 +175,11 @@ public class GPSRequest extends BaseDataRequest<String> {
         this.userID = userID;
     }
 
-    public String getTaskI() {
-        return taskI;
+    public String getTaskId() {
+        return taskId;
     }
 
-    public void setTaskI(String taskI) {
-        this.taskI = taskI;
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 }

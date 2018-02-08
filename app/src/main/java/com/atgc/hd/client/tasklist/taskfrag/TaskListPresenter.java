@@ -1,11 +1,17 @@
 package com.atgc.hd.client.tasklist.taskfrag;
 
+import android.util.SparseArray;
+
 import com.atgc.hd.client.tasklist.TaskHandContract;
 import com.atgc.hd.client.tasklist.taskfrag.adapter.TaskListEntity;
 import com.atgc.hd.comm.net.response.TaskListResponse;
+import com.atgc.hd.comm.utils.StringUtils;
+import com.atgc.hd.entity.EventMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * <p>描述：任务列表presenter
@@ -20,12 +26,19 @@ public class TaskListPresenter implements TaskListContract.IPresenterView, TaskL
     public TaskListPresenter(TaskListContract.IView iView) {
         this.iView = iView;
 
-        iView.registerOnAllTaskListener(this);
+        // 在TaskHandModel注册监听
+        TaskHandContract.OnAllTaskLlistener listener = this;
+        EventMessage msg = new EventMessage("on_all_task_listener", listener);
+        EventBus.getDefault().post(msg);
     }
 
     @Override
     public boolean isCurrentTask(String currentTaskId) {
-        return this.currentTaskId.equals(currentTaskId);
+        if (StringUtils.isEmpty(this.currentTaskId)) {
+            return false;
+        } else {
+            return this.currentTaskId.equals(currentTaskId);
+        }
     }
 
     @Override
@@ -39,7 +52,7 @@ public class TaskListPresenter implements TaskListContract.IPresenterView, TaskL
      * @param taskInfos
      */
     @Override
-    public void onReceiveAllTask(List<TaskListResponse.TaskInfo> taskInfos) {
+    public void onReceiveAllTask(SparseArray<TaskListResponse.TaskInfo> taskInfos) {
 
         List<TaskListEntity> entities = new ArrayList<>();
 

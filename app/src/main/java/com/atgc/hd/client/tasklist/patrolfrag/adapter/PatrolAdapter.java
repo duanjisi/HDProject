@@ -25,37 +25,14 @@ public class PatrolAdapter extends TaskListAdapter {
         } else {
             return super.getItemLayoutId(viewType);
         }
-
     }
 
     @Override
     protected void convertGroupItem(ViewHolder holder, TaskListEntity data, int position) {
-//        super.convertGroupItem(holder, data, position);
-
         holder.setText(R.id.tv_task_title, data.getTaskInfo().getTaskName());
         holder.setText(R.id.tv_task_peroid, data.getTaskInfo().getTaskPeriod());
 
         holder.getView(R.id.iv_background).setSelected(true);
     }
 
-    //    @Override
-//    protected int getItemLayoutId() {
-//        return R.layout.item_tasklist;
-//    }
-//
-//    @Override
-//    protected void convert(ViewHolder holder, PointInfo data, int position) {
-//        int temp = position + 1;
-//        String strPositioin = temp < 10 ? ("0" + temp + ".") : (temp + ".");
-//        holder.setText(R.id.tv_point_position, strPositioin);
-//
-//        holder.setText(R.id.tv_point_status, data.getPointName());
-//
-////        holder.setText(R.id.tv_task_start_time, data.getStartTime());
-//
-//        holder.setText(R.id.tv_task_finish_time, "--:--");
-//
-//        String status = data.isChecked() ? "已打点" : "未打点";
-//        holder.setText(R.id.tv_task_title, status);
-//    }
 }

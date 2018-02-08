@@ -6,42 +6,51 @@
                 {
                     "PointArray": [
                         {
-                            "interval": 20,
+                            "cardNumber": "636B3EA4928804008500000004134501",
+                            "interval": 1,
                             "orderNo": 0,
                             "pointName": "联调巡更点01",
-                            "resultType": "1",
+                            "resultType": "0",
                             "taskPointID": "4c55fd6efc80434fbe8de60f25a039ad",
                             "longitude":113.614227,
-                            "latitude":23.298972
+                            "latitude":23.298972,
+                            "pointTime":"",
+                            "planTime":""
                         },
                         {
-                            "cardNumber": "11",
-                            "interval": 20,
+                            "cardNumber": "636B3EA4928804008500000004134501",
+                            "interval": 1  ,
                             "orderNo": 1,
-                            "pointName": "测试巡查点11",
-                            "resultType": "1",
-                            "taskPointID": "97fed561547547bb8cc80b52e420dca6"
+                            "pointName": "测试巡查点02",
+                            "resultType": "0",
+                            "taskPointID": "97fed561547547bb8cc80b52e420dca6",
+                            "pointTime":"",
+                            "planTime":""
                         },
                         {
-                            "cardNumber": "12",
+                            "cardNumber": "636B3EA4928804008500000004134501",
                             "interval": 20,
                             "orderNo": 2,
-                            "pointName": "测试巡查点12",
-                            "resultType": "2",
-                            "taskPointID": "2d5b3ff7e4154bc8b55b1cf13da302dd"
+                            "pointName": "测试巡查点03",
+                            "resultType": "0",
+                            "taskPointID": "2d5b3ff7e4154bc8b55b1cf13da302dd",
+                            "pointTime":"",
+                            "planTime":""
                         },
                         {
-                            "cardNumber": "13",
+                            "cardNumber": "636B3EA4928804008500000004134501",
                             "interval": 20,
-                            "orderNo": 3,
-                            "pointName": "测试巡查点13",
+                            "orderNo": 2,
+                            "pointName": "测试巡查点04",
                             "resultType": "0",
-                            "taskPointID": "f2755f9734a74f0f90a6318e640eedc3"
+                            "taskPointID": "f2755f9734a74f0f90a6318e640eedc3",
+                            "pointTime":"",
+                            "planTime":""
                         }
                     ],
                     "deviceID": "10012017020000000000",
-                    "startTime": "2018-01-27 00:30:00",
-                    "endTime": "2018-01-27 02:30:00",
+                    "startTime": "2018-02-08 10:00:20",
+                    "endTime": "2018-02-08 19:58:30",
                     "taskID": "db2c8e017b724cbc9be5dbd6c1018076",
                     "taskName": "联调测试计划1（请勿删除修改）965194c3e0fe4d42b96fbd6536c2b59d"
                 },
@@ -52,7 +61,7 @@
                             "orderNo": 0,
                             "pointName": "联调巡更点01",
                             "resultType": "0",
-                            "taskPointID": "ca484c9fe94c456d909ee5239b705651"
+                            "taskPointID": "ca484c9fe94c456de909ee5239b705651"
                         },
                         {
                             "cardNumber": "11",
@@ -80,8 +89,8 @@
                         }
                     ],
                     "deviceID": "10012017020000000000",
-                    "startTime": "2018-01-27 03:30:00",
-                    "endTime": "2018-01-27 04:30:00",
+                    "startTime": "2018-02-06 16:58:40",
+                    "endTime": "2018-02-06 16:58:50",
                     "taskID": "1bd1eb9c0c814994a7d12125030d69f2",
                     "taskName": "联调测试计划1（请勿删除修改）24ce9daf897c418782aec47eb1c7e6fc"
                 },
@@ -120,8 +129,8 @@
                         }
                     ],
                     "deviceID": "10012017020000000000",
-                    "startTime": "2018-01-27 06:30:00",
-                    "endTime": "2018-01-27 08:30:00",
+                    "startTime": "2018-02-27 06:30:00",
+                    "endTime": "2018-02-27 08:30:00",
                     "taskID": "c596cd909f004616842faa079e5a80a8",
                     "taskName": "联调测试计划1（请勿删除修改）da27c5ecd6e04ed3869cba07cbf4538a"
                 },
@@ -162,55 +171,11 @@
                         }
                     ],
                     "deviceID": "10012017020000000000",
-                    "startTime": "2018-01-27 09:00:00",
-                    "endTime": "2018-01-27 09:00:10",
+                    "startTime": "2018-02-27 09:00:00",
+                    "endTime": "2018-02-27 09:00:10",
                     "taskID": "87f4586086ca4ed2a9d4dddf76776b4c",
                     "taskName": "联调测试计划1（请勿删除修改）b0ae5c734abe4ee7861f87ac9a081a75"
-                },
-                {
-                    "PointArray": [],
-                    "deviceID": "10012017020000000000",
-                    "startTime": "2018-01-27 09:32:40",
-                    "endTime": "2018-01-27 09:33:10",
-                    "taskID": "2232343432423432",
-                    "taskName": "测试任务"
                 }
-                ,
-                                {
-                                    "PointArray": [],
-                                    "deviceID": "10012017020000000000",
-                                    "startTime": "2018-01-27 09:32:40",
-                                    "endTime": "2018-01-27 09:33:10",
-                                    "taskID": "2232343432423432",
-                                    "taskName": "测试任务"
-                                }
-                ,
-                                {
-                                    "PointArray": [],
-                                    "deviceID": "10012017020000000000",
-                                    "startTime": "2018-01-27 09:32:40",
-                                    "endTime": "2018-01-27 09:33:10",
-                                    "taskID": "2232343432423432",
-                                    "taskName": "测试任务"
-                                }
-                ,
-                                {
-                                    "PointArray": [],
-                                    "deviceID": "10012017020000000000",
-                                    "startTime": "2018-01-27 09:32:40",
-                                    "endTime": "2018-01-27 09:33:10",
-                                    "taskID": "2232343432423432",
-                                    "taskName": "测试任务"
-                                }
-                ,
-                                {
-                                    "PointArray": [],
-                                    "deviceID": "10012017020000000000",
-                                    "startTime": "2018-01-27 09:32:40",
-                                    "endTime": "2018-01-27 09:33:10",
-                                    "taskID": "2232343432423432",
-                                    "taskName": "测试任务"
-                                }
             ]
         }
     ]

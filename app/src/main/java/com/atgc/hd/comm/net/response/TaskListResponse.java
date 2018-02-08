@@ -3,6 +3,7 @@ package com.atgc.hd.comm.net.response;
 import android.support.annotation.NonNull;
 
 import com.atgc.hd.comm.utils.DateUtil;
+import com.atgc.hd.comm.utils.StringUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -15,7 +16,7 @@ import java.util.List;
 public class TaskListResponse implements Serializable {
     private List<TaskInfo> TaskArray;
 
-    public static class TaskInfo implements Serializable, Comparable<TaskListResponse.TaskInfo> {
+    public static class TaskInfo implements Serializable, Comparable<TaskInfo> {
         /**
          * 表示任务未执行
          */
@@ -122,6 +123,39 @@ public class TaskListResponse implements Serializable {
             this.inspectStatus = inspectStatus;
         }
 
+        public void initInspectStatus() {
+            // 结果类型 0：未巡查 1：正常（已巡查） 2：超时未巡查 3：超时已巡查
+            int countUnCheck = 0;
+            int countChecked = 0;
+            int countUnCheckException = 0;
+            int countCheckedException = 0;
+            for (PointInfo pointInfo : PointArray) {
+                String resultType = pointInfo.getResultType();
+                if ("0".equals(resultType)) {
+                    countUnCheck++;
+                } else if ("1".equals(resultType)) {
+                    countChecked++;
+                } else if ("2".equals(resultType)) {
+                    countUnCheckException++;
+                } else if ("3".equals(resultType)) {
+                    countCheckedException++;
+                }
+            }
+
+            // 0-有部分点未巡查
+            // 1-所有点已正常巡查
+            // 2-所有点已巡查但有异常点或其他异常情况
+            if (countUnCheck > 0 || countUnCheckException > 0) {
+                inspectStatus = "0";
+            } else if (countChecked == PointArray.size()) {
+                inspectStatus = "1";
+            } else if ((countChecked + countCheckedException) == PointArray.size()) {
+                inspectStatus = "2";
+            } else {
+                inspectStatus = "2";
+            }
+        }
+
         public void initTaskPeriod() {
             String start = getStartTime().substring(10, 16);
             String end = getEndTime().substring(10, 16);
@@ -175,15 +209,18 @@ public class TaskListResponse implements Serializable {
         private double latitude;
         // 卡号
         private String cardNumber;
-        // 结果类型 0：未巡查1：正常（已巡查） 2：超时未巡查 3：超时已巡查
+        // 结果类型 0：未巡查 1：正常（已巡查） 2：超时未巡查 3：超时已巡查
         private String resultType;
 
         // 实际打点时间 yyyy-MM-dd HH:mm:ss
-        private String pointTime = "--:--";
+        private String pointTime;
         // 最迟打点时间 yyyy-MM-dd HH:mm:ss
-        private String planTime = "--:--";
+        private String planTime;
 
         private boolean isChecked;
+
+        private String formatPointTime;
+        private String formatPlanTime;
 
         public String getTaskPointId() {
             return taskPointId;
@@ -258,7 +295,19 @@ public class TaskListResponse implements Serializable {
         }
 
         public String getPointTime() {
-            return pointTime;
+            return pointTime == null ? "" : pointTime;
+        }
+
+        public String getFormatPointTime() {
+            if (formatPointTime == null) {
+                if (StringUtils.isNotEmpty(pointTime)) {
+                    formatPointTime = pointTime.substring(11, 16);
+                    return formatPointTime;
+                }
+                return "--:--";
+            } else {
+                return formatPointTime;
+            }
         }
 
         public void setPointTime(String pointTime) {
@@ -267,6 +316,18 @@ public class TaskListResponse implements Serializable {
 
         public String getPlanTime() {
             return planTime;
+        }
+
+        public String getFormatPlanTime() {
+            if (formatPlanTime == null) {
+                if (StringUtils.isNotEmpty(planTime)) {
+                    formatPlanTime = planTime.substring(11, 16);
+                    return formatPlanTime;
+                }
+                return "--:--";
+            } else {
+                return formatPlanTime;
+            }
         }
 
         public void setPlanTime(String planTime) {
@@ -287,4 +348,5 @@ public class TaskListResponse implements Serializable {
     public void setTaskArray(List<TaskInfo> taskArray) {
         TaskArray = taskArray;
     }
+
 }

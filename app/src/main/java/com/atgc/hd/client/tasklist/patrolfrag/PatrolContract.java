@@ -22,12 +22,10 @@ public interface PatrolContract {
         void showFillReasonDialog(String taskStatus, String carryStatus);
 
         void refreshTaskList(List<TaskListEntity> entities);
-
-        void registerOnCurrentTaskListener(TaskHandContract.OnCurrentTaskListener listener);
     }
 
     interface IPresenterView {
-        void reportTaskStatus(String taskStatus, String carryStatus, String reason);
+        void reportTaskStatus(String taskStatus, String carryStatus, String reason, OnReportTaskListener listener);
 
         void onDestory();
     }
@@ -35,4 +33,9 @@ public interface PatrolContract {
     interface IPresenterModel {
     }
 
+    interface OnReportTaskListener {
+        void onReportSuccess();
+
+        void onReportFail(String msg);
+    }
 }

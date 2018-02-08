@@ -24,6 +24,10 @@ public class StringUtils {
         return string == null || string.length() == 0;
     }
 
+    public static boolean isNotEmpty(String string) {
+        return !isEmpty(string);
+    }
+
     /**
      * 生成长度为10的随机字符串
      * <p>指定长度使用：{@link #getRandomString(int)}

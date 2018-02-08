@@ -15,4 +15,8 @@ public class EventMessage {
         this.eventTag = eventTag;
     }
 
+    public EventMessage(String eventTag, Object object) {
+        this.eventTag = eventTag;
+        this.object = object;
+    }
 }

@@ -6,7 +6,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import io.netty.util.internal.StringUtil;
 
 /**
  * <p>描述： 日期工具类
@@ -34,7 +33,7 @@ public class DateUtil {
 
     /**
      * 当前手机系统时间
-     * <p>注：若时间需要上传到服务器端，请使用{@link InnerClock#getInnerClockDate()}
+     * <p>注：若时间需要上传到服务器端，请使用{@link InnerClock#nowDate()}
      * @param format 指定格式
      * @return
      */
@@ -43,6 +42,23 @@ public class DateUtil {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         return sdf.format(date);
     }
+    public static Date currentDate() {
+        return currentDate(DateUtil.DATE_TIME_PATTERN);
+    }
+
+    public static Date currentDate(String format) {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        Date result = null;
+        try {
+            String time = sdf.format(date);
+            result = sdf.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 
     /**
      * 日期相加减天数
@@ -75,7 +91,7 @@ public class DateUtil {
      * @return
      * @throws ParseException
      */
-    public static String dateFormat(Date date, String pattern) throws ParseException {
+    public static String dateFormat(Date date, String pattern) {
         if (StringUtils.isEmpty(pattern)) {
             pattern = DateUtil.DATE_PATTERN;
         }

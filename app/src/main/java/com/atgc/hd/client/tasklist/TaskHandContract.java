@@ -1,10 +1,9 @@
 package com.atgc.hd.client.tasklist;
 
-import com.atgc.hd.client.tasklist.patrolfrag.PatrolContract;
-import com.atgc.hd.comm.net.response.TaskListResponse;
+import android.nfc.Tag;
+import android.util.SparseArray;
 
-import java.io.Serializable;
-import java.util.List;
+import com.atgc.hd.comm.net.response.TaskListResponse;
 
 /**
  * <p>描述：
@@ -13,26 +12,27 @@ import java.util.List;
 public interface TaskHandContract {
     void initData();
 
-    void registerOnCurrentTaskListener(OnCurrentTaskListener listener);
-
-    void registerOnAllTaskListener(OnAllTaskLlistener listener);
+    void handleNfcTag(Tag nfcTag);
 
     void onDestroy();
 
     interface OnCurrentTaskListener {
-        void onReceiveCurrentTask(TaskListResponse.TaskInfo taskInfo);
+        void onReceiveTask(TaskListResponse.TaskInfo taskInfo);
+
+        void onReceiveNfcCardNum(String cardNum);
 
         TaskListResponse.TaskInfo stopTask();
     }
 
     interface OnAllTaskLlistener {
-        void onReceiveAllTask(List<TaskListResponse.TaskInfo> taskInfos);
+        void onReceiveAllTask(SparseArray<TaskListResponse.TaskInfo> taskInfos);
 
         void onCurrentTask(String taskId);
     }
 
-    interface IView{
+    interface IView {
         void showProgressDialog(String msg);
+
         void dimssProgressDialog();
     }
 }

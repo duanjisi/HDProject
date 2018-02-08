@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_point_position"
+        android:id="@+id/tv_place_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="24dp"
@@ -29,9 +29,23 @@
         android:textColor="@color/dark_blue"
         android:textSize="@dimen/text_size_xxxlarge"
         android:textStyle="bold"
+        android:visibility="invisible"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_check_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="08:05"
+        android:textColor="@color/dark_blue"
+        android:textSize="@dimen/text_size_xxxlarge"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tv_place_holder"
+        app:layout_constraintStart_toStartOf="@+id/tv_place_holder"
+        app:layout_constraintTop_toTopOf="@+id/tv_place_holder" />
 
     <TextView
         android:id="@+id/tv_point_status"
@@ -115,9 +129,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_point_position"
-        app:layout_constraintStart_toEndOf="@+id/tv_point_position"
-        app:layout_constraintTop_toTopOf="@+id/tv_point_position"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_place_holder"
+        app:layout_constraintStart_toEndOf="@+id/tv_place_holder"
+        app:layout_constraintTop_toTopOf="@+id/tv_place_holder"
         app:srcCompat="@drawable/ic_green_checked" />
 
     <ImageView
@@ -145,9 +159,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        app:layout_constraintEnd_toEndOf="@+id/tv_point_position"
-        app:layout_constraintStart_toStartOf="@+id/tv_point_position"
-        app:layout_constraintTop_toBottomOf="@+id/tv_point_position"
-        android:src="@drawable/location_start" />
+        android:src="@drawable/location_start"
+        app:layout_constraintEnd_toEndOf="@+id/tv_place_holder"
+        app:layout_constraintStart_toStartOf="@+id/tv_place_holder"
+        app:layout_constraintTop_toBottomOf="@+id/tv_place_holder" />
 
 </android.support.constraint.ConstraintLayout>

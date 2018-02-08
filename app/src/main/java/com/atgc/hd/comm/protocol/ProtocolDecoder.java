@@ -2,6 +2,7 @@ package com.atgc.hd.comm.protocol;
 
 import com.alibaba.fastjson.JSONObject;
 import com.atgc.hd.comm.utils.DateUtil;
+import com.atgc.hd.comm.utils.DigitalUtils;
 import com.atgc.hd.comm.utils.StringUtils;
 import com.orhanobut.logger.Logger;
 
@@ -149,6 +150,9 @@ public class ProtocolDecoder {
      */
     public static String parseContent(byte[] bytes) {
 
+        String origin = DigitalUtils.toHexString(bytes);
+
+//        Logger.e(bytes.length + "原始数据：\n" + origin);
 
         ByteBuf byteBuf = Unpooled.buffer(bytes.length);
         byteBuf.writeBytes(bytes);
@@ -163,7 +167,6 @@ public class ProtocolDecoder {
         //内容长度
         int length = Integer.valueOf(contentLength);
 
-        Logger.e("------------------------" + bytes.length + "  " + length);
         // 读取消息内容
         String content;
 
@@ -172,7 +175,6 @@ public class ProtocolDecoder {
         } else {
             content = parseString(byteBuf, length);
         }
-        Logger.e("------------------------" + content);
 
         byteBuf.readableBytes();
         byteBuf.clear();

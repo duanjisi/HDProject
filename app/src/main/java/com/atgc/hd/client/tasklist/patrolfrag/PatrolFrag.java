@@ -5,23 +5,17 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseFragment;
-import com.atgc.hd.client.tasklist.TaskHandContract;
-import com.atgc.hd.client.tasklist.TaskListActivity;
 import com.atgc.hd.client.tasklist.patrolfrag.adapter.PatrolAdapter;
 import com.atgc.hd.client.tasklist.taskfrag.adapter.TaskListEntity;
-import com.atgc.hd.comm.net.response.TaskListResponse;
+import com.atgc.hd.comm.utils.StringUtils;
 import com.atgc.hd.comm.widget.NiftyDialog;
-import com.orhanobut.logger.Logger;
 
 import java.util.List;
-
-import de.greenrobot.event.EventBus;
-import de.greenrobot.event.Subscribe;
 
 /**
  * <p>描述： 当天巡更任务列表
@@ -62,32 +56,50 @@ public class PatrolFrag extends BaseFragment implements PatrolContract.IView {
         patrolAdapter = new PatrolAdapter(parentActivity, false);
         taskListRecyclerView.setAdapter(patrolAdapter);
 
-        tvTips = findViewById(R.id.tv_error_tips);
+        View view = inflate(R.layout.layout_empty_data);
+        patrolAdapter.setEmptyView(view);
     }
 
-    private TextView tvTips;
     @Override
     public void showTips(final String tips) {
-        parentActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                tvTips.setText(tips);
-            }
-        });
     }
 
     @Override
     public void showFillReasonDialog(final String taskStatus, final String carryStatus) {
-        NiftyDialog.create(parentActivity)
-                .setCustomView(R.layout.layout_reason, parentActivity)
-                .withCustomViewOnClick(R.id.btn_commit, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(parentActivity, "提交", Toast.LENGTH_LONG).show();
+        View contentView = inflate(R.layout.layout_reason);
+        final EditText edtReason = findViewById(contentView, R.id.edt_reason);
 
+        NiftyDialog.create(parentActivity)
+                .setCustomView(contentView)
+                .withCustomViewOnClick(R.id.btn_commit, new NiftyDialog.OnClickActionListener() {
+                    @Override
+                    public void onClick(NiftyDialog dialog, View clickView) {
+                        String reason = edtReason.getText().toString();
+                        if (StringUtils.isEmpty(reason)) {
+                            Toast.makeText(parentActivity, "请填写异常原因", Toast.LENGTH_SHORT).show();
+                        } else {
+                            reportTaskStatus(dialog, reason);
+                        }
+                    }
+
+                    private void reportTaskStatus(final NiftyDialog dialog, String reason) {
+                        iPresenter.reportTaskStatus(taskStatus, carryStatus, reason, new PatrolContract.OnReportTaskListener() {
+
+                            @Override
+                            public void onReportSuccess() {
+                                dialog.dismiss();
+                            }
+
+                            @Override
+                            public void onReportFail(String msg) {
+
+                            }
+                        });
                     }
                 })
+                .isCancelableOnTouchOutside(false)
                 .show();
+
     }
 
     @Override
@@ -95,20 +107,9 @@ public class PatrolFrag extends BaseFragment implements PatrolContract.IView {
         parentActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (entities == null || entities.isEmpty()) {
-                    patrolAdapter.setNewData(null);
-                    Toast.makeText(parentActivity, "该时间点暂无任务...", Toast.LENGTH_LONG).show();
-                } else {
-                    patrolAdapter.setNewData(entities);
-                }
+                patrolAdapter.setNewData(entities);
             }
         });
-    }
-
-    @Override
-    public void registerOnCurrentTaskListener(TaskHandContract.OnCurrentTaskListener listener) {
-        TaskListActivity aty = (TaskListActivity) parentActivity;
-        aty.registerOnCurrentTaskListener(listener);
     }
 
     @Override
@@ -116,4 +117,7 @@ public class PatrolFrag extends BaseFragment implements PatrolContract.IView {
         iPresenter.onDestory();
         super.onDestroy();
     }
+
+
+
 }

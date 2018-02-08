@@ -241,12 +241,17 @@ public class NiftyDialog extends Dialog implements DialogInterface {
      * @param targetId
      * @return
      */
-    public NiftyDialog withCustomViewOnClick(int targetId, View.OnClickListener onClickListener) {
+    public NiftyDialog withCustomViewOnClick(int targetId, final NiftyDialog.OnClickActionListener listener) {
         if (mFrameLayoutCustomView == null) {
             return this;
         } else {
             View target = mFrameLayoutCustomView.findViewById(targetId);
-            target.setOnClickListener(onClickListener);
+            target.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onClick(NiftyDialog.this, v);
+                }
+            });
         }
         return this;
     }

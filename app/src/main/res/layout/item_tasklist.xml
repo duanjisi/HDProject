@@ -6,7 +6,7 @@
     android:background="@color/white">
 
     <TextView
-        android:id="@+id/tv_point_position"
+        android:id="@+id/tv_check_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -29,8 +29,8 @@
         android:textSize="@dimen/text_size_medium"
         app:layout_constraintEnd_toStartOf="@+id/tv_task_start_time"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tv_point_position"
-        app:layout_constraintTop_toTopOf="@+id/tv_point_position" />
+        app:layout_constraintStart_toEndOf="@+id/tv_check_time"
+        app:layout_constraintTop_toTopOf="@+id/tv_check_time" />
 
     <TextView
         android:id="@+id/tv_task_title"
@@ -54,7 +54,7 @@
         android:id="@+id/tv_task_start_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:text="08：35"
         android:textColor="@color/meta_text_primary"
         android:textSize="@dimen/text_size_medium"

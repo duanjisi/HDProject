@@ -17,7 +17,7 @@ public class ReportTaskStatusRequest extends BaseDataRequest<String> {
     private String userId;
     // 任务ID
     private String taskID;
-    // 任务状态1：正在执行 2：时间范围内结束任务 3超出时间，强制结束
+    // 任务状态 0:未下发 1: 未执行 2:正在执行 3:时间范围内结束任务 4：强制结束任务 5:解除异常
     private String taskStatus;
     // 结果状态 0正常  1异常（巡查点有超时）
     private String carryStatus;

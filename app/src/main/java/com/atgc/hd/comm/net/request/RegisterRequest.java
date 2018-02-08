@@ -2,6 +2,7 @@ package com.atgc.hd.comm.net.request;
 
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.net.BaseDataRequest;
+import com.atgc.hd.comm.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,8 @@ import java.util.Map;
 
 public class RegisterRequest extends BaseDataRequest<String> {
 
+    private String deviceID;
+
     @Override
     protected boolean isParse() {
         return false;
@@ -21,8 +24,7 @@ public class RegisterRequest extends BaseDataRequest<String> {
     protected Map<String, String> getParams() {
         HashMap<String, String> map = new HashMap<>();
         map.put("Type", "1");
-        map.put("deviceID", "10012017020000000000");
-//        map.put("deviceID", "10012017f6d0101be5ed");
+        map.put("deviceID", deviceID);
         map.put("manufacturer", "XXX厂商");
         map.put("macNO", "102");
         map.put("locationAddr", "南门停车场入口");
@@ -38,5 +40,13 @@ public class RegisterRequest extends BaseDataRequest<String> {
     @Override
     protected String getCommand() {
         return DeviceCmd.REGISTER;
+    }
+
+    public String getDeviceID() {
+        return deviceID;
+    }
+
+    public void setDeviceID(String deviceID) {
+        this.deviceID = deviceID;
     }
 }

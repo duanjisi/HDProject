@@ -1,5 +1,9 @@
 package com.atgc.hd.client.tasklist;
 
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -14,13 +18,18 @@ import com.atgc.hd.client.platform.PlatformInfoActivity;
 import com.atgc.hd.client.setting.SettingActivity;
 import com.atgc.hd.client.tasklist.adapter.ContentFragAdapter;
 import com.atgc.hd.comm.widget.PagerSlidingTabStrip;
+import com.atgc.hd.entity.EventMessage;
+
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
 /**
  * <p>描述： 任务列表界面
  * <p>作者： liangguokui 2018/1/17
  */
 public class TaskListActivity extends BaseActivity implements TaskHandContract.IView {
-    private int currentFragmentPosition;
+    private NfcAdapter mNfcAdapter;
+    private PendingIntent mPendingIntent;
 
     private ContentFragAdapter fragAdapter;
     private PagerSlidingTabStrip pagerTitle;
@@ -46,6 +55,7 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
 
         addFragmentInitListener();
 
+        EventBus.getDefault().register(this);
     }
 
     private void initContentFragments() {
@@ -65,8 +75,7 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
 
             @Override
             public void onPageSelected(int position) {
-                currentFragmentPosition = position;
-                BaseFragment fragment = fragAdapter.getItem(currentFragmentPosition);
+                BaseFragment fragment = fragAdapter.getItem(position);
                 fragment.onFragmentSelected();
             }
 
@@ -99,6 +108,8 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
             @Override
             public void onClick(View v) {
                 // TODO 调用接口刷新巡更数据
+                TaskHandModel model = (TaskHandModel) taskHandContract;
+                model.demoNfcCardNum("636B3EA4928804008500000004134501");
             }
         });
 
@@ -128,36 +139,63 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
         }, false);
     }
 
-    public void showCurrentTaskPage() {
-        contentViewPager.setCurrentItem(0);
-    }
-
-    /**
-     * 当前任务页注册监听
-     *
-     * @param listener
-     */
-    public void registerOnCurrentTaskListener(TaskHandContract.OnCurrentTaskListener listener) {
-        taskHandContract.registerOnCurrentTaskListener(listener);
-    }
-
-    /**
-     * 任务列表页面注册监听
-     *
-     * @param listener
-     */
-    public void registerOnAllTaskListener(TaskHandContract.OnAllTaskLlistener listener) {
-        taskHandContract.registerOnAllTaskListener(listener);
-    }
-
     @Override
     public void dimssProgressDialog() {
         dismissProgressBarDialog();
     }
 
     @Override
+    public void onNewIntent(Intent intent) {
+        //1.获取Tag对象
+        Tag nfcTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+        taskHandContract.handleNfcTag(nfcTag);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // 此处adapter需要重新获取，否则无法获取message
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        // 当截获NFC消息，就会通过PendingIntent调用窗口
+        Intent intent = new Intent(this, getClass());
+        mPendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+    }
+
+    /**
+     * 获得焦点，按钮可以点击
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        //设置处理优于所有其他NFC的处理
+        if (mNfcAdapter != null)
+            mNfcAdapter.enableForegroundDispatch(this, mPendingIntent, null, null);
+    }
+
+    /**
+     * 暂停Activity，界面获取焦点，按钮可以点击
+     */
+    @Override
+    public void onPause() {
+        super.onPause();
+        //恢复默认状态
+        if (mNfcAdapter != null)
+            mNfcAdapter.disableForegroundDispatch(this);
+    }
+
+    @Override
     protected void onDestroy() {
         taskHandContract.onDestroy();
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
+    }
+
+    @Subscribe
+    public void switchTaskPage(EventMessage message) {
+        if ("switch_task_page".equals(message.eventTag)) {
+            Integer pageIndex = (Integer) message.object;
+            contentViewPager.setCurrentItem(pageIndex.intValue());
+        }
     }
 }

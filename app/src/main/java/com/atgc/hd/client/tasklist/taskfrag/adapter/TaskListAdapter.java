@@ -47,7 +47,7 @@ public class TaskListAdapter extends MultiBaseAdapter<TaskListEntity> {
     }
 
     protected void convertGroupItem(ViewHolder holder, TaskListEntity data, int position) {
-        holder.setText(R.id.tv_point_position, data.getGroupPosition());
+        holder.setText(R.id.tv_check_time, data.getGroupPosition());
         holder.setText(R.id.tv_task_title, data.getTaskInfo().getTaskName());
         holder.setText(R.id.tv_task_peroid, data.getTaskInfo().getTaskPeriod());
 
@@ -93,7 +93,7 @@ public class TaskListAdapter extends MultiBaseAdapter<TaskListEntity> {
 
         ImageView ivPointCheck = holder.getView(R.id.iv_dot0);
         TextView tvPointStatus = holder.getView(R.id.tv_point_status);
-        TextView tvCheckedTime = holder.getView(R.id.tv_point_position);
+        TextView tvCheckedTime = holder.getView(R.id.tv_check_time);
         // 未巡查
         if ("0".equals(data.getPointInfo().getResultType())) {
             ivPointCheck.setImageResource(R.drawable.ic_gray_uncheck);
@@ -134,6 +134,8 @@ public class TaskListAdapter extends MultiBaseAdapter<TaskListEntity> {
 
         holder.setText(R.id.tv_location_name, data.getPointInfo().getPointName());
         holder.setText(R.id.tv_timeline, data.getPointInfo().getPlanTime());
+        holder.setText(R.id.tv_check_time, data.getPointInfo().getFormatPointTime());
+        holder.setText(R.id.tv_timeline, data.getPointInfo().getFormatPlanTime());
 
     }
 

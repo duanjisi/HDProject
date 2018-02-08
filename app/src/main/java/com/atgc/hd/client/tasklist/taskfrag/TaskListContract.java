@@ -17,8 +17,6 @@ public interface TaskListContract {
     }
 
     interface IView {
-        void registerOnAllTaskListener(TaskHandContract.OnAllTaskLlistener listener);
-
         void refreshTaskList(List<TaskListEntity> taskArray);
     }
 

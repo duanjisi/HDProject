@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/spacing_20x"
+        android:drawableTop="@drawable/background_empty_data"
+        android:drawablePadding="@dimen/spacing_12x"
+        android:gravity="center_horizontal"
+        android:text="暂无任务"
+        android:textColor="@color/meta_text_secondary"
+        android:textSize="24sp" />
+</RelativeLayout>

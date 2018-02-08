@@ -21,7 +21,7 @@ public class ReportPointStatusRequest extends BaseDataRequest<String> {
     private String pointTime;
 
     private String planTime;
-    // 结果类型 2.已巡查 3：超时未巡查 4.超时已巡查
+    // 结果类型 1.已巡查 2：超时未巡查 3.超时已巡查
     private String historyPointStatus;
 
     @Override
