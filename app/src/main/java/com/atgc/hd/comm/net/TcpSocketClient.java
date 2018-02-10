@@ -11,9 +11,8 @@ package com.atgc.hd.comm.net;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.Constants;
-import com.atgc.hd.comm.protocol.ProtocolBody;
+import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.protocol.ProtocolDecoder;
 import com.atgc.hd.comm.utils.FileUtil;
 import com.atgc.hd.comm.utils.StringUtils;
@@ -99,8 +98,8 @@ public class TcpSocketClient implements Runnable {
                 public void onReceive(byte[] bytes) {
                     if (bytes != null && bytes.length != 0) {
                         final String content = ProtocolDecoder.parseContent(bytes);
-                        Logger.e("content: " + content);
                         if (!TextUtils.isEmpty(content)) {
+                            Logger.e("content:\n" + content);
                             PreRspPojo preRspPojo = JSON.parseObject(content, PreRspPojo.class);
                             preRspPojo.originJson = content;
                             if (listener != null) {
@@ -212,6 +211,10 @@ public class TcpSocketClient implements Runnable {
             Logger.d("已找到配置文件：" + cmd + "_req.txt");
         }
         PreRspPojo preRspPojo = JSON.parseObject(demoResop, PreRspPojo.class);
+        if (listener != null) {
+            preRspPojo.originJson = demoResop;
+            listener.onReceive(preRspPojo);
+        }
         if (mapListener.containsKey(preRspPojo.Command)) {
             OnReceiveListener listener = mapListener.get(preRspPojo.Command);
             listener.onReceive(preRspPojo.Command, preRspPojo.Data);

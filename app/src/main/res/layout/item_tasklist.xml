@@ -6,7 +6,7 @@
     android:background="@color/white">
 
     <TextView
-        android:id="@+id/tv_check_time"
+        android:id="@+id/tv_position"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_point_status"
+        android:id="@+id/tv_task_status"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -29,8 +29,8 @@
         android:textSize="@dimen/text_size_medium"
         app:layout_constraintEnd_toStartOf="@+id/tv_task_start_time"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tv_check_time"
-        app:layout_constraintTop_toTopOf="@+id/tv_check_time" />
+        app:layout_constraintStart_toEndOf="@+id/tv_position"
+        app:layout_constraintTop_toTopOf="@+id/tv_position" />
 
     <TextView
         android:id="@+id/tv_task_title"
@@ -47,8 +47,8 @@
         android:textSize="@dimen/text_size_medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/tv_point_status"
-        app:layout_constraintTop_toBottomOf="@+id/tv_point_status" />
+        app:layout_constraintStart_toStartOf="@+id/tv_task_status"
+        app:layout_constraintTop_toBottomOf="@+id/tv_task_status" />
 
     <TextView
         android:id="@+id/tv_task_start_time"
@@ -58,9 +58,9 @@
         android:text="08：35"
         android:textColor="@color/meta_text_primary"
         android:textSize="@dimen/text_size_medium"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_point_status"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_task_status"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_point_status" />
+        app:layout_constraintTop_toTopOf="@+id/tv_task_status" />
 
     <TextView
         android:id="@+id/tv_task_finish_time"

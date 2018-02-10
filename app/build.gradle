@@ -65,7 +65,7 @@ dependencies {
     compile 'com.github.vilyever:AndroidSocketClient:3.0.3'
     implementation files('libs/BaiduLBS_Android.jar')
     compile 'net.jodah:typetools:0.4.0'
-    compile 'com.alibaba:fastjson:1.2.9'
+    compile 'com.alibaba:fastjson:1.2.46'
     implementation files('libs/universal-image-loader-1.9.5.jar')
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.jakewharton:butterknife:8.4.0'

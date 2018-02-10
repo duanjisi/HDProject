@@ -165,8 +165,8 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
                 PreferenceUtils.putBoolean(this, PrefKey.REGISTER, true);
                 EventBus.getDefault().post(new ActionEntity(Constants.Action.REGISTER_SUCCESSED, 0));
 
-                startHeartBeat();
-                startSendGps();
+//                startHeartBeat();
+//                startSendGps();
                 Logger.i("info===============设备注册成功");
             } else if (preRspPojo.Command.equals(DeviceCmd.HEART_BEAT)) {
                 EventBus.getDefault().post(new ActionEntity(Constants.Action.HEART_BEAT, 0));

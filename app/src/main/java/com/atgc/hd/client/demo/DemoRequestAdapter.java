@@ -22,6 +22,6 @@ public class DemoRequestAdapter extends BaseSingleAdapter<String> {
 
     @Override
     protected void convert(ViewHolder holder, String data, int position) {
-        holder.setText(R.id.tv_point_status, data);
+        holder.setText(R.id.tv_task_status, data);
     }
 }

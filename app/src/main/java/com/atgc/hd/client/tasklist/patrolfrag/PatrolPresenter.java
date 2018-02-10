@@ -8,6 +8,7 @@ import com.atgc.hd.comm.local.Coordinate;
 import com.atgc.hd.comm.local.LocationService;
 import com.atgc.hd.comm.local.LocationService.ILocationListener;
 import com.atgc.hd.comm.net.BaseDataRequest;
+import com.atgc.hd.comm.net.request.GPSRequest;
 import com.atgc.hd.comm.net.request.ReportPointStatusRequest;
 import com.atgc.hd.comm.net.request.ReportTaskStatusRequest;
 import com.atgc.hd.comm.net.response.TaskListResponse;
@@ -20,6 +21,7 @@ import com.orhanobut.logger.Logger;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -306,13 +308,13 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
         request.send(new BaseDataRequest.RequestCallback() {
             @Override
             public void onSuccess(Object pojo) {
-                Logger.e("上报任务状态成功（taskStatus:" + taskStatus + " carryStatus:" + carryStatus + "）");
+                Logger.e("上报任务状态成功（initTaskStatus:" + taskStatus + " carryStatus:" + carryStatus + "）");
                 if (listener != null) {
                     listener.onReportSuccess();
                 }
 
                 // 3:时间范围内结束任务 4：强制结束任务
-                if ("3".equals(taskStatus) && "1".equals(taskStatus)) {
+                if ("3".equals(taskStatus) && "1".equals(carryStatus)) {
                     // 通知TaskHandModel结束当前任务，TaskHandModel.onTaskFinish()接收
                     sendEventMessage("on_task_finish");
                 }
@@ -324,7 +326,7 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
 
             @Override
             public void onFailure(String msg) {
-                Logger.e("上报任务状态失败（taskStatus:" + taskStatus + " carryStatus:" + carryStatus + "）");
+                Logger.e("上报任务状态失败（initTaskStatus:" + taskStatus + " carryStatus:" + carryStatus + "）");
                 if (listener != null) {
                     listener.onReportFail(msg);
                 }

@@ -47,6 +47,8 @@ public class TaskListResponse implements Serializable {
 
         private String taskPeriod;
 
+        private String taskStatus;
+
         // 0-有部分点未巡查 1-所有点已正常巡查 2-所有点已巡查但有异常点
         private String inspectStatus = "1";
 
@@ -163,29 +165,42 @@ public class TaskListResponse implements Serializable {
             setTaskPeriod(start + " -" + end);
         }
 
+        public String getTaskStatus() {
+            return taskStatus;
+        }
+
+        public void setTaskStatus(String taskStatus) {
+            this.taskStatus = taskStatus;
+        }
+
         /**
          * 根据传入的时间判断当前任务的状态
          *
          * @param currentDate 当前时间 yyyy-MM-dd HH:mm:ss
          * @return
          */
-        public String taskStatus(Date currentDate) {
+        public String initTaskStatus(Date currentDate) {
+            if ("1".equals(inspectStatus) || "2".equals(inspectStatus)) {
+                taskStatus = STATUS_DONE;
+                return taskStatus;
+            }
 
             Date startDate = DateUtil.dateParse(startTime, DateUtil.DATE_TIME_PATTERN);
             Date endDate = DateUtil.dateParse(endTime, DateUtil.DATE_TIME_PATTERN);
 
             // 任务未开始
             if (currentDate.before(startDate)) {
-                return STATUS_UNDO;
+                taskStatus = STATUS_UNDO;
             }
             // 任务进行中
             else if (currentDate.after(startDate) && currentDate.before(endDate)) {
-                return STATUS_DOING;
+                taskStatus = STATUS_DOING;
             }
             // 任务已过最后时间
             else {
-                return STATUS_DONE;
+                taskStatus = STATUS_DONE;
             }
+            return taskStatus;
         }
 
         @Override

@@ -35,7 +35,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_check_time"
+        android:id="@+id/tv_position"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -48,7 +48,7 @@
         app:layout_constraintTop_toTopOf="@+id/tv_place_holder" />
 
     <TextView
-        android:id="@+id/tv_point_status"
+        android:id="@+id/tv_task_status"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginRight="2.3dp"

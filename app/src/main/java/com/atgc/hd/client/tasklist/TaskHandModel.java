@@ -10,6 +10,7 @@ import com.atgc.hd.comm.clock.InnerClock;
 import com.atgc.hd.comm.config.DeviceParams;
 import com.atgc.hd.comm.net.BaseDataRequest;
 import com.atgc.hd.comm.net.TcpSocketClient;
+import com.atgc.hd.comm.net.request.GPSRequest;
 import com.atgc.hd.comm.net.request.GetTaskRequest;
 import com.atgc.hd.comm.net.response.TaskListResponse;
 import com.atgc.hd.comm.net.response.TaskListResponse.TaskInfo;
@@ -19,11 +20,9 @@ import com.atgc.hd.entity.NfcCard;
 import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -154,14 +153,13 @@ public class TaskHandModel implements TaskHandContract {
 
         for (int i = 0, count = taskListResponse.getTaskArray().size(); i < count; i++) {
             TaskInfo taskInfo = taskListResponse.getTaskArray().get(i);
-            taskInfo.initInspectStatus();
             taskInfo.initTaskPeriod();
-
-            Logger.e(taskInfo.getStartTime());
+            taskInfo.initInspectStatus();
+            taskInfo.initTaskStatus(currentTime);
 
             arrayTaskInfos.append(i, taskInfo);
 
-            String taskStatus = taskInfo.taskStatus(currentTime);
+            String taskStatus = taskInfo.getTaskStatus();
             // 任务未开始
             if (TaskInfo.STATUS_UNDO.equals(taskStatus)) {
                 if (currentTaskIndex == -1) {
@@ -249,8 +247,12 @@ public class TaskHandModel implements TaskHandContract {
     private void startTask() {
         if (-1 < currentTaskIndex && currentTaskIndex < arrayTaskInfos.size()) {
             TaskInfo currentTaskInfo = arrayTaskInfos.get(currentTaskIndex);
+            currentTaskInfo.setTaskStatus(TaskInfo.STATUS_DOING);
             onCurrentTaskListener.onReceiveTask(currentTaskInfo);
+
+            onAllTaskListener.onReceiveAllTask(arrayTaskInfos);
             onAllTaskListener.onCurrentTask(currentTaskInfo.getTaskID());
+
         } else {
             noTaskOnGoing();
         }
@@ -267,8 +269,9 @@ public class TaskHandModel implements TaskHandContract {
 
     private void actionStopTask() {
         // 巡更任务时间已到，上交巡更任务状态数据
-        TaskListResponse.TaskInfo newTaskInfo = onCurrentTaskListener.stopTask();
+        TaskInfo newTaskInfo = onCurrentTaskListener.stopTask();
         newTaskInfo.initInspectStatus();
+        newTaskInfo.setTaskStatus(TaskInfo.STATUS_DONE);
 
         arrayTaskInfos.setValueAt(currentTaskIndex, newTaskInfo);
 
@@ -278,11 +281,6 @@ public class TaskHandModel implements TaskHandContract {
     }
 
     private Date currentTime() {
-
-//        String currentTime = DateUtil.currentTime();
-//        String currentTime = "2018-01-27 01:30:30";
-//        Date currentDate = DateUtil.dateParse(currentTime, DateUtil.HOUR_PATTERN);
-//        return currentDate;
         return InnerClock.instance().nowDate();
     }
 

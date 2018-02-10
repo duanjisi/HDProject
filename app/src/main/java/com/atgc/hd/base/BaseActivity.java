@@ -17,7 +17,6 @@ import android.widget.ViewSwitcher;
 
 import com.atgc.hd.R;
 import com.atgc.hd.client.widgethelper.BarHelper;
-
 import com.atgc.hd.comm.utils.SysManager;
 import com.atgc.hd.comm.widget.NiftyDialog;
 
@@ -183,19 +182,30 @@ public abstract class BaseActivity extends AppCompatActivity {
         showProgressDialog("请稍候...");
     }
 
-    public void showProgressDialog(String msg) {
-        progressDialog = NiftyDialog.create(this);
-        progressDialog
-                .isCancelableOnTouchOutside(true)
-                .setCustomView(R.layout.request_progress_layout, this)
-                .withCustomViewMessage(R.id.tv_content, msg)
-                .show();
+    public void showProgressDialog(final String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog = NiftyDialog.create(BaseActivity.this);
+                progressDialog
+                        .isCancelableOnTouchOutside(true)
+                        .setCustomView(R.layout.request_progress_layout, BaseActivity.this)
+                        .withCustomViewMessage(R.id.tv_content, msg)
+                        .show();
+            }
+        });
+
     }
 
     public void dismissProgressBarDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                }
+            }
+        });
     }
 
     public static <T extends View> T findViewById(View view, int id) {

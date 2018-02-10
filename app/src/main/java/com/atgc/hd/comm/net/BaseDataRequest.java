@@ -45,6 +45,7 @@ public abstract class BaseDataRequest<T> implements TcpSocketClient.TcpListener 
 
     public void send(final RequestCallback callback) {
         if (Constants.isDemo) {
+            this.callback = callback;
             tcpSocketClient.demoSendMsg(getCommand());
 
         } else {

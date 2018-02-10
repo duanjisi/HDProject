@@ -29,6 +29,8 @@ public class PatrolAdapter extends TaskListAdapter {
 
     @Override
     protected void convertGroupItem(ViewHolder holder, TaskListEntity data, int position) {
+        holder.getConvertView().setSelected(true);
+
         holder.setText(R.id.tv_task_title, data.getTaskInfo().getTaskName());
         holder.setText(R.id.tv_task_peroid, data.getTaskInfo().getTaskPeriod());
 

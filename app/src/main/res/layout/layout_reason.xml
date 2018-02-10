@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/spacing_2x">
 
     <TextView
-        android:id="@+id/tv_point_status"
+        android:id="@+id/tv_task_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
