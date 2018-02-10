@@ -6,15 +6,13 @@ import android.support.annotation.Nullable;
 
 import com.atgc.hd.MainActivity;
 import com.atgc.hd.R;
-import com.atgc.hd.activity.SettingActivity;
 import com.atgc.hd.base.BaseActivity;
+import com.atgc.hd.client.setting.SettingActivity;
 import com.atgc.hd.client.tasklist.TaskListActivity;
 import com.atgc.hd.comm.PrefKey;
 import com.atgc.hd.comm.Utils;
 import com.atgc.hd.comm.service.DeviceBootService;
 import com.atgc.hd.comm.utils.PreferenceUtils;
-import com.atgc.hd.widget.xlistview.Util;
-import com.orhanobut.logger.Logger;
 
 import java.util.Timer;
 import java.util.TimerTask;

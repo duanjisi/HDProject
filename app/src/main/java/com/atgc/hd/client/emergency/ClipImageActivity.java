@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.atgc.hd.activity;
+package com.atgc.hd.client.emergency;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -25,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atgc.hd.R;
-import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.comm.utils.FileUtil;
 import com.atgc.hd.widget.ClipImageView;
 

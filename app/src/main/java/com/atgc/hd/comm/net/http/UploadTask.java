@@ -96,7 +96,7 @@ public class UploadTask implements Runnable {
                     }
                 });
                 //这里是测试时为了演示进度,休眠500毫秒，正常应去掉
-                Thread.sleep(50);
+                Thread.sleep(25);
             }
             // flush输出流的缓冲
             out.flush();

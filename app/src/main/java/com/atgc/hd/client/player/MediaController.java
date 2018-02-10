@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.atgc.hd.activity;
+package com.atgc.hd.client.player;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

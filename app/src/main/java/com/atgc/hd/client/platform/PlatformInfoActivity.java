@@ -6,25 +6,20 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.atgc.hd.activity;
+package com.atgc.hd.client.platform;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.View;
 import android.widget.ListView;
 
 import com.alibaba.fastjson.JSON;
 import com.atgc.hd.R;
 import com.atgc.hd.adapter.PlatformInfoAdapter;
 import com.atgc.hd.base.BaseActivity;
-import com.atgc.hd.client.demo.DemoRequestActivity;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.net.TcpSocketClient;
-import com.atgc.hd.comm.net.response.TaskListResponse;
-import com.atgc.hd.comm.widget.NiftyDialog;
 import com.atgc.hd.db.dao.PlatformInfoDao;
-import com.atgc.hd.entity.BasePlatform;
 import com.atgc.hd.entity.PatInfo;
 import com.orhanobut.logger.Logger;
 

@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.atgc.hd.activity;
+package com.atgc.hd.client.im;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

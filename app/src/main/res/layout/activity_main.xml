@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <TextView
+        <Button
             android:id="@+id/tv_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,12 +32,18 @@
             android:layout_marginTop="20dp"
             android:text="注册设备" />
 
-        <TextView
+        <Button
             android:id="@+id/tv_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="进入测试界面" />
 
+        <Button
+            android:id="@+id/btn_player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="进入播放页面" />
     </LinearLayout>
 </RelativeLayout>

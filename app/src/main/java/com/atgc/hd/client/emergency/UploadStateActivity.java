@@ -6,18 +6,19 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.atgc.hd.activity;
+package com.atgc.hd.client.emergency;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
+
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.entity.ActionEntity;
-import com.atgc.hd.entity.EventEntity;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;

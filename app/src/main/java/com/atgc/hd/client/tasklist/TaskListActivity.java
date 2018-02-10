@@ -7,11 +7,11 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.atgc.hd.R;
-import com.atgc.hd.activity.EmergencyListActivity;
-import com.atgc.hd.activity.PlatformInfoActivity;
-import com.atgc.hd.activity.SettingActivity;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.base.BaseFragment;
+import com.atgc.hd.client.emergency.EmergencyListActivity;
+import com.atgc.hd.client.platform.PlatformInfoActivity;
+import com.atgc.hd.client.setting.SettingActivity;
 import com.atgc.hd.client.tasklist.adapter.ContentFragAdapter;
 import com.atgc.hd.comm.widget.PagerSlidingTabStrip;
 
@@ -123,7 +123,6 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
                 if (numberFragmentViewCreated >= fragAdapter.getCount()) {
                     showProgressDialog();
                     taskHandContract.initData();
-
                 }
             }
         }, false);

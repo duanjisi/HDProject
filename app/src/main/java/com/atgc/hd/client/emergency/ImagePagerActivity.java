@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.atgc.hd.activity;
+package com.atgc.hd.client.emergency;
 
 import android.app.Activity;
 import android.content.Context;
@@ -31,8 +31,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.atgc.hd.base.BaseActivity;
+import com.atgc.hd.R;
 import com.atgc.hd.comm.utils.FileUtil;
+import com.atgc.hd.widget.ActionSheet;
+import com.atgc.hd.widget.HackyViewPager;
+import com.atgc.hd.widget.photoview.PhotoView;
+import com.atgc.hd.widget.photoview.PhotoViewAttacher;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -42,12 +46,6 @@ import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.atgc.hd.R;
-import com.atgc.hd.widget.ActionSheet;
-import com.atgc.hd.widget.HackyViewPager;
-import com.atgc.hd.widget.photoview.PhotoView;
-import com.atgc.hd.widget.photoview.PhotoViewAttacher;
 
 /**
  * Created by GMARUnity on 2017/2/3.

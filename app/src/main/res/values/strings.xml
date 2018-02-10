@@ -1,5 +1,7 @@
 <resources>
+
     <item name="tag_position" type="id"></item>
+    <item name="tag_url" type="id"></item>
 
     <string name="app_name">HDProject</string>
     <string name="action_settings">Settings</string>

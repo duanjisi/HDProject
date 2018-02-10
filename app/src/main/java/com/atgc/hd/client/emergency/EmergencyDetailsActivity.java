@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.atgc.hd.activity;
+package com.atgc.hd.client.emergency;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,10 +19,10 @@ import android.widget.TextView;
 
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
+import com.atgc.hd.client.player.VideoPlayerActivity;
 import com.atgc.hd.comm.utils.FileUtil;
 import com.atgc.hd.comm.utils.UIUtils;
 import com.atgc.hd.entity.EventEntity;
-import com.atgc.hd.widget.MyView;
 import com.atgc.hd.widget.RoundView;
 
 import java.util.ArrayList;

@@ -11,14 +11,21 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
         vectorDrawables.useSupportLibrary = true
+//        ndk {
+//            //abiFilters "armeabi"
+//            //设置支持的SO库架构
+//            abiFilters 'armeabi'
+//            moduleName "app"
+//        }
     }
+
     splits {
         abi {
             enable true
             reset()
-            include 'x86', 'armeabi-v7a', 'x86_64'
+            include 'x86', 'armeabi-v7a', 'x86_64', 'armeabi'
+//            include 'armeabi'
             universalApk true
         }
     }

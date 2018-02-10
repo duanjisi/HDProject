@@ -9,26 +9,17 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
-import com.atgc.hd.activity.ConversationActivity;
-import com.atgc.hd.activity.EmergencyEventActivity;
-import com.atgc.hd.activity.EmergencyEventActivity;
-import com.atgc.hd.activity.EmergencyListActivity;
-import com.atgc.hd.activity.PlatformInfoActivity;
-import com.atgc.hd.activity.SettingActivity;
 import com.atgc.hd.base.BaseActivity;
-import com.atgc.hd.client.tasklist.TaskListActivity;
+import com.atgc.hd.client.emergency.EmergencyListActivity;
+import com.atgc.hd.client.player.VideoPlayerActivity;
 import com.atgc.hd.comm.Constants;
-import com.atgc.hd.comm.PrefKey;
-import com.atgc.hd.comm.Utils;
 import com.atgc.hd.comm.config.DeviceParams;
 import com.atgc.hd.comm.local.GPSLocationTool;
-import com.atgc.hd.comm.local.LocationService;
 import com.atgc.hd.comm.net.BaseDataRequest;
 import com.atgc.hd.comm.net.request.RegisterRequest;
-import com.atgc.hd.comm.service.DeviceBootService;
-import com.atgc.hd.comm.utils.PreferenceUtils;
 import com.atgc.hd.entity.ActionEntity;
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
@@ -38,7 +29,8 @@ import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
 public class MainActivity extends BaseActivity {
-    private TextView tv_net, tvResult, tvState, tv_register;
+    private TextView tvResult, tvState;
+    private Button tv_register, tv_net, btn_player;
     private Handler mHandler = new Handler();
     private WifiManager my_wifiManager;
     private WifiInfo wifiInfo;
@@ -172,7 +164,7 @@ public class MainActivity extends BaseActivity {
         tv_net = findViewById(R.id.tv_start);
         tv_register = findViewById(R.id.tv_register);
         tvState = findViewById(R.id.tv_device_state);
-
+        btn_player = findViewById(R.id.btn_player);
 //        boolean isRegister = PreferenceUtils.getBoolean(this, PrefKey.REGISTER, false);
 //        if (!isRegister) {
 //            Intent intent = new Intent(context, DeviceBootService.class);
@@ -182,15 +174,24 @@ public class MainActivity extends BaseActivity {
         tv_net.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, PlatformInfoActivity.class));
+                startActivity(new Intent(MainActivity.this, EmergencyListActivity.class));
             }
         });
 
         tv_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getMac();
-//                register();
+//                getMac();
+                register();
+            }
+        });
+        btn_player.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, VideoPlayerActivity.class);
+                intent.putExtra("videoPath", "http://192.168.0.246:8888/group1/M00/11/0D/wKgA9lp6rr2AfJTAAAOWTI_LynI063.mp4");
+                intent.putExtra("imgurl", "http://192.168.0.246:8888/group1/M00/11/0D/wKgA9lp6rr2AfJTAAAOWTI_LynI063.mp4");
+                startActivity(intent);
             }
         });
 //        Utils.printIpAddress();

@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.atgc.hd.activity;
+package com.atgc.hd.client.player;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -18,14 +18,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.atgc.hd.base.BaseActivity;
+import com.atgc.hd.R;
 import com.atgc.hd.comm.utils.NetworkUtil;
 import com.bumptech.glide.Glide;
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
 import com.pili.pldroid.player.widget.PLVideoTextureView;
-
-import com.atgc.hd.R;
 
 /**
  * Created by GMARUnity on 2017/3/27.

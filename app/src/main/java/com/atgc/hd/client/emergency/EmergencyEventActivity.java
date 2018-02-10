@@ -6,12 +6,11 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.atgc.hd.activity;
+package com.atgc.hd.client.emergency;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
-import android.media.MediaFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,7 +21,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,21 +28,15 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.atgc.hd.R;
-import com.atgc.hd.TestActivity;
-import com.atgc.hd.adapter.PictureAdapter;
-import com.atgc.hd.adapter.UpdateCallback;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.Utils;
 import com.atgc.hd.comm.net.BaseDataRequest;
-import com.atgc.hd.comm.net.http.MyTask;
-import com.atgc.hd.comm.net.http.UploadFileTask;
 import com.atgc.hd.comm.net.request.UploadEventRequest;
 import com.atgc.hd.comm.utils.DateUtil;
 import com.atgc.hd.comm.utils.FileUtil;
@@ -52,7 +44,6 @@ import com.atgc.hd.comm.utils.PermissonUtil.PermissionListener;
 import com.atgc.hd.comm.utils.PermissonUtil.PermissionUtil;
 import com.atgc.hd.comm.utils.PhotoAlbumUtil.MultiImageSelector;
 import com.atgc.hd.comm.utils.PhotoAlbumUtil.MultiImageSelectorActivity;
-import com.atgc.hd.comm.utils.PreferenceUtils;
 import com.atgc.hd.comm.utils.UIUtils;
 import com.atgc.hd.db.dao.EventDao;
 import com.atgc.hd.entity.ActionEntity;
@@ -62,8 +53,6 @@ import com.atgc.hd.widget.ActionSheet;
 import com.atgc.hd.widget.MyGridView;
 import com.atgc.hd.widget.MyView;
 import com.atgc.hd.widget.RoundImageView;
-import com.bumptech.glide.Glide;
-import com.orhanobut.logger.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -91,6 +80,9 @@ public class EmergencyEventActivity extends BaseActivity implements
     private int cameraType;//1:相机 2：相册
     private Uri imageUri;
     private String imageName;
+    private final int URLS_IMAGES = 1;
+    private final int URLS_VIDEOS = 2;
+    private final int URLS_ALL = 3;
     private final int OPEN_CAMERA = 1;//相机
     private final int OPEN_ALBUM = 2;//相册
     private final int REQUEST_CLIP_IMAGE = 3;//裁剪
@@ -241,10 +233,21 @@ public class EmergencyEventActivity extends BaseActivity implements
     }
 
     private void submit() {
-        final String urls = getImageUrls();
-        final String videos = getVideoUrls();
+        final String urls = getUrls(URLS_IMAGES);
+        final String videos = getUrls(URLS_VIDEOS);
+        final String urls_all = getUrls(URLS_ALL);
         final String description = getText(tvWrite);
         final String place = getText(tvPlace);
+
+        if (TextUtils.isEmpty(urls_all)) {
+            showToast("未上传图片或视频!");
+            return;
+        }
+
+        if (!isUploaded()) {
+            showToast("等待上传完毕，再提交!");
+            return;
+        }
 
         if (TextUtils.isEmpty(place)) {
             showToast("地址不能为空!");
@@ -274,7 +277,8 @@ public class EmergencyEventActivity extends BaseActivity implements
             @Override
             public void onSuccess(String json) {
 //                showToast(json);
-                String url = urls + "," + videos;
+//                String url = urls + "," + videos;
+                String url = getUrls(URLS_ALL);
                 EventEntity entity = new EventEntity();
                 entity.setTime(time);
                 entity.setDescription(description);
@@ -328,6 +332,7 @@ public class EmergencyEventActivity extends BaseActivity implements
                         startActivityForResult(intent, OPEN_CAMERA);
                     }
                 } else if (cameraType == OPEN_ALBUM) {
+//                    int count=3-imageCount;
                     MultiImageSelector.create(context).
                             showCamera(false).
                             count(1)
@@ -523,17 +528,73 @@ public class EmergencyEventActivity extends BaseActivity implements
     }
 
 
-    private StringBuilder sb = new StringBuilder();
+//    private StringBuilder sb = new StringBuilder();
 
-    private String getImageUrls() {
+    private String getUrls(int type) {
+        StringBuilder sb = new StringBuilder();
+        int count = ll_image.getChildCount();
+        if (count != 0) {
+            for (int i = 0; i < count; i++) {
+                View view = ll_image.getChildAt(i);
+                String tag = (String) view.getTag(R.id.tag_url);
+                if (!TextUtils.isEmpty(tag) && !tag.equals("lastItem")) {
+                    if (type == URLS_IMAGES && isImage(tag)) {
+                        sb.append(tag).append(",");
+                    } else if (type == URLS_VIDEOS && isVideo(tag)) {
+                        sb.append(tag).append(",");
+                    } else if (type == URLS_ALL) {
+                        sb.append(tag).append(",");
+                    }
+                }
+            }
+        }
         return sb.toString();
     }
 
-    private StringBuilder sb2 = new StringBuilder();
-
-    private String getVideoUrls() {
-        return sb2.toString();
+    private boolean isUploaded() {
+        int sum = 0;
+        int sum2 = 0;
+        int count = ll_image.getChildCount();
+        if (count != 0) {
+            for (int i = 0; i < count; i++) {
+                View view = ll_image.getChildAt(i);
+                String tag = (String) view.getTag();
+                String tag_url = (String) view.getTag(R.id.tag_url);
+                if (!tag.equals("lastItem")) {
+                    sum++;
+                }
+                if (!TextUtils.isEmpty(tag_url)) {
+                    sum2++;
+                }
+            }
+        }
+        return (sum == sum2);
     }
+
+    private boolean isImage(String url) {
+        if (url.contains(".jpg") ||
+                url.contains(".jpeg") ||
+                url.contains(".png")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isVideo(String url) {
+        if (url.contains(".mp4") ||
+                url.contains(".MP4") ||
+                url.contains(".3gp")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+//    private StringBuilder sb2 = new StringBuilder();
+//    private String getVideoUrls() {
+//        return sb2.toString();
+//    }
 
     private View insertImage(String localPath, int position) {
         final LinearLayout layout = new LinearLayout(getApplicationContext());
@@ -549,13 +610,15 @@ public class EmergencyEventActivity extends BaseActivity implements
                 @Override
                 public void getFileUrl(String url) {
                     String fileName = FileUtil.getFileName(url);
-                    if (fileName.contains(".mp4")) {
-                        sb2.append(url);
-                        sb2.append(",");
-                    } else {
-                        sb.append(url);
-                        sb.append(",");
-                    }
+//                    showToast("=======Url:" + url);
+                    layout.setTag(R.id.tag_url, url);
+//                    if (fileName.contains(".mp4")) {
+//                        sb2.append(url);
+//                        sb2.append(",");
+//                    } else {
+//                        sb.append(url);
+//                        sb.append(",");
+//                    }
                 }
             });
             child.setCloseListener(new View.OnClickListener() {
@@ -580,6 +643,12 @@ public class EmergencyEventActivity extends BaseActivity implements
     private void deleteView(String path) {
         if (images.contains(path)) {
             images.remove(path);
+            String fileName = FileUtil.getFileName(path);
+            if (fileName.contains(".mp4") || fileName.contains(".MP4")) {
+                videoCount--;
+            } else {
+                imageCount--;
+            }
         }
         int count = ll_image.getChildCount();
         if (count != 0) {
@@ -602,7 +671,6 @@ public class EmergencyEventActivity extends BaseActivity implements
     private ViewHolder viewHolder = null;
 
     private class MyAdapter extends BaseAdapter {
-
         @Override
         public int getCount() {
             //我们将map作为数据源

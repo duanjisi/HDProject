@@ -44,7 +44,7 @@
         <!--android:label="@string/app_name"-->
         <!--android:theme="@style/AppTheme.NoActionBar"></activity>-->
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".client.tasklist.TaskListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -54,27 +54,26 @@
         <activity android:name=".TestActivity"></activity>
         <activity android:name=".SecondActivity"></activity>
         <activity android:name=".FouthActivity"></activity>
-        <activity android:name=".LocationTestActivity"></activity>
-        <activity android:name=".activity.ConversationActivity"></activity>
-        <activity android:name=".activity.ContactBookActivity"></activity>
-        <activity android:name=".activity.ChatActivity"></activity>
-        <activity android:name=".activity.EmergencyEventActivity"></activity>
-        <activity android:name=".activity.EmergencyListActivity"></activity>
-        <activity android:name=".activity.EmergencyDetailsActivity"></activity>
-        <activity android:name=".activity.ImagePagerActivity"></activity>
-        <activity android:name=".activity.VideoPlayerActivity"></activity>
-        <activity android:name=".activity.PlatformInfoActivity"></activity>
-
-        <activity android:name=".activity.ClipImageActivity"></activity>
-        <activity android:name=".activity.LocalVideoFilesActivity"></activity>
-        <activity android:name=".activity.SettingActivity"></activity>
-        <activity android:name=".activity.UploadStateActivity"></activity>
+        <!--<activity android:name=".LocationTestActivity"></activity>-->
+        <activity android:name=".client.im.ConversationActivity"></activity>
+        <activity android:name=".client.im.ContactBookActivity"></activity>
+        <activity android:name=".client.im.ChatActivity"></activity>
+        <activity android:name=".client.emergency.ClipImageActivity"></activity>
+        <activity android:name=".client.emergency.EmergencyDetailsActivity"></activity>
+        <activity android:name=".client.emergency.EmergencyEventActivity"></activity>
+        <activity android:name=".client.emergency.EmergencyListActivity"></activity>
+        <activity android:name=".client.emergency.ImagePagerActivity"></activity>
+        <activity android:name=".client.emergency.LocalVideoFilesActivity"></activity>
+        <activity android:name=".client.emergency.UploadStateActivity"></activity>
+        <activity android:name=".client.platform.PlatformInfoActivity"></activity>
+        <activity android:name=".client.player.VideoPlayerActivity"></activity>
+        <activity android:name=".client.setting.SettingActivity"></activity>
 
         <activity
             android:name=".comm.utils.PhotoAlbumUtil.MultiImageSelectorActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".client.tasklist.TaskListActivity" />
+        <!--<activity android:name=".client.tasklist.TaskListActivity" />-->
         <activity android:name=".client.demo.DemoRequestActivity" />
 
         <service android:name=".comm.service.DeviceBootService"></service>
