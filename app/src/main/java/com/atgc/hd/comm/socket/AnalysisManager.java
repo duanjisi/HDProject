@@ -3,6 +3,7 @@ package com.atgc.hd.comm.socket;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
+import com.atgc.hd.comm.DeviceCmd;
 import com.hdsocket.net.response.BaseResponse;
 import com.hdsocket.net.response.Response;
 import com.xuhao.android.libsocket.sdk.bean.OriginalData;
@@ -46,7 +47,7 @@ public class AnalysisManager {
         }
 
         // 设备注册口需做特殊处理，网关不支持返回requestTag
-        if ("".equals(response.Command)) {
+        if (DeviceCmd.REGISTER.equals(response.Command)) {
             if (response.Result == 0) {
                 actionListener.onResponseSuccess(response.Command, "", response);
             } else {

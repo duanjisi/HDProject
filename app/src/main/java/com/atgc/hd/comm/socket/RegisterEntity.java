@@ -1,6 +1,7 @@
 package com.atgc.hd.comm.socket;
 
 
+import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.config.DeviceParams;
 import com.hdsocket.net.request.BaseRequest;
 import com.hdsocket.net.response.GetTaskListResp;
@@ -24,12 +25,12 @@ public class RegisterEntity extends BaseRequest {
 
     @Override
     public String getRequestCommand() {
-        return "COM_DEV_REGISTER";
+        return DeviceCmd.REGISTER;
     }
 
     @Override
     public String getResponseCommand() {
-        return "COM_DEV_REGISTER";
+        return DeviceCmd.REGISTER;
     }
 
     @Override
