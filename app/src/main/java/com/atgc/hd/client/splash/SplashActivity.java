@@ -1,18 +1,21 @@
 package com.atgc.hd.client.splash;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.atgc.hd.MainActivity;
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.client.setting.SettingActivity;
 import com.atgc.hd.client.tasklist.TaskListActivity;
+import com.atgc.hd.comm.Constants;
+import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.PrefKey;
-import com.atgc.hd.comm.Utils;
-import com.atgc.hd.comm.service.DeviceBootService;
+import com.atgc.hd.comm.config.DeviceParams;
+import com.atgc.hd.comm.socket.OnActionAdapter;
+import com.atgc.hd.comm.socket.RegisterEntity;
+import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.utils.PreferenceUtils;
+import com.hdsocket.net.response.Response;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,26 +30,50 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-//        barHelper.displayActionBar(false);
-//        Intent i = new Intent(context, DeviceBootService.class);
-//        context.startService(i);
-        //TODO 检查服务是否已开启
 
-        if (!Utils.isServiceRunning(context, "com.atgc.hd.comm.service.DeviceBootService")) {
-            Intent i = new Intent(context, DeviceBootService.class);
-            context.startService(i);
-        }
+        barHelper.displayActionBar(false);
 
-        //TODO 校时功能
+
+//        if (!Utils.isServiceRunning(context, DeviceBootService.class.getName())) {
+//            Intent i = new Intent(context, DeviceBootService.class);
+//            context.startService(i);
+//        }
+
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                startActivity(intent);
+//                Constants.isDemo = true;
+                if (Constants.isDemo) {
+                    openActivity(TaskListActivity.class);
+                    finish();
+                } else {
+                    registerDevice();
+                }
+            }
+        }, 1 * 3000);
+    }
+
+    private void registerDevice() {
+        registerOnActionListener(DeviceCmd.REGISTER, new OnActionAdapter() {
+            @Override
+            public void onResponseSuccess(String cmd, String serialNum, Response response) {
+                super.onResponseSuccess(cmd, serialNum, response);
+                openActivity(TaskListActivity.class);
                 finish();
             }
-        }, 1 * 5000);
+
+            @Override
+            public void onResponseFaile(String cmd, String serialNum, String errorCode, String errorMsg) {
+                super.onResponseFaile(cmd, serialNum, errorCode, errorMsg);
+            }
+        });
+
+        final RegisterEntity request = new RegisterEntity();
+
+        request.deviceID = DeviceParams.getInstance().getDeviceId();
+
+        SocketManager.intance().launch(request);
     }
 
     private void goNextPager() {
@@ -57,4 +84,5 @@ public class SplashActivity extends BaseActivity {
             openActivity(TaskListActivity.class);
         }
     }
+
 }
