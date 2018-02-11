@@ -1,16 +1,14 @@
 package com.atgc.hd.comm.net.request;
 
 import com.atgc.hd.comm.DeviceCmd;
-import com.atgc.hd.comm.net.BaseDataRequest;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.atgc.hd.comm.net.request.base.BaseRequest;
+import com.atgc.hd.comm.net.response.base.BaseResponse;
 
 /**
  * <p>描述：8.3.33	上报巡查任务状态
  * <p>作者：liangguokui 2018/1/23
  */
-public class ReportTaskStatusRequest extends BaseDataRequest<String> {
+public class ReportTaskStatusRequest extends BaseRequest {
     // 设备ID
     private String deviceID;
     // 用户ID
@@ -23,29 +21,6 @@ public class ReportTaskStatusRequest extends BaseDataRequest<String> {
     private String carryStatus;
     // 异常原因
     private String abnormalReason;
-
-    @Override
-    protected boolean isParse() {
-        return false;
-    }
-
-    @Override
-    protected Map<String, String> getParams() {
-        Map<String, String> map = new HashMap<>();
-        map.put("deviceID", deviceID);
-        map.put("userId", userId);
-        map.put("taskID", taskID);
-        map.put("taskStatus", taskStatus);
-        map.put("carryStatus", carryStatus);
-        map.put("abnormalReason", abnormalReason);
-
-        return map;
-    }
-
-    @Override
-    protected String getCommand() {
-        return DeviceCmd.PAT_TASK_STATUS;
-    }
 
     public String getDeviceID() {
         return deviceID;
@@ -93,5 +68,20 @@ public class ReportTaskStatusRequest extends BaseDataRequest<String> {
 
     public void setAbnormalReason(String abnormalReason) {
         this.abnormalReason = abnormalReason;
+    }
+
+    @Override
+    public String getRequestCommand() {
+        return DeviceCmd.PAT_TASK_STATUS;
+    }
+
+    @Override
+    public String getResponseCommand() {
+        return DeviceCmd.PAT_TASK_STATUS;
+    }
+
+    @Override
+    public Class<?> getResponseClass() {
+        return BaseResponse.class;
     }
 }

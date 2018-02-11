@@ -1,6 +1,7 @@
 package com.atgc.hd.comm.net.request;
 
-import com.hdsocket.net.request.BaseRequest;
+import com.atgc.hd.comm.DeviceCmd;
+import com.atgc.hd.comm.net.request.base.BaseRequest;
 
 /**
  * <p>描述：心跳包数据
@@ -9,7 +10,7 @@ import com.hdsocket.net.request.BaseRequest;
 public class PulseRequest extends BaseRequest {
     @Override
     public String getRequestCommand() {
-        return "COM_HEARTBEAT";
+        return DeviceCmd.HEART_BEAT;
     }
 
     @Override

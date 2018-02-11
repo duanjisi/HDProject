@@ -4,16 +4,15 @@ import android.nfc.Tag;
 import android.nfc.tech.MifareClassic;
 import android.util.SparseArray;
 
-import com.alibaba.fastjson.JSON;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.clock.InnerClock;
 import com.atgc.hd.comm.config.DeviceParams;
-import com.atgc.hd.comm.net.BaseDataRequest;
-import com.atgc.hd.comm.net.TcpSocketClient;
-import com.atgc.hd.comm.net.request.GPSRequest;
 import com.atgc.hd.comm.net.request.GetTaskRequest;
 import com.atgc.hd.comm.net.response.TaskListResponse;
 import com.atgc.hd.comm.net.response.TaskListResponse.TaskInfo;
+import com.atgc.hd.comm.net.response.base.Response;
+import com.atgc.hd.comm.socket.OnActionAdapter;
+import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.utils.DateUtil;
 import com.atgc.hd.entity.EventMessage;
 import com.atgc.hd.entity.NfcCard;
@@ -22,7 +21,7 @@ import com.orhanobut.logger.Logger;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Random;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -102,40 +101,34 @@ public class TaskHandModel implements TaskHandContract {
      */
     private void requestTaskList() {
         GetTaskRequest taskRequest = new GetTaskRequest();
-        String deviceID = DeviceParams.getInstance().getDeviceId();
-        taskRequest.setDeviceID(deviceID);
-        taskRequest.send(new BaseDataRequest.RequestCallback() {
-            @Override
-            public void onSuccess(Object pojo) {
-                Logger.e("巡更--发送成功");
-            }
+        taskRequest.deviceID = DeviceParams.getInstance().getDeviceId();
 
-            @Override
-            public void onFailure(String msg) {
-
-            }
-        });
+        SocketManager.intance().launch(taskRequest);
     }
 
     /**
      * 注册监听网关发送巡更报文
      */
     private void registerOnReceiveListener() {
-        TcpSocketClient.getInstance().registerOnReceiveListener(new TcpSocketClient.OnReceiveListener() {
-            @Override
-            public void onReceive(String cmd, String[] jsonData) {
-                Logger.json("巡更任务", jsonData[0]);
-                // 注销监听
-                TcpSocketClient.getInstance().unregisterOnReceiveListener(DeviceCmd.PAT_SEND_TASK);
 
-                TaskListResponse taskListResponse = JSON.parseObject(jsonData[0], TaskListResponse.class);
+        SocketManager.intance().registertOnActionListener(DeviceCmd.PAT_SEND_TASK, new OnActionAdapter() {
+            @Override
+            public void onResponseSuccess(String cmd, String serialNum, Response response) {
+                super.onResponseSuccess(cmd, serialNum, response);
+
+                List<TaskListResponse> datas = response.dataArray;
+                TaskListResponse taskListResponse = datas.get(0);
 
                 handTaskData(taskListResponse);
 
                 iView.dimssProgressDialog();
-
             }
-        }, DeviceCmd.PAT_SEND_TASK);
+
+            @Override
+            public void onResponseFaile(String cmd, String serialNum, String errorCode, String errorMsg) {
+                super.onResponseFaile(cmd, serialNum, errorCode, errorMsg);
+            }
+        });
     }
 
     private void handTaskData(TaskListResponse taskListResponse) {
@@ -144,15 +137,17 @@ public class TaskHandModel implements TaskHandContract {
             return;
         }
 
+        List<TaskInfo> taskInfos = taskListResponse.data;
+
         // 按任务开始时间进行排序
-        Collections.sort(taskListResponse.getTaskArray());
+        Collections.sort(taskInfos);
 
         currentTaskIndex = -1;
         boolean taskOnGoing = false;
         Date currentTime = currentTime();
 
-        for (int i = 0, count = taskListResponse.getTaskArray().size(); i < count; i++) {
-            TaskInfo taskInfo = taskListResponse.getTaskArray().get(i);
+        for (int i = 0, count = taskInfos.size(); i < count; i++) {
+            TaskInfo taskInfo = taskInfos.get(i);
             taskInfo.initTaskPeriod();
             taskInfo.initInspectStatus();
             taskInfo.initTaskStatus(currentTime);

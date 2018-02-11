@@ -1,5 +1,6 @@
-package com.hdsocket.net.request;
+package com.atgc.hd.comm.net.request.base;
 
+import com.atgc.hd.comm.net.request.base.BaseRequest;
 import com.hdsocket.utils.DigitalUtils;
 import com.xuhao.android.libsocket.sdk.bean.IPulseSendable;
 

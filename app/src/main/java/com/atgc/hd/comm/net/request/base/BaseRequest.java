@@ -1,4 +1,4 @@
-package com.hdsocket.net.request;
+package com.atgc.hd.comm.net.request.base;
 
 import com.alibaba.fastjson.annotation.JSONField;
 

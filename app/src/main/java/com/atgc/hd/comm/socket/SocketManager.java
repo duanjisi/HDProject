@@ -4,12 +4,12 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.atgc.hd.comm.net.request.base.BaseRequest;
 import com.atgc.hd.comm.net.request.PulseRequest;
+import com.atgc.hd.comm.net.request.base.SendableBase;
+import com.atgc.hd.comm.net.request.base.SendablePulse;
 import com.atgc.hd.comm.utils.StringUtils;
 import com.hdsocket.net.header.HeaderResponse;
-import com.hdsocket.net.request.BaseRequest;
-import com.hdsocket.net.request.SendableBase;
-import com.hdsocket.net.request.SendablePulse;
 import com.xuhao.android.libsocket.impl.PulseManager;
 import com.xuhao.android.libsocket.sdk.ConnectionInfo;
 import com.xuhao.android.libsocket.sdk.OkSocket;

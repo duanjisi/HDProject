@@ -4,8 +4,9 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.atgc.hd.comm.DeviceCmd;
-import com.hdsocket.net.response.BaseResponse;
-import com.hdsocket.net.response.Response;
+import com.atgc.hd.comm.net.response.base.BaseResponse;
+import com.atgc.hd.comm.net.response.base.Response;
+import com.orhanobut.logger.Logger;
 import com.xuhao.android.libsocket.sdk.bean.OriginalData;
 
 import java.nio.charset.Charset;
@@ -30,7 +31,7 @@ public class AnalysisManager {
 
     public void onReceiveResponse(OriginalData data) {
         String str = new String(data.getBodyBytes(), Charset.forName("utf-8"));
-        Log.e("AnalysisManager", "onReceiveResponse --- " + str);
+        Logger.e("onReceiveResponse --- " + str);
 
         Response response = JSON.parseObject(str, Response.class);
 

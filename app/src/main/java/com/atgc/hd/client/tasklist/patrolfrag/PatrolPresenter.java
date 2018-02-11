@@ -2,17 +2,18 @@ package com.atgc.hd.client.tasklist.patrolfrag;
 
 import com.atgc.hd.client.tasklist.TaskHandContract;
 import com.atgc.hd.client.tasklist.taskfrag.adapter.TaskListEntity;
+import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.clock.InnerClock;
 import com.atgc.hd.comm.config.DeviceParams;
 import com.atgc.hd.comm.local.Coordinate;
 import com.atgc.hd.comm.local.LocationService;
 import com.atgc.hd.comm.local.LocationService.ILocationListener;
-import com.atgc.hd.comm.net.BaseDataRequest;
-import com.atgc.hd.comm.net.request.GPSRequest;
 import com.atgc.hd.comm.net.request.ReportPointStatusRequest;
 import com.atgc.hd.comm.net.request.ReportTaskStatusRequest;
 import com.atgc.hd.comm.net.response.TaskListResponse;
 import com.atgc.hd.comm.net.response.TaskListResponse.PointInfo;
+import com.atgc.hd.comm.socket.OnActionAdapter;
+import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.utils.CoordinateUtil;
 import com.atgc.hd.comm.utils.DateUtil;
 import com.atgc.hd.entity.EventMessage;
@@ -21,7 +22,6 @@ import com.orhanobut.logger.Logger;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -64,6 +64,9 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
 
     @Override
     public void onDestory() {
+        SocketManager.intance().unRegistertOnActionListener(DeviceCmd.PAT_POINT_RESULT);
+        SocketManager.intance().unRegistertOnActionListener(DeviceCmd.PAT_TASK_STATUS);
+
         LocationService.intance().unregisterLocationListener(locationListener);
     }
 
@@ -271,17 +274,21 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
         request.setPlanTime(pointInfo.getPlanTime());
         request.setHistoryPointStatus(pointInfo.getResultType());
 
-        request.send(new BaseDataRequest.RequestCallback<String>() {
+        SocketManager.intance().registertOnActionListener(DeviceCmd.PAT_POINT_RESULT, new OnActionAdapter() {
             @Override
-            public void onSuccess(String pojo) {
+            public void onSendSucess(String cmd, String serialNum) {
+                super.onSendSucess(cmd, serialNum);
                 Logger.e("上报巡查点状态成功");
             }
 
             @Override
-            public void onFailure(String msg) {
+            public void onSendFail(String cmd, String serialNum, String errorCode, String errorMsg) {
+                super.onSendFail(cmd, serialNum, errorCode, errorMsg);
                 Logger.e("上报巡查点状态失败");
             }
         });
+
+        SocketManager.intance().launch(request);
     }
 
     /**
@@ -305,9 +312,9 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
         request.setCarryStatus(carryStatus);
         request.setAbnormalReason(reason);
 
-        request.send(new BaseDataRequest.RequestCallback() {
+        SocketManager.intance().registertOnActionListener(DeviceCmd.PAT_TASK_STATUS, new OnActionAdapter(){
             @Override
-            public void onSuccess(Object pojo) {
+            public void onSendSucess(String cmd, String serialNum) {
                 Logger.e("上报任务状态成功（initTaskStatus:" + taskStatus + " carryStatus:" + carryStatus + "）");
                 if (listener != null) {
                     listener.onReportSuccess();
@@ -325,13 +332,17 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
             }
 
             @Override
-            public void onFailure(String msg) {
+            public void onSendFail(String cmd, String serialNum, String errorCode, String errorMsg) {
+                super.onSendFail(cmd, serialNum, errorCode, errorMsg);
                 Logger.e("上报任务状态失败（initTaskStatus:" + taskStatus + " carryStatus:" + carryStatus + "）");
                 if (listener != null) {
-                    listener.onReportFail(msg);
+                    listener.onReportFail(errorMsg);
                 }
             }
         });
+
+        SocketManager.intance().launch(request);
+
     }
 
     private void sendEventMessage(String eventTag) {

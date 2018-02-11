@@ -1,16 +1,14 @@
 package com.atgc.hd.comm.net.request;
 
 import com.atgc.hd.comm.DeviceCmd;
-import com.atgc.hd.comm.net.BaseDataRequest;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.atgc.hd.comm.net.request.base.BaseRequest;
+import com.atgc.hd.comm.net.response.base.BaseResponse;
 
 /**
  * <p>描述：8.3.30 上报巡查点结果
  * <p>作者：liangguokui 2018/1/23
  */
-public class ReportPointStatusRequest extends BaseDataRequest<String> {
+public class ReportPointStatusRequest extends BaseRequest {
     // 设备ID
     private String deviceID;
     // 任务ID
@@ -24,28 +22,6 @@ public class ReportPointStatusRequest extends BaseDataRequest<String> {
     // 结果类型 1.已巡查 2：超时未巡查 3.超时已巡查
     private String historyPointStatus;
 
-    @Override
-    protected boolean isParse() {
-        return false;
-    }
-
-    @Override
-    protected Map<String, String> getParams() {
-        Map<String, String> map = new HashMap<>();
-        map.put("deviceID", deviceID);
-        map.put("taskID", taskID);
-        map.put("taskPointID", taskPointID);
-        map.put("pointTime", pointTime);
-        map.put("historyPointStatus", historyPointStatus);
-        map.put("planTime", planTime);
-
-        return map;
-    }
-
-    @Override
-    protected String getCommand() {
-        return DeviceCmd.PAT_POINT_RESULT;
-    }
 
     public String getDeviceID() {
         return deviceID;
@@ -93,5 +69,20 @@ public class ReportPointStatusRequest extends BaseDataRequest<String> {
 
     public void setPlanTime(String planTime) {
         this.planTime = planTime;
+    }
+
+    @Override
+    public String getRequestCommand() {
+        return DeviceCmd.PAT_POINT_RESULT;
+    }
+
+    @Override
+    public String getResponseCommand() {
+        return DeviceCmd.PAT_POINT_RESULT;
+    }
+
+    @Override
+    public Class<?> getResponseClass() {
+        return BaseResponse.class;
     }
 }

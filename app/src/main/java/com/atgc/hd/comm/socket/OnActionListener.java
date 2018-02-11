@@ -1,6 +1,6 @@
 package com.atgc.hd.comm.socket;
 
-import com.hdsocket.net.response.Response;
+import com.atgc.hd.comm.net.response.base.Response;
 
 /**
  * <p>描述：

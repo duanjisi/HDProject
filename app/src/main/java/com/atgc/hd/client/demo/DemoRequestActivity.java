@@ -237,70 +237,70 @@ public class DemoRequestActivity extends BaseActivity implements OnItemClickList
     }
 
     private void requestTaskList() {
-        GetTaskRequest taskRequest = new GetTaskRequest();
-        taskRequest.setDeviceID(deviceID);
-        String jsonData = taskRequest.jsonData();
-
-        launchDialog("获取巡更任务", jsonData, "发送", taskRequest, new BaseDataRequest.RequestCallback() {
-            @Override
-            public void onSuccess(Object pojo) {
-                showMsg("发送成功");
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                showMsg("发送失败：" + msg);
-            }
-        });
+//        GetTaskRequest taskRequest = new GetTaskRequest();
+//        taskRequest.deviceID = deviceID;
+//        String jsonData = taskRequest.jsonData();
+//
+//        launchDialog("获取巡更任务", jsonData, "发送", taskRequest, new BaseDataRequest.RequestCallback() {
+//            @Override
+//            public void onSuccess(Object pojo) {
+//                showMsg("发送成功");
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                showMsg("发送失败：" + msg);
+//            }
+//        });
 
     }
 
     private void reportPointStatus() {
-        ReportPointStatusRequest request = new ReportPointStatusRequest();
-        request.setDeviceID(deviceID);
-
-        request.setTaskID(taskID);
-        request.setTaskPointID("2406077b13f14eafa26087aecabf0eba");
-
-        request.setPointTime("2018-2-2 16:33:08");
-        request.setPlanTime("2018-2-2 16:35:29");
-        request.setHistoryPointStatus("2");
-        String jsonData = request.jsonData();
-
-        launchDialog("上报巡查点结果", jsonData, "发送", request, new BaseDataRequest.RequestCallback() {
-            @Override
-            public void onSuccess(Object pojo) {
-                showMsg("发送成功");
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                showMsg("发送失败：" + msg);
-            }
-        });
+//        ReportPointStatusRequest request = new ReportPointStatusRequest();
+//        request.setDeviceID(deviceID);
+//
+//        request.setTaskID(taskID);
+//        request.setTaskPointID("2406077b13f14eafa26087aecabf0eba");
+//
+//        request.setPointTime("2018-2-2 16:33:08");
+//        request.setPlanTime("2018-2-2 16:35:29");
+//        request.setHistoryPointStatus("2");
+//        String jsonData = request.jsonData();
+//
+//        launchDialog("上报巡查点结果", jsonData, "发送", request, new BaseDataRequest.RequestCallback() {
+//            @Override
+//            public void onSuccess(Object pojo) {
+//                showMsg("发送成功");
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                showMsg("发送失败：" + msg);
+//            }
+//        });
     }
 
     private void reportTaskStatus() {
-        ReportTaskStatusRequest request = new ReportTaskStatusRequest();
-        request.setDeviceID(deviceID);
-        request.setUserId(userID);
-        request.setTaskID(taskID);
-        request.setTaskStatus("2");
-        request.setCarryStatus("0");
-        request.setAbnormalReason("处理紧急情况");
-        String jsonData = request.jsonData();
-
-        launchDialog("上报巡查任务状态", jsonData, "发送", request, new BaseDataRequest.RequestCallback() {
-            @Override
-            public void onSuccess(Object pojo) {
-                showMsg("发送成功");
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                showMsg("发送失败：" + msg);
-            }
-        });
+//        ReportTaskStatusRequest request = new ReportTaskStatusRequest();
+//        request.setDeviceID(deviceID);
+//        request.setUserId(userID);
+//        request.setTaskID(taskID);
+//        request.setTaskStatus("2");
+//        request.setCarryStatus("0");
+//        request.setAbnormalReason("处理紧急情况");
+//        String jsonData = request.jsonData();
+//
+//        launchDialog("上报巡查任务状态", jsonData, "发送", request, new BaseDataRequest.RequestCallback() {
+//            @Override
+//            public void onSuccess(Object pojo) {
+//                showMsg("发送成功");
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                showMsg("发送失败：" + msg);
+//            }
+//        });
     }
 
     private void launchDialog(final String title,

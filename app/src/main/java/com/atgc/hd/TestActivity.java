@@ -16,8 +16,6 @@ import com.atgc.hd.comm.PrefKey;
 import com.atgc.hd.comm.net.BaseDataRequest;
 import com.atgc.hd.comm.net.TcpSocketClient;
 import com.atgc.hd.comm.net.request.GPSRequest;
-import com.atgc.hd.comm.net.request.GetTaskRequest;
-import com.atgc.hd.comm.net.request.HeartBeatRequest;
 import com.atgc.hd.comm.net.request.RegisterRequest;
 import com.atgc.hd.comm.net.request.UploadEventRequest;
 import com.atgc.hd.comm.utils.PreferenceUtils;
@@ -67,19 +65,19 @@ public class TestActivity extends BaseActivity {
         btn_test2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                GetTaskRequest request = new GetTaskRequest();
-                request.setDeviceID("10012017f6d0101be5ed");
-                request.send(new BaseDataRequest.RequestCallback<String>() {
-                    @Override
-                    public void onSuccess(String pojo) {
-                        showToast(pojo);
-                    }
-
-                    @Override
-                    public void onFailure(String msg) {
-
-                    }
-                });
+//                GetTaskRequest request = new GetTaskRequest();
+//                request.setDeviceID("10012017f6d0101be5ed");
+//                request.send(new BaseDataRequest.RequestCallback<String>() {
+//                    @Override
+//                    public void onSuccess(String pojo) {
+//                        showToast(pojo);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(String msg) {
+//
+//                    }
+//                });
             }
         });
 
@@ -100,20 +98,20 @@ public class TestActivity extends BaseActivity {
     private StringBuilder sb = new StringBuilder();
 
     private void testHearBeat() {
-        HeartBeatRequest request = new HeartBeatRequest();
-        request.send(new BaseDataRequest.RequestCallback<String>() {
-            @Override
-            public void onSuccess(String pojo) {
-//                showToast(pojo);
-                println(pojo);
-            }
-
-            @Override
-            public void onFailure(String msg) {
-//                showToast(msg);
-                println(msg);
-            }
-        });
+//        HeartBeatRequest request = new HeartBeatRequest();
+//        request.send(new BaseDataRequest.RequestCallback<String>() {
+//            @Override
+//            public void onSuccess(String pojo) {
+////                showToast(pojo);
+//                println(pojo);
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+////                showToast(msg);
+//                println(msg);
+//            }
+//        });
     }
 
     private void println(String str) {

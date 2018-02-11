@@ -17,11 +17,11 @@ import android.widget.ViewSwitcher;
 
 import com.atgc.hd.R;
 import com.atgc.hd.client.widgethelper.BarHelper;
+import com.atgc.hd.comm.net.request.base.BaseRequest;
 import com.atgc.hd.comm.socket.OnActionListener;
 import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.utils.SysManager;
 import com.atgc.hd.comm.widget.NiftyDialog;
-import com.hdsocket.net.request.BaseRequest;
 
 /**
  * Created by duanjisi on 2018/1/15.

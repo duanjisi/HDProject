@@ -1,4 +1,4 @@
-package com.hdsocket.net.response;
+package com.atgc.hd.comm.net.response.base;
 
 import com.alibaba.fastjson.JSONArray;
 

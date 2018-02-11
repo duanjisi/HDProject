@@ -3,8 +3,7 @@ package com.atgc.hd.comm.socket;
 
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.config.DeviceParams;
-import com.hdsocket.net.request.BaseRequest;
-import com.hdsocket.net.response.GetTaskListResp;
+import com.atgc.hd.comm.net.request.base.BaseRequest;
 
 /**
  * <p>描述：查询机器状态

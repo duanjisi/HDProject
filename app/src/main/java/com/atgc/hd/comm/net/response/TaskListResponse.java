@@ -2,6 +2,7 @@ package com.atgc.hd.comm.net.response;
 
 import android.support.annotation.NonNull;
 
+import com.atgc.hd.comm.net.response.base.BaseResponse;
 import com.atgc.hd.comm.utils.DateUtil;
 import com.atgc.hd.comm.utils.StringUtils;
 
@@ -13,8 +14,7 @@ import java.util.List;
  * <p>描述：网关下发的巡更任务
  * <p>作者：liangguokui 2018/1/23
  */
-public class TaskListResponse implements Serializable {
-    private List<TaskInfo> TaskArray;
+public class TaskListResponse extends BaseResponse<TaskListResponse.TaskInfo> implements Serializable {
 
     public static class TaskInfo implements Serializable, Comparable<TaskInfo> {
         /**
@@ -355,13 +355,4 @@ public class TaskListResponse implements Serializable {
             return temp ? 1 : 0;
         }
     }
-
-    public List<TaskInfo> getTaskArray() {
-        return TaskArray;
-    }
-
-    public void setTaskArray(List<TaskInfo> taskArray) {
-        TaskArray = taskArray;
-    }
-
 }
