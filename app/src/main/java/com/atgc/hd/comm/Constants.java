@@ -23,7 +23,7 @@ public class Constants {
     /**
      * demo模式，表示数据会从/src/assets文件夹读取
      */
-    public static final boolean isDemo = false;
+    public static boolean isDemo = false;
 
     /**
      * 行为

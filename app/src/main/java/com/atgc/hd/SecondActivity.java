@@ -11,9 +11,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.atgc.hd.comm.protocol.ProtocolDecoder;
-import com.atgc.hd.comm.utils.DigitalUtils;
-import com.atgc.hd.comm.utils.Int2ByteUtil;
 import com.atgc.hd.entity.Header;
+import com.hdsocket.utils.Int2ByteUtil;
 import com.orhanobut.logger.Logger;
 
 import java.io.BufferedReader;
@@ -154,7 +153,7 @@ public class SecondActivity extends Activity {
         map.put("UserName", "张三");
         map.put("UserNo", "1006");
         map.put("OpTime", "2017-11-10 08:00:01");
-        DigitalUtils.getParamBytes("COM_LOAD_CERTIFICATE", map);
+//        DigitalUtils.getParamBytes("COM_LOAD_CERTIFICATE", map);
     }
 
 

@@ -7,6 +7,7 @@ import android.content.Context;
 import com.atgc.hd.comm.config.DeviceParams;
 import com.atgc.hd.comm.crash.CrashHandler;
 import com.atgc.hd.comm.local.LocationService;
+import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.utils.FileUtil;
 import com.atgc.hd.entity.Header;
 import com.baidu.location.BDAbstractLocationListener;
@@ -37,13 +38,21 @@ public class HDApplication extends Application {
         context = getApplicationContext();
 
         initLog();
+
 //        initCrashHandler();
+
+        initSocket();
 
         initLocationServcie();
     }
 
     public synchronized static HDApplication getInstance() {
         return mApplication;
+    }
+
+    private void initSocket() {
+        SocketManager.intance().initialize(this);
+        SocketManager.intance().initConfiguration();
     }
 
     /**

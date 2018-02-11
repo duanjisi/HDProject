@@ -37,9 +37,13 @@ public class DeviceParams {
     }
 
     public String getDeviceId() {
-        if (TextUtils.isEmpty(deviceId)) {
-            deviceId = Utils.getMacAddressFromIp(mContext);
-        }
-        return deviceId;
+//        10012017020000000000
+//        10012017001899000022
+//        10012017f6d0101be5ed
+//        if (TextUtils.isEmpty(deviceId)) {
+//            deviceId = Utils.getMacAddressFromIp(mContext);
+//        }
+//        return deviceId;
+        return "10012017020000000000";
     }
 }

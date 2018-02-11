@@ -17,8 +17,11 @@ import android.widget.ViewSwitcher;
 
 import com.atgc.hd.R;
 import com.atgc.hd.client.widgethelper.BarHelper;
+import com.atgc.hd.comm.socket.OnActionListener;
+import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.utils.SysManager;
 import com.atgc.hd.comm.widget.NiftyDialog;
+import com.hdsocket.net.request.BaseRequest;
 
 /**
  * Created by duanjisi on 2018/1/15.
@@ -56,8 +59,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         initStatusBar();
 
         initToolBar();
-//
-//        initLoadingTips();
     }
 
     @Override
@@ -107,6 +108,21 @@ public abstract class BaseActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 发送请求
+     * @param request
+     */
+    public void launch(BaseRequest request) {
+        SocketManager.intance().launch(request);
+    }
+
+    public void registerOnActionListener(String cmd, OnActionListener listener) {
+        SocketManager.intance().registertOnActionListener(cmd, listener);
+    }
+
+    public void unRegisterOnActionListener(String cmd) {
+        SocketManager.intance().unRegistertOnActionListener(cmd);
+    }
 
     public void openActivity(Class<?> clazz) {
         openActivity(clazz, null);
@@ -161,7 +177,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         return textView.getText().toString().trim();
     }
 
-
     /**
      * @param msg 内容
      * @return: void
@@ -176,7 +191,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     public String toolBarTitle() {
         return getString(R.string.app_name);
     }
-
 
     public void showProgressDialog() {
         showProgressDialog("请稍候...");
@@ -197,7 +211,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     }
 
-    public void dismissProgressBarDialog() {
+    public void dismissProgressDialog() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

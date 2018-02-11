@@ -1,12 +1,11 @@
-package com.atgc.hd.comm.utils;
+package com.hdsocket.utils;
 
 
 import android.text.TextUtils;
+import android.util.Log;
 
-import com.atgc.hd.HDApplication;
-import com.atgc.hd.entity.Header;
-import com.orhanobut.logger.Logger;
-
+import com.alibaba.fastjson.JSON;
+import com.hdsocket.net.header.HeaderRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -120,27 +119,6 @@ public class DigitalUtils {
         return hexString.toString().toLowerCase();
     }
 
-    public static byte[] getParamBytes(String cmd, Map<String, String> map) {
-        String json = getJson(cmd, map);
-        int contentLength = json.getBytes().length;
-        int crcCode = CRCUtil.crc16CCITTFalse(json.getBytes(), contentLength);
-        Header header = HDApplication.getInstance().getHeader();
-        final ByteBuf byteBuf = Unpooled.buffer();
-        byteBuf.writeBytes(header.getVersion().getBytes());
-        byteBuf.writeBytes(header.getSrcID().getBytes());
-        byteBuf.writeBytes(header.getDestID().getBytes());
-        byteBuf.writeBytes(Int2ByteUtil.intTo1Bytes(Integer.parseInt(header.getRequest())));
-        byteBuf.writeBytes(Int2ByteUtil.intTo4Bytes(Integer.parseInt(header.getPackNo())));
-//        byteBuf.writeBytes(Int2ByteUtil.intTo4Bytes(Integer.parseInt(header.getContentLength())));
-        byteBuf.writeBytes(Int2ByteUtil.intTo4Bytes(contentLength));
-        byteBuf.writeBytes(Int2ByteUtil.intTo2Bytes(Integer.parseInt(header.getHold())));
-//        byteBuf.writeBytes(Int2ByteUtil.intTo2Bytes(Integer.parseInt(header.getCrc())));
-        byteBuf.writeBytes(Int2ByteUtil.intTo2Bytes(crcCode));
-        byteBuf.writeBytes(json.getBytes());
-        return byteBuf.array();
-    }
-
-
     private static String getJson(String cmd, Map<String, String> map) {
 //        JSONObject Data = JSONObject.fromObject(map);
         JSONObject object = new JSONObject();
@@ -152,10 +130,10 @@ public class DigitalUtils {
                 array.put(obj);
                 object.put("Data", array);
             }
-            Logger.json("请求报文：", object.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         return object.toString();
     }
 
@@ -176,6 +154,19 @@ public class DigitalUtils {
         return data;
     }
 
+    public static byte[] getBytes(Object object) {
+
+        String json = JSON.toJSONString(object);
+
+        Log.e("DigitalUtils", "发送的Data数据：" + json);
+        byte[] strData = json.getBytes();
+        int dataLength = strData.length;
+        int crcCode = CRCUtil.crc16CCITTFalse(strData, dataLength);
+        byte[] infoHead = constructByteHead(crcCode, dataLength);
+        byte[] data = concatByteArrays(infoHead, strData);
+        return data;
+    }
+
     /**
      * 获取头部的信息的字节数组
      *
@@ -184,7 +175,7 @@ public class DigitalUtils {
      * @return 转换的字节数组
      */
     public static byte[] constructByteHead(int crcCode, int dataLength) {
-        Header header = HDApplication.getInstance().getHeader();
+        HeaderRequest header = HeaderRequest.defaultHeader();
         byte[] b = header.getVersion().getBytes();
         byte[] b2 = header.getSrcID().getBytes();
         byte[] b3 = "00000000000000000000".getBytes();

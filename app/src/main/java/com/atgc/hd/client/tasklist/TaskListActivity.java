@@ -141,7 +141,7 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
 
     @Override
     public void dimssProgressDialog() {
-        dismissProgressBarDialog();
+        dismissProgressDialog();
     }
 
     @Override

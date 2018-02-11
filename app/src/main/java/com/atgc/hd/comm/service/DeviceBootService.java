@@ -22,10 +22,10 @@ import com.atgc.hd.comm.net.BaseDataRequest;
 import com.atgc.hd.comm.net.PreRspPojo;
 import com.atgc.hd.comm.net.TcpSocketClient;
 import com.atgc.hd.comm.net.request.GPSRequest;
-import com.atgc.hd.comm.utils.DigitalUtils;
 import com.atgc.hd.comm.utils.PreferenceUtils;
 import com.atgc.hd.entity.ActionEntity;
 import com.baidu.location.BDLocation;
+import com.hdsocket.utils.DigitalUtils;
 import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
