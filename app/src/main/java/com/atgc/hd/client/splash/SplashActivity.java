@@ -34,8 +34,6 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.activity_splash);
 
         barHelper.displayActionBar(false);
-
-
 //        if (!Utils.isServiceRunning(context, DeviceBootService.class.getName())) {
 //            Intent i = new Intent(context, DeviceBootService.class);
 //            context.startService(i);
