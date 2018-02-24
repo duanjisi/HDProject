@@ -1,4 +1,4 @@
-package com.hdsocket.net.header;
+package com.atgc.hd.comm.net.response.base;
 
 
 import com.hdsocket.utils.ParseUtil;

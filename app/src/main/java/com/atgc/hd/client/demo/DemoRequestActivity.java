@@ -14,6 +14,7 @@ import com.atgc.hd.base.adapter.ViewHolder;
 import com.atgc.hd.base.adapter.interfaces.OnItemClickListener;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.IPPort;
+import com.atgc.hd.comm.config.DeviceParams;
 import com.atgc.hd.comm.net.BaseDataRequest;
 import com.atgc.hd.comm.net.TcpSocketClient;
 import com.atgc.hd.comm.net.request.GPSRequest;
@@ -179,21 +180,21 @@ public class DemoRequestActivity extends BaseActivity implements OnItemClickList
     }
 
     private void registerDevice() {
-        final RegisterRequest request = new RegisterRequest();
-        request.setDeviceID(deviceID);
-        String jsonData = request.jsonData();
-
-        launchDialog("设备注册", jsonData, "发送", request, new BaseDataRequest.RequestCallback() {
-            @Override
-            public void onSuccess(Object pojo) {
-                showMsg("注册成功");
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                showMsg("注册失败：" + msg);
-            }
-        });
+//        final RegisterRequest request = new RegisterRequest();
+//        request.deviceID = DeviceParams.getInstance().getDeviceId();
+//        String jsonData = request.jsonData();
+//
+//        launchDialog("设备注册", jsonData, "发送", request, new BaseDataRequest.RequestCallback() {
+//            @Override
+//            public void onSuccess(Object pojo) {
+//                showMsg("注册成功");
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                showMsg("注册失败：" + msg);
+//            }
+//        });
     }
 
     private void uploadGps() {
@@ -201,39 +202,39 @@ public class DemoRequestActivity extends BaseActivity implements OnItemClickList
     }
 
     private void uploadGps(final String longitude, final String latitude, boolean now) {
-        GPSRequest gpsRequest = new GPSRequest();
-        gpsRequest.setDeviceID(deviceID);
-        gpsRequest.setTaskId(taskID);
-        gpsRequest.setUserID(userID);
-        gpsRequest.setLongitude(longitude);
-        gpsRequest.setLatitude(latitude);
-        String jsonData = gpsRequest.jsonData();
-
-        if (now) {
-            gpsRequest.send(new BaseDataRequest.RequestCallback() {
-                @Override
-                public void onSuccess(Object pojo) {
-                    Logger.e("上传成功：" + longitude + " " + latitude);
-                }
-
-                @Override
-                public void onFailure(String msg) {
-                    Logger.e("上传失败：" + longitude + " " + latitude);
-                }
-            });
-        } else {
-            launchDialog("GPS上传", jsonData, "发送", gpsRequest, new BaseDataRequest.RequestCallback() {
-                @Override
-                public void onSuccess(Object pojo) {
-                    showMsg("上传成功");
-                }
-
-                @Override
-                public void onFailure(String msg) {
-                    showMsg("上传失败：" + msg);
-                }
-            });
-        }
+//        GPSRequest gpsRequest = new GPSRequest();
+//        gpsRequest.setDeviceID(deviceID);
+//        gpsRequest.setTaskId(taskID);
+//        gpsRequest.setUserID(userID);
+//        gpsRequest.setLongitude(longitude);
+//        gpsRequest.setLatitude(latitude);
+//        String jsonData = gpsRequest.jsonData();
+//
+//        if (now) {
+//            gpsRequest.send(new BaseDataRequest.RequestCallback() {
+//                @Override
+//                public void onSuccess(Object pojo) {
+//                    Logger.e("上传成功：" + longitude + " " + latitude);
+//                }
+//
+//                @Override
+//                public void onFailure(String msg) {
+//                    Logger.e("上传失败：" + longitude + " " + latitude);
+//                }
+//            });
+//        } else {
+//            launchDialog("GPS上传", jsonData, "发送", gpsRequest, new BaseDataRequest.RequestCallback() {
+//                @Override
+//                public void onSuccess(Object pojo) {
+//                    showMsg("上传成功");
+//                }
+//
+//                @Override
+//                public void onFailure(String msg) {
+//                    showMsg("上传失败：" + msg);
+//                }
+//            });
+//        }
     }
 
     private void requestTaskList() {

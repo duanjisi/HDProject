@@ -2,8 +2,8 @@ package com.atgc.hd.comm.protocol;
 
 import com.alibaba.fastjson.JSONObject;
 import com.atgc.hd.comm.utils.DateUtil;
+import com.atgc.hd.comm.utils.DigitalUtils;
 import com.atgc.hd.comm.utils.StringUtils;
-import com.hdsocket.utils.DigitalUtils;
 import com.orhanobut.logger.Logger;
 
 import java.util.Date;

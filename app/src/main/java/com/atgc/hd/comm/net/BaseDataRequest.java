@@ -6,7 +6,7 @@ import android.os.Looper;
 import com.alibaba.fastjson.JSON;
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.IPPort;
-import com.hdsocket.utils.DigitalUtils;
+import com.atgc.hd.comm.utils.DigitalUtils;
 
 import net.jodah.typetools.TypeResolver;
 

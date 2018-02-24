@@ -23,10 +23,11 @@ public class CRCUtil {
      * @return
      */
     public static byte[] getParamCRC(byte[] buf) {
-        int checkCode = 0;
-        checkCode = crc16CCITTFalse(buf, buf.length);
+        int checkCode = crc16CCITTFalse(buf, buf.length);
         byte[] crcByte = new byte[2];
+        // 次低位
         crcByte[0] = (byte) ((checkCode >> 8) & 0xff);
+        // 最低位
         crcByte[1] = (byte) (checkCode & 0xff);
         return crcByte;
     }

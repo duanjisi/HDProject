@@ -1,11 +1,12 @@
 package com.atgc.hd.comm.socket;
 
-import android.util.Log;
-
 import com.alibaba.fastjson.JSON;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.net.response.base.BaseResponse;
 import com.atgc.hd.comm.net.response.base.Response;
+import com.atgc.hd.comm.utils.DigitalUtils;
+import com.atgc.hd.comm.utils.StringUtils;
+import com.hdsocket.utils.CRCUtil;
 import com.orhanobut.logger.Logger;
 import com.xuhao.android.libsocket.sdk.bean.OriginalData;
 
@@ -30,10 +31,26 @@ public class AnalysisManager {
     }
 
     public void onReceiveResponse(OriginalData data) {
-        String str = new String(data.getBodyBytes(), Charset.forName("utf-8"));
-        Logger.e("onReceiveResponse --- " + str);
+        String header = DigitalUtils.byteArrayToHexString(data.getHeadBytes());
+        String body = new String(data.getBodyBytes(), Charset.forName("utf-8"));
 
-        Response response = JSON.parseObject(str, Response.class);
+        Logger.e("响应报文头：\n" + header + "\n响应报文体：\n" + body);
+
+        boolean verifyOK = checkCrc(data);
+        if (verifyOK) {
+            onReceiveResponse(body);
+        } else {
+            Logger.e("数据包CRC验证失败" + "\nheader：" + header + "\nbody：" + body);
+        }
+
+    }
+
+    public void onReceiveResponse(String body) {
+        if (StringUtils.isEmpty(body)) {
+            return;
+        }
+
+        Response response = JSON.parseObject(body, Response.class);
 
         OnActionListener actionListener = null;
 
@@ -103,12 +120,16 @@ public class AnalysisManager {
         } else {
             mapActionListeners.put(cmd, listener);
         }
-
-
     }
 
     public void unRegistertOnActionListener(String cmd) {
         mapActionListeners.remove(cmd);
         mapResponseClass.remove(cmd);
+    }
+
+    private boolean checkCrc(OriginalData data) {
+        byte[] crc = new byte[2];
+        System.arraycopy(data.getHeadBytes(), 55, crc, 0, 2);
+        return CRCUtil.isPassCRC(data.getBodyBytes(), crc);
     }
 }

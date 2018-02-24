@@ -4,12 +4,16 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
-import com.atgc.hd.comm.net.request.base.BaseRequest;
+import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.net.request.PulseRequest;
+import com.atgc.hd.comm.net.request.base.BaseRequest;
 import com.atgc.hd.comm.net.request.base.SendableBase;
 import com.atgc.hd.comm.net.request.base.SendablePulse;
+import com.atgc.hd.comm.net.response.base.HeaderResponse;
+import com.atgc.hd.comm.utils.FileUtil;
 import com.atgc.hd.comm.utils.StringUtils;
-import com.hdsocket.net.header.HeaderResponse;
+import com.hdsocket.socket.ReconnectManager;
+import com.orhanobut.logger.Logger;
 import com.xuhao.android.libsocket.impl.PulseManager;
 import com.xuhao.android.libsocket.sdk.ConnectionInfo;
 import com.xuhao.android.libsocket.sdk.OkSocket;
@@ -22,14 +26,13 @@ import com.xuhao.android.libsocket.sdk.connection.IConnectionManager;
 import com.xuhao.android.libsocket.sdk.protocol.IHeaderProtocol;
 
 import java.nio.ByteOrder;
-import java.util.Timer;
 
 /**
  * <p>描述：
  * <p>作者：liangguokui 2018/2/6
  */
 public class SocketManager {
-    private static final String HOST = "172.16.10.127";
+    private static final String HOST = "172.16.10.77";
     private static final int PORT = 20001;
 
     // 心跳包数据
@@ -38,6 +41,8 @@ public class SocketManager {
     private IConnectionManager connectionManager;
 
     private static SocketManager socketManager = new SocketManager();
+
+    private AnalysisManager analysisManager = new AnalysisManager();
 
     private SocketManager() {
         mPulseData = new SendablePulse(new PulseRequest());
@@ -51,8 +56,6 @@ public class SocketManager {
         connectionManager.disConnect();
     }
 
-    private Timer timer;
-
     /**
      * 在application初始化,只能初始化一次，多进程时需要区分主进程.
      *
@@ -63,7 +66,6 @@ public class SocketManager {
     }
 
     public void initConfiguration() {
-        timer = new Timer();
 
         //连接参数设置(IP,端口号),这也是一个连接的唯一标识,不同连接,该参数中的两个值至少有其一不一样
         ConnectionInfo info = new ConnectionInfo(HOST, PORT);
@@ -237,7 +239,7 @@ public class SocketManager {
 
     private void registerDevice() {
 
-        registertOnActionListener("", new OnActionAdapter(){
+        registertOnActionListener("", new OnActionAdapter() {
             @Override
             public void onSendSucess(String cmd, String serialNum) {
                 startPulse();
@@ -269,28 +271,46 @@ public class SocketManager {
 
     }
 
-    AnalysisManager analysisManager = new AnalysisManager();
-
     /**
      * 发送请求
      *
-     * @param object        请求数据
+     * @param object 请求数据
      * @return
      */
     public String launch(BaseRequest object) {
-        if (connectionManager == null) {
-            return "";
+        // demo模式下读取模拟响应报文文件
+        if (Constants.isDemo) {
+            analysisManager.setResponseClass(object.getResponseCommand(), object.getResponseClass());
+
+            String cmd = object.getRequestCommand();
+            String demoResop = FileUtil.getAssets(cmd + "_req.txt");
+
+            if (StringUtils.isEmpty(demoResop)) {
+                Logger.d("未读取配置文件：" + cmd + "_req.txt 或 配置文件内容为空");
+            } else {
+                Logger.d("已读取配置文件：" + cmd + "_req.txt\n配置文件的内容：\n" + demoResop);
+            }
+
+            analysisManager.onReceiveResponse(demoResop);
+
+            return object.serialNum;
         }
+        // 非demo模式发送请求
+        else {
+            if (connectionManager == null) {
+                return "";
+            }
 
-        analysisManager.setResponseClass(object.getResponseCommand(), object.getResponseClass());
+            analysisManager.setResponseClass(object.getResponseCommand(), object.getResponseClass());
 
-        if (object.serialNum == null || object.serialNum.length() == 0) {
-            object.serialNum = StringUtils.getRandomString(20);
+            if (object.serialNum == null || object.serialNum.length() == 0) {
+                object.serialNum = StringUtils.getRandomString(20);
+            }
+
+            connectionManager.send(new SendableBase(object));
+
+            return object.serialNum;
         }
-
-        connectionManager.send(new SendableBase(object));
-
-        return object.serialNum;
     }
 
     public void registertOnActionListener(String cmd, OnActionListener listener) {

@@ -11,11 +11,13 @@ import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.PrefKey;
 import com.atgc.hd.comm.config.DeviceParams;
+import com.atgc.hd.comm.net.request.RegisterRequest;
 import com.atgc.hd.comm.net.response.base.Response;
 import com.atgc.hd.comm.socket.OnActionAdapter;
-import com.atgc.hd.comm.socket.RegisterEntity;
 import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.utils.PreferenceUtils;
+import com.hdsocket.utils.CRCUtil;
+import com.orhanobut.logger.Logger;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -69,7 +71,7 @@ public class SplashActivity extends BaseActivity {
             }
         });
 
-        final RegisterEntity request = new RegisterEntity();
+        RegisterRequest request = new RegisterRequest();
 
         request.deviceID = DeviceParams.getInstance().getDeviceId();
 

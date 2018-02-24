@@ -120,18 +120,18 @@ public class TestActivity extends BaseActivity {
     }
 
     private void testGPS() {
-        GPSRequest gpsRequest = new GPSRequest();
-        gpsRequest.send(new BaseDataRequest.RequestCallback() {
-            @Override
-            public void onSuccess(Object pojo) {
-                Logger.e("发送成功：" + pojo.toString());
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                Logger.e("发送失败：" + msg);
-            }
-        });
+//        GPSRequest gpsRequest = new GPSRequest();
+//        gpsRequest.send(new BaseDataRequest.RequestCallback() {
+//            @Override
+//            public void onSuccess(Object pojo) {
+//                Logger.e("发送成功：" + pojo.toString());
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                Logger.e("发送失败：" + msg);
+//            }
+//        });
     }
 
     private void testRegister() {
@@ -175,18 +175,18 @@ public class TestActivity extends BaseActivity {
             return;
         }
 
-        RegisterRequest request = new RegisterRequest();
-        request.send(new BaseDataRequest.RequestCallback<String>() {
-            @Override
-            public void onSuccess(String json) {
-                showToast(json);
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                showToast(msg);
-            }
-        });
+//        RegisterRequest request = new RegisterRequest();
+//        request.send(new BaseDataRequest.RequestCallback<String>() {
+//            @Override
+//            public void onSuccess(String json) {
+//                showToast(json);
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                showToast(msg);
+//            }
+//        });
     }
 
     private void upLoadEmergency() {

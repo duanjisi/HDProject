@@ -1,7 +1,9 @@
 package com.atgc.hd.comm.net.request.base;
 
-import com.atgc.hd.comm.net.request.base.BaseRequest;
-import com.hdsocket.utils.DigitalUtils;
+import com.alibaba.fastjson.JSON;
+import com.atgc.hd.comm.utils.DigitalUtils;
+import com.hdsocket.utils.CRCUtil;
+import com.orhanobut.logger.Logger;
 import com.xuhao.android.libsocket.sdk.bean.ISendable;
 
 import java.util.ArrayList;
@@ -32,6 +34,22 @@ public class SendableBase implements ISendable {
 
     @Override
     public byte[] parse() {
-        return DigitalUtils.getBytes(this);
+        String bodyData = JSON.toJSONString(this);
+
+        byte[] bodyBytes = bodyData.getBytes();
+        byte[] crcCode = CRCUtil.getParamCRC(bodyBytes);
+
+        HeaderRequest headerRequest = new HeaderRequest();
+        headerRequest.setContentLength(bodyBytes.length);
+        headerRequest.setCrc(crcCode);
+        byte[] headerBytes = headerRequest.toBytes();
+
+        byte[] restule = new byte[headerBytes.length + bodyBytes.length];
+        System.arraycopy(headerBytes, 0, restule, 0, headerBytes.length);
+        System.arraycopy(bodyBytes, 0, restule, headerBytes.length, bodyBytes.length);
+
+        String headerHexStr = DigitalUtils.toHexString(headerBytes);
+        Logger.e("请求报文头：\n" + headerHexStr + "\n请求报文体：\n" + bodyData);
+        return restule;
     }
 }

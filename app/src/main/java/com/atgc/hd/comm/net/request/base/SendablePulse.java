@@ -1,7 +1,6 @@
 package com.atgc.hd.comm.net.request.base;
 
-import com.atgc.hd.comm.net.request.base.BaseRequest;
-import com.hdsocket.utils.DigitalUtils;
+import com.atgc.hd.comm.utils.DigitalUtils;
 import com.xuhao.android.libsocket.sdk.bean.IPulseSendable;
 
 import java.util.ArrayList;

@@ -18,14 +18,10 @@ import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.PrefKey;
 import com.atgc.hd.comm.local.LocationService;
-import com.atgc.hd.comm.net.BaseDataRequest;
 import com.atgc.hd.comm.net.PreRspPojo;
 import com.atgc.hd.comm.net.TcpSocketClient;
-import com.atgc.hd.comm.net.request.GPSRequest;
 import com.atgc.hd.comm.utils.PreferenceUtils;
 import com.atgc.hd.entity.ActionEntity;
-import com.baidu.location.BDLocation;
-import com.hdsocket.utils.DigitalUtils;
 import com.orhanobut.logger.Logger;
 
 import java.util.HashMap;
@@ -89,25 +85,25 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
     }
 
     private void sendRegisterMsg() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("Type", "1");
-        map.put("deviceID", "10012017020000000000");
-        map.put("manufacturer", "XXX厂商");
-        map.put("macNO", "102");
-        map.put("locationAddr", "南门停车场入口");
-        map.put("name", "停车场设备");
-        map.put("ip", "172.16.10.22");
-        map.put("gateWay", "00000000000000000");
-        map.put("mac", "00:FF:81:99:2F");
-        map.put("mask", "255.255.255.0");
-        map.put("version", "V1.0.16_20171225001");
-        byte[] datas = DigitalUtils.getBytes(DeviceCmd.REGISTER, map);
-        tcpSocketClient.sendMsg(datas);
+//        HashMap<String, String> map = new HashMap<>();
+//        map.put("Type", "1");
+//        map.put("deviceID", "10012017020000000000");
+//        map.put("manufacturer", "XXX厂商");
+//        map.put("macNO", "102");
+//        map.put("locationAddr", "南门停车场入口");
+//        map.put("name", "停车场设备");
+//        map.put("ip", "172.16.10.22");
+//        map.put("gateWay", "00000000000000000");
+//        map.put("mac", "00:FF:81:99:2F");
+//        map.put("mask", "255.255.255.0");
+//        map.put("version", "V1.0.16_20171225001");
+//        byte[] datas = DigitalUtils.getBytes(DeviceCmd.REGISTER, map);
+//        tcpSocketClient.sendMsg(datas);
     }
 
     private void sendHeatBeat() {
-        byte[] datas = DigitalUtils.getBytes(DeviceCmd.HEART_BEAT, null);
-        tcpSocketClient.sendMsg(datas);
+//        byte[] datas = DigitalUtils.getBytes(DeviceCmd.HEART_BEAT, null);
+//        tcpSocketClient.sendMsg(datas);
     }
 
     private void startHeartBeat() {
@@ -115,26 +111,26 @@ public class DeviceBootService extends Service implements TcpSocketClient.TcpLis
     }
 
     private void sendGps() {
-        BDLocation bdLocation = locationService.getLastBDLocation();
-        if (bdLocation == null) {
-            return;
-        }
-
-        GPSRequest gpsRequest = new GPSRequest();
-        gpsRequest.setLongitude("" + bdLocation.getLongitude());
-        gpsRequest.setLatitude("" + bdLocation.getLatitude());
-
-        gpsRequest.send(new BaseDataRequest.RequestCallback() {
-            @Override
-            public void onSuccess(Object pojo) {
-
-            }
-
-            @Override
-            public void onFailure(String msg) {
-
-            }
-        });
+//        BDLocation bdLocation = locationService.getLastBDLocation();
+//        if (bdLocation == null) {
+//            return;
+//        }
+//
+//        GPSRequest gpsRequest = new GPSRequest();
+//        gpsRequest.setLongitude("" + bdLocation.getLongitude());
+//        gpsRequest.setLatitude("" + bdLocation.getLatitude());
+//
+//        gpsRequest.send(new BaseDataRequest.RequestCallback() {
+//            @Override
+//            public void onSuccess(Object pojo) {
+//
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//
+//            }
+//        });
     }
 
     private void startSendGps() {

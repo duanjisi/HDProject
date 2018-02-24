@@ -110,6 +110,9 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
 
     @Override
     public void onReceiveNfcCardNum(String cardNum) {
+        if (taskInfoProxy == null) {
+            return;
+        }
         if (cardNum.equals(taskInfoProxy.getCurrentPointInfo().getCardNumber())) {
             checkPoint();
         }

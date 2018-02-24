@@ -1,52 +1,39 @@
 package com.atgc.hd.comm.net.request;
 
 import com.atgc.hd.comm.DeviceCmd;
-import com.atgc.hd.comm.net.BaseDataRequest;
-import com.atgc.hd.comm.utils.StringUtils;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.atgc.hd.comm.config.DeviceParams;
+import com.atgc.hd.comm.net.request.base.BaseRequest;
 
 /**
  * Created by duanjisi on 2018/1/15.
  */
 
-public class RegisterRequest extends BaseDataRequest<String> {
-
-    private String deviceID;
-
-    @Override
-    protected boolean isParse() {
-        return false;
-    }
-
-    @Override
-    protected Map<String, String> getParams() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("Type", "1");
-        map.put("deviceID", deviceID);
-        map.put("manufacturer", "XXX厂商");
-        map.put("macNO", "102");
-        map.put("locationAddr", "南门停车场入口");
-        map.put("name", "停车场设备");
-        map.put("ip", "172.16.10.22");
-        map.put("gateWay", "00000000000000000");
-        map.put("mac", "00:FF:81:99:2F");
-        map.put("mask", "255.255.255.0");
-        map.put("version", "V1.0.16_20171225001");
-        return map;
-    }
+public class RegisterRequest extends BaseRequest {
+    public String Type = "1";
+    public String deviceID = DeviceParams.getInstance().getDeviceId();
+    public String manufacturer = "XXX厂商";
+    public String macNO = "102";
+    public String locationAddr = "南门停车场入口";
+    public String name = "停车场设备";
+    public String ip = "172.16.10.22";
+    public String gateWay = "00000000000000000";
+    public String mac = "00:FF:81:99:2F";
+    public String mask = "255.255.255.0";
+    public String version = "V1.0.16_20171225001";
 
     @Override
-    protected String getCommand() {
+    public String getRequestCommand() {
         return DeviceCmd.REGISTER;
     }
 
-    public String getDeviceID() {
-        return deviceID;
+    @Override
+    public String getResponseCommand() {
+        return DeviceCmd.REGISTER;
     }
 
-    public void setDeviceID(String deviceID) {
-        this.deviceID = deviceID;
+    @Override
+    public Class<?> getResponseClass() {
+        return null;
     }
+
 }

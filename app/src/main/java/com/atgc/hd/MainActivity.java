@@ -204,18 +204,18 @@ public class MainActivity extends BaseActivity {
 
 
     private void register() {
-        RegisterRequest request = new RegisterRequest();
-        request.send(new BaseDataRequest.RequestCallback<String>() {
-            @Override
-            public void onSuccess(String json) {
-                showToast(json);
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                showToast(msg);
-            }
-        });
+//        RegisterRequest request = new RegisterRequest();
+//        request.send(new BaseDataRequest.RequestCallback<String>() {
+//            @Override
+//            public void onSuccess(String json) {
+//                showToast(json);
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                showToast(msg);
+//            }
+//        });
     }
 
 

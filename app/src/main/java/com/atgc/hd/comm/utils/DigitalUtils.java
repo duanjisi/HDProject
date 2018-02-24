@@ -1,11 +1,13 @@
-package com.hdsocket.utils;
+package com.atgc.hd.comm.utils;
 
 
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
-import com.hdsocket.net.header.HeaderRequest;
+import com.atgc.hd.HDApplication;
+import com.atgc.hd.entity.Header;
+import com.hdsocket.utils.CRCUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,9 +15,6 @@ import org.json.JSONObject;
 
 import java.util.Locale;
 import java.util.Map;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  * <p>描述： 数字转换工具类
@@ -175,7 +174,7 @@ public class DigitalUtils {
      * @return 转换的字节数组
      */
     public static byte[] constructByteHead(int crcCode, int dataLength) {
-        HeaderRequest header = HeaderRequest.defaultHeader();
+        Header header = HDApplication.getInstance().getHeader();
         byte[] b = header.getVersion().getBytes();
         byte[] b2 = header.getSrcID().getBytes();
         byte[] b3 = "00000000000000000000".getBytes();

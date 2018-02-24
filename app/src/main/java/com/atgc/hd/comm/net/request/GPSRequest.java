@@ -9,20 +9,20 @@
 package com.atgc.hd.comm.net.request;
 
 import com.atgc.hd.comm.DeviceCmd;
-import com.atgc.hd.comm.net.BaseDataRequest;
+import com.atgc.hd.comm.config.DeviceParams;
+import com.atgc.hd.comm.net.request.base.BaseRequest;
+import com.atgc.hd.comm.net.response.base.BaseResponse;
 import com.atgc.hd.comm.utils.DateUtil;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <p>描述：
  * <p>作者：duanjisi 2018年 01月 17日
  */
 
-public class GPSRequest extends BaseDataRequest<String> {
+public class GPSRequest extends BaseRequest {
 
-    private String deviceID = "137000000000000000";
+    private String deviceID = DeviceParams.getInstance().getDeviceId();
     private String uploadTime = "";
     private String longitude = "";
     private String latitude = "";
@@ -39,36 +39,6 @@ public class GPSRequest extends BaseDataRequest<String> {
 
     public GPSRequest() {
         this.uploadTime = DateUtil.currentTime();
-    }
-
-    @Override
-    protected boolean isParse() {
-        return false;
-    }
-
-    @Override
-    protected Map<String, String> getParams() {
-        Map<String, String> map = new HashMap<>();
-        map.put("deviceID", deviceID);
-        map.put("uploadTime", uploadTime);
-        map.put("longitude", longitude);
-        map.put("latitude", latitude);
-        map.put("direction", direction);
-        map.put("speed", speed);
-        map.put("satellites", satellites);
-        map.put("precision", precision);
-        map.put("height", height);
-        map.put("retransFlag", retransFlag);
-        map.put("needsResponse", needsResponse);
-        map.put("remark", remark);
-        map.put("userID", userID);
-        map.put("taskID", taskId);
-        return map;
-    }
-
-    @Override
-    protected String getCommand() {
-        return DeviceCmd.PAT_UPLOAD_GPS;
     }
 
     public String getDeviceID() {
@@ -181,5 +151,20 @@ public class GPSRequest extends BaseDataRequest<String> {
 
     public void setTaskId(String taskId) {
         this.taskId = taskId;
+    }
+
+    @Override
+    public String getRequestCommand() {
+        return DeviceCmd.PAT_UPLOAD_GPS;
+    }
+
+    @Override
+    public String getResponseCommand() {
+        return DeviceCmd.PAT_UPLOAD_GPS;
+    }
+
+    @Override
+    public Class<?> getResponseClass() {
+        return BaseResponse.class;
     }
 }
