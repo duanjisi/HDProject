@@ -1,1 +1,1 @@
-include ':app', ':logger', ':hdsocket'
+include ':app', ':logger'

@@ -30,13 +30,13 @@
 
     <application
         android:name=".HDApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoTitleBar"
-        tools:replace="android:theme">
+        tools:replace="android:theme,android:allowBackup">
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="Vp1gXzCXCIqvxx5pga1OxMOFXcxlfDqz"></meta-data>
@@ -46,18 +46,17 @@
             android:enabled="true"
             android:process=":remote" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".client.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--<activity android:name=".MainActivity"></activity>-->
+        <activity android:name=".MainActivity"></activity>
         <activity android:name=".TestActivity"></activity>
         <activity android:name=".SecondActivity"></activity>
         <activity android:name=".FouthActivity"></activity>
-        <!--<activity android:name=".LocationTestActivity"></activity>-->
         <activity android:name=".client.im.ConversationActivity"></activity>
         <activity android:name=".client.im.ContactBookActivity"></activity>
         <activity android:name=".client.im.ChatActivity"></activity>

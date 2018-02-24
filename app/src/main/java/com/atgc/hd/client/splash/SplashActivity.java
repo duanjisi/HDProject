@@ -16,7 +16,6 @@ import com.atgc.hd.comm.net.response.base.Response;
 import com.atgc.hd.comm.socket.OnActionAdapter;
 import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.utils.PreferenceUtils;
-import com.hdsocket.utils.CRCUtil;
 import com.orhanobut.logger.Logger;
 
 import java.util.Timer;
@@ -60,7 +59,7 @@ public class SplashActivity extends BaseActivity {
             public void onResponseSuccess(String cmd, String serialNum, Response response) {
                 super.onResponseSuccess(cmd, serialNum, response);
                 openActivity(TaskListActivity.class);
-                finish();
+                SplashActivity.this.finish();
             }
 
             @Override

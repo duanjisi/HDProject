@@ -1,7 +1,7 @@
 package com.atgc.hd.comm.net.response.base;
 
 
-import com.hdsocket.utils.ParseUtil;
+import com.atgc.hd.comm.utils.ParseUtil;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

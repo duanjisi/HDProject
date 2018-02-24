@@ -1,7 +1,7 @@
 /**
  * Copyright 2017-2025 Evergrande Group.
  */
-package com.hdsocket.utils;
+package com.atgc.hd.comm.utils;
 
 /**
  * int和byte数组互相转换工具类

@@ -1,4 +1,4 @@
-package com.hdsocket.socket;
+package com.atgc.hd.comm.socket;
 
 import android.content.Context;
 import android.os.Handler;

@@ -2,7 +2,7 @@ package com.atgc.hd.comm.net.request.base;
 
 import com.alibaba.fastjson.JSON;
 import com.atgc.hd.comm.utils.DigitalUtils;
-import com.hdsocket.utils.CRCUtil;
+import com.atgc.hd.comm.utils.CRCUtil;
 import com.orhanobut.logger.Logger;
 import com.xuhao.android.libsocket.sdk.bean.ISendable;
 

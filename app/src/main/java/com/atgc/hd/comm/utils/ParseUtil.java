@@ -1,4 +1,4 @@
-package com.hdsocket.utils;
+package com.atgc.hd.comm.utils;
 
 import java.math.BigInteger;
 

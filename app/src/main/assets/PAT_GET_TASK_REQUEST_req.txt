@@ -25,7 +25,7 @@
                         },
                         {
                             "cardNumber": "636B3EA4928804008500000004134501",
-                            "interval": 1  ,
+                            "interval": 1,
                             "orderNo": 1,
                             "pointName": "测试巡查点02",
                             "resultType": "0",

@@ -1,7 +1,7 @@
 /**
  * Copyright 2017-2025 Evergrande Group.
  */
-package com.hdsocket.utils;
+package com.atgc.hd.comm.utils;
 
 /**
  * CRC16校验工具类,生成byte数组校验值和对byte数组进行校验对比

@@ -7,7 +7,6 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.atgc.hd.HDApplication;
 import com.atgc.hd.entity.Header;
-import com.hdsocket.utils.CRCUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;

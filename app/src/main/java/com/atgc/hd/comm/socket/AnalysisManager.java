@@ -6,7 +6,7 @@ import com.atgc.hd.comm.net.response.base.BaseResponse;
 import com.atgc.hd.comm.net.response.base.Response;
 import com.atgc.hd.comm.utils.DigitalUtils;
 import com.atgc.hd.comm.utils.StringUtils;
-import com.hdsocket.utils.CRCUtil;
+import com.atgc.hd.comm.utils.CRCUtil;
 import com.orhanobut.logger.Logger;
 import com.xuhao.android.libsocket.sdk.bean.OriginalData;
 

@@ -2,7 +2,6 @@ package com.atgc.hd.comm.net.request.base;
 
 import com.atgc.hd.comm.config.DeviceParams;
 import com.atgc.hd.comm.utils.DigitalUtils;
-import com.hdsocket.Config;
 
 /**
  * <p>描述：请求报文的报文
@@ -21,7 +20,7 @@ public class HeaderRequest {
     public static HeaderRequest defaultHeader() {
         HeaderRequest header = new HeaderRequest();
         header.setVersion("HDXM");
-        header.setSrcID(Config.deviceId);
+        header.setSrcID(DeviceParams.getInstance().getDeviceId());
         header.setDestID("00000000000000000000");
         header.setRequest("0");
         header.setPackNo("5684");

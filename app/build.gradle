@@ -57,21 +57,24 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compile 'de.greenrobot:eventbus:3.0.0-beta1'
+
     implementation project(':logger')
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    //    compile 'com.github.vilyever:AndroidSocketClient:1.4.1'
-    compile 'com.github.vilyever:AndroidSocketClient:3.0.3'
     implementation files('libs/BaiduLBS_Android.jar')
-    compile 'net.jodah:typetools:0.4.0'
-    compile 'com.alibaba:fastjson:1.2.46'
     implementation files('libs/universal-image-loader-1.9.5.jar')
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.jakewharton:butterknife:8.4.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
-    compile 'com.loopj.android:android-async-http:1.4.5'
     implementation files('libs/httpmime-4.1.3.jar')
     implementation files('libs/sun.misc.BASE64Decoder.jar')
     implementation files('libs/pldroid-player-1.5.1.jar')
-    implementation project(':hdsocket')
+    implementation files('libs/netty-all-4.0.53.Final.jar')
+
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+
+    compile 'de.greenrobot:eventbus:3.0.0-beta1'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.github.vilyever:AndroidSocketClient:3.0.3'
+    compile 'net.jodah:typetools:0.4.0'
+    compile 'com.alibaba:fastjson:1.2.46'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.jakewharton:butterknife:8.4.0'
+    compile 'com.loopj.android:android-async-http:1.4.5'
+    compile 'com.tonystark.android:socket:1.2.1'
 }

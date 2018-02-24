@@ -12,7 +12,6 @@ import com.atgc.hd.comm.net.request.base.SendablePulse;
 import com.atgc.hd.comm.net.response.base.HeaderResponse;
 import com.atgc.hd.comm.utils.FileUtil;
 import com.atgc.hd.comm.utils.StringUtils;
-import com.hdsocket.socket.ReconnectManager;
 import com.orhanobut.logger.Logger;
 import com.xuhao.android.libsocket.impl.PulseManager;
 import com.xuhao.android.libsocket.sdk.ConnectionInfo;
