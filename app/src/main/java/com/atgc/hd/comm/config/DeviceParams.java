@@ -8,9 +8,7 @@
 
 package com.atgc.hd.comm.config;
 import android.content.Context;
-import android.text.TextUtils;
 import com.atgc.hd.HDApplication;
-import com.atgc.hd.comm.Utils;
 /**
  * <p>描述：设备参数
  * <p>作者：duanjisi 2018年 02月 06日

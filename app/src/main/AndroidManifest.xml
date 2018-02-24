@@ -24,7 +24,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.NFC" />
     <!-- 要求当前设备必须要有NFC芯片 -->
-    <uses-feature android:name="android.hardware.nfc" android:required="true" />
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
 
     <application
         android:name=".HDApplication"
@@ -44,15 +46,14 @@
             android:enabled="true"
             android:process=":remote" />
 
-        <activity android:name=".client.splash.SplashActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity">
-        </activity>
+        <!--<activity android:name=".MainActivity"></activity>-->
         <activity android:name=".TestActivity"></activity>
         <activity android:name=".SecondActivity"></activity>
         <activity android:name=".FouthActivity"></activity>
@@ -75,8 +76,9 @@
             android:name=".comm.utils.PhotoAlbumUtil.MultiImageSelectorActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".client.tasklist.TaskListActivity"
-            android:launchMode="singleTask"/>
+        <activity
+            android:name=".client.tasklist.TaskListActivity"
+            android:launchMode="singleTask" />
         <activity android:name=".client.demo.DemoRequestActivity" />
 
         <service android:name=".comm.service.DeviceBootService"></service>
