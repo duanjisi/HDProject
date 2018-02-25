@@ -279,7 +279,7 @@ public class SocketManager {
     public String launch(BaseRequest object) {
         // demo模式下读取模拟响应报文文件
         if (Constants.isDemo) {
-            analysisManager.setResponseClass(object.getResponseCommand(), object.getResponseClass());
+            analysisManager.setResponseClass(object.getResponseCommand(), object.responseClass());
 
             String cmd = object.getRequestCommand();
             String demoResop = FileUtil.getAssets(cmd + "_req.txt");
@@ -300,7 +300,7 @@ public class SocketManager {
                 return "";
             }
 
-            analysisManager.setResponseClass(object.getResponseCommand(), object.getResponseClass());
+            analysisManager.setResponseClass(object.getResponseCommand(), object.responseClass());
 
             if (object.serialNum == null || object.serialNum.length() == 0) {
                 object.serialNum = StringUtils.getRandomString(20);
