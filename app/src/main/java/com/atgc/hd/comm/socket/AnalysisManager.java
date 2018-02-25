@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.net.response.base.BaseResponse;
 import com.atgc.hd.comm.net.response.base.Response;
+import com.atgc.hd.comm.utils.CRCUtil;
 import com.atgc.hd.comm.utils.DigitalUtils;
 import com.atgc.hd.comm.utils.StringUtils;
-import com.atgc.hd.comm.utils.CRCUtil;
 import com.orhanobut.logger.Logger;
 import com.xuhao.android.libsocket.sdk.bean.OriginalData;
 
@@ -82,6 +82,19 @@ public class AnalysisManager {
 
         List<BaseResponse> baseResponses = response.dataArray;
         BaseResponse baseResponse = baseResponses.isEmpty() ? null : baseResponses.get(0);
+        if (baseResponse == null) {
+            actionListener.onSendFail(
+                    response.Command,
+                    "",
+                    "" + response.ErrorCode,
+                    response.ErrorMessage);
+            actionListener.onResponseFaile(
+                    response.Command,
+                    "",
+                    "999",
+                    "暂无数据");
+            return;
+        }
 
         // S 端返回给C 端的回执
         if (baseResponse.isReceipt()) {
@@ -114,6 +127,26 @@ public class AnalysisManager {
         }
     }
 
+    /**
+     * 适用于：没有请求只有数据接收的情况注册
+     * <p>注意及时调用{@link #unRegistertOnActionListener(String)}注销
+     *
+     * @param cmd
+     * @param responseClass
+     * @param listener
+     */
+    public void registertOnActionListener(String cmd, Class<?> responseClass, OnActionListener listener) {
+        setResponseClass(cmd, responseClass);
+        registertOnActionListener(cmd, listener);
+    }
+
+    /**
+     * 适用于：有请求有数据接收的情况注册
+     * <p>注意及时调用{@link #unRegistertOnActionListener(String)}注销
+     *
+     * @param cmd
+     * @param listener
+     */
     public void registertOnActionListener(String cmd, OnActionListener listener) {
         if (mapActionListeners.containsKey(cmd)) {
         } else {

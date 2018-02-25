@@ -312,10 +312,34 @@ public class SocketManager {
         }
     }
 
+    /**
+     * 适用于：没有请求只有数据接收的情况注册
+     * <p>注意及时调用{@link #unRegistertOnActionListener(String)}注销
+     *
+     * @param cmd
+     * @param responseClass
+     * @param listener
+     */
+    public void registertOnActionListener(String cmd, Class<?> responseClass, OnActionListener listener) {
+        analysisManager.registertOnActionListener(cmd, responseClass, listener);
+    }
+
+    /**
+     * 适用于：有请求有数据接收的情况注册
+     * <p>注意及时调用{@link #unRegistertOnActionListener(String)}注销
+     *
+     * @param cmd
+     * @param listener
+     */
     public void registertOnActionListener(String cmd, OnActionListener listener) {
         analysisManager.registertOnActionListener(cmd, listener);
     }
 
+    /**
+     * 注销监听
+     *
+     * @param cmd
+     */
     public void unRegistertOnActionListener(String cmd) {
         analysisManager.unRegistertOnActionListener(cmd);
     }
