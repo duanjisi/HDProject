@@ -34,5 +34,7 @@ public interface TaskHandContract {
         void showProgressDialog(String msg);
 
         void dimssProgressDialog();
+
+        void toastMessage(String message);
     }
 }

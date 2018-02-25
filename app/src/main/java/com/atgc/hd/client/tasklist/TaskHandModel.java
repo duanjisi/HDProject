@@ -44,6 +44,7 @@ public class TaskHandModel implements TaskHandContract {
 
     private Timer countDownTimer;
 
+    private String serialNumTaskRequest;
     /***
      * 当前任务索引
      */
@@ -67,6 +68,7 @@ public class TaskHandModel implements TaskHandContract {
 
     @Override
     public void onDestroy() {
+        SocketManager.intance().unRegistertOnActionListener(DeviceCmd.PAT_SEND_TASK);
         EventBus.getDefault().unregister(this);
     }
 
@@ -81,8 +83,11 @@ public class TaskHandModel implements TaskHandContract {
 //            nfcCard.fastCheck(mfc);
 
             byte[] bytes = nfcCard.getBlockBytes(0, 0);
+            byte[] target = new byte[4];
+            // 服务端只返回卡号的前4个字节，客户端需要截取前4个字节再比较
+            System.arraycopy(bytes, 0, target, 0, target.length);
 
-            String cardNum = NfcCard.toHexString(bytes);
+            String cardNum = NfcCard.toHexString(target);
             Logger.e("卡号：" + cardNum);
 
             onCurrentTaskListener.onReceiveNfcCardNum(cardNum);
@@ -103,7 +108,7 @@ public class TaskHandModel implements TaskHandContract {
         GetTaskRequest taskRequest = new GetTaskRequest();
         taskRequest.deviceID = DeviceParams.getInstance().getDeviceId();
 
-        SocketManager.intance().launch(taskRequest);
+        serialNumTaskRequest = SocketManager.intance().launch(taskRequest);
     }
 
     /**
@@ -116,12 +121,17 @@ public class TaskHandModel implements TaskHandContract {
             public void onResponseSuccess(String cmd, String serialNum, Response response) {
                 super.onResponseSuccess(cmd, serialNum, response);
 
+                if (!serialNum.equals(serialNumTaskRequest)) {
+                    return;
+                }
+
                 List<TaskListResponse> datas = response.dataArray;
                 TaskListResponse taskListResponse = datas.get(0);
 
                 handTaskData(taskListResponse);
 
                 iView.dimssProgressDialog();
+                iView.toastMessage("数据已更新");
             }
 
             @Override
@@ -204,8 +214,6 @@ public class TaskHandModel implements TaskHandContract {
         builder.append("planTime：" + currentTaskInfo.getStartTime());
         builder.append("\ncurrentTime：" + date.toString());
         builder.append("\ndelay：" + delay);
-
-        Logger.e(builder.toString());
 
         if (delay <= 0) {
             startTask();

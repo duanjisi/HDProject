@@ -82,7 +82,6 @@ public class AnalysisManager {
 
         List<BaseResponse> baseResponses = response.dataArray;
         BaseResponse baseResponse = baseResponses.isEmpty() ? null : baseResponses.get(0);
-        String serialNum = baseResponse == null ? "" : baseResponse.serialNum;
 
         // S 端返回给C 端的回执
         if (baseResponse.isReceipt()) {

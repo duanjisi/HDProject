@@ -112,8 +112,10 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
             @Override
             public void onClick(View v) {
                 // TODO 调用接口刷新巡更数据
-                TaskHandModel model = (TaskHandModel) taskHandContract;
-                model.demoNfcCardNum("636B3EA4928804008500000004134501");
+//                TaskHandModel model = (TaskHandModel) taskHandContract;
+//                model.demoNfcCardNum("636B3EA4928804008500000004134501");
+                showProgressDialog();
+                taskHandContract.initData();
             }
         });
 
@@ -146,6 +148,11 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
     @Override
     public void dimssProgressDialog() {
         dismissProgressDialog();
+    }
+
+    @Override
+    public void toastMessage(String message) {
+        showToast(message);
     }
 
     @Override
