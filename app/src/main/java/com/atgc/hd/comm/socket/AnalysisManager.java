@@ -98,7 +98,7 @@ public class AnalysisManager {
         String serverResult;
         String errMsg;
         boolean isReceipt;
-        if (respClass.getSuperclass() == BaseResponse.class) {
+        if (respClass == BaseResponse.class || respClass.getSuperclass() == BaseResponse.class) {
             List<BaseResponse> baseResponses = response.dataArray;
             BaseResponse baseResponse = baseResponses.isEmpty() ? null : baseResponses.get(0);
 
