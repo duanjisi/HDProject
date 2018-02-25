@@ -19,6 +19,10 @@ import com.atgc.hd.client.setting.SettingActivity;
 import com.atgc.hd.client.tasklist.adapter.ContentFragAdapter;
 import com.atgc.hd.comm.widget.PagerSlidingTabStrip;
 import com.atgc.hd.entity.EventMessage;
+import com.orhanobut.logger.Logger;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
@@ -197,5 +201,20 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
             Integer pageIndex = (Integer) message.object;
             contentViewPager.setCurrentItem(pageIndex.intValue());
         }
+    }
+
+    private long firstClick;
+
+    @Override
+    public void onBackPressed() {
+
+        if (System.currentTimeMillis() - firstClick > 2000) {
+            firstClick = System.currentTimeMillis();
+            showToast("再按一次退出");
+        } else {
+            super.onBackPressed();
+            System.exit(0);
+        }
+
     }
 }

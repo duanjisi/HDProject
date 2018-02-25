@@ -52,7 +52,7 @@ public class HDApplication extends Application {
 
     private void initSocket() {
         SocketManager.intance().initialize(this);
-//        SocketManager.intance().initConfiguration();
+        SocketManager.intance().initConfiguration();
     }
 
     /**
