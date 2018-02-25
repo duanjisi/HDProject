@@ -93,7 +93,7 @@ public class SocketManager {
         // 心跳包间隔数
         builder.setPulseFrequency(60 * 1000);
         // 设置发送单个数据包的大小（默认50）
-        builder.setSinglePackageBytes(1000);
+        builder.setSinglePackageBytes(500);
 
         // 设置自定义的重连管理器
         builder.setReconnectionManager(new ReconnectManager());

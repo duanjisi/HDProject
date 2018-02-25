@@ -1,5 +1,6 @@
 package com.atgc.hd.client.splash;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -10,13 +11,14 @@ import com.atgc.hd.client.tasklist.TaskListActivity;
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.PrefKey;
+import com.atgc.hd.comm.Utils;
 import com.atgc.hd.comm.config.DeviceParams;
 import com.atgc.hd.comm.net.request.RegisterRequest;
 import com.atgc.hd.comm.net.response.base.Response;
+import com.atgc.hd.comm.service.DeviceBootService;
 import com.atgc.hd.comm.socket.OnActionAdapter;
 import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.utils.PreferenceUtils;
-import com.orhanobut.logger.Logger;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,10 +35,10 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.activity_splash);
 
         barHelper.displayActionBar(false);
-//        if (!Utils.isServiceRunning(context, DeviceBootService.class.getName())) {
-//            Intent i = new Intent(context, DeviceBootService.class);
-//            context.startService(i);
-//        }
+        if (!Utils.isServiceRunning(context, DeviceBootService.class.getName())) {
+            Intent i = new Intent(context, DeviceBootService.class);
+            context.startService(i);
+        }
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {

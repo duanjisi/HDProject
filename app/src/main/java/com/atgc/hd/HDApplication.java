@@ -41,7 +41,7 @@ public class HDApplication extends Application {
 
 //        initCrashHandler();
 
-        initSocket();
+//        initSocket();
 
         initLocationServcie();
     }

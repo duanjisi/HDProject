@@ -80,9 +80,7 @@ public class AnalysisManager {
         Class<?> respClass = mapResponseClass.get(response.Command);
         response.parseData(respClass);
 
-        List<BaseResponse> baseResponses = response.dataArray;
-        BaseResponse baseResponse = baseResponses.isEmpty() ? null : baseResponses.get(0);
-        if (baseResponse == null) {
+        if (response.dataArray.isEmpty()) {
             actionListener.onSendFail(
                     response.Command,
                     "",
@@ -96,33 +94,52 @@ public class AnalysisManager {
             return;
         }
 
+        String serialNum;
+        String serverResult;
+        String errMsg;
+        boolean isReceipt;
+        if (respClass.getSuperclass() == BaseResponse.class) {
+            List<BaseResponse> baseResponses = response.dataArray;
+            BaseResponse baseResponse = baseResponses.isEmpty() ? null : baseResponses.get(0);
+
+            serialNum = baseResponse.serialNum;
+            serverResult = baseResponse.serverResult;
+            errMsg = baseResponse.errMsg;
+            isReceipt = baseResponse.isReceipt();
+        } else {
+            serialNum = "";
+            serverResult = response.Result == 0 ? "0" : String.valueOf(response.ErrorCode);
+            errMsg = response.ErrorMessage;
+            isReceipt = false;
+        }
+
         // S 端返回给C 端的回执
-        if (baseResponse.isReceipt()) {
+        if (isReceipt) {
             if (response.Result == 0) {
                 actionListener.onSendSucess(
                         response.Command,
-                        baseResponse.serialNum);
+                        serialNum);
             } else {
                 actionListener.onSendFail(
                         response.Command,
-                        baseResponse.serialNum,
+                        serialNum,
                         "" + response.ErrorCode,
                         response.ErrorMessage);
             }
         }
         // S 端下发到C 端的业务数据
         else {
-            if ("0".equals(baseResponse.serverResult)) {
+            if ("0".equals(serverResult)) {
                 actionListener.onResponseSuccess(
                         response.Command,
-                        baseResponse.serialNum,
+                        serialNum,
                         response);
             } else {
                 actionListener.onResponseFaile(
                         response.Command,
-                        baseResponse.serialNum,
-                        baseResponse.serverResult,
-                        baseResponse.errMsg);
+                        serialNum,
+                        serverResult,
+                        errMsg);
             }
         }
     }
