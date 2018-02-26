@@ -178,7 +178,6 @@ public class DigitalUtils {
         byte[] b2 = header.getSrcID().getBytes();
         byte[] b3 = "00000000000000000000".getBytes();
 
-
         byte[] b4 = {0};//请求应答
         byte[] b5 = intToByteArrays(5684);//包号
         byte[] b6 = intToByteArrays(dataLength);

@@ -201,18 +201,18 @@ public class TestActivity extends BaseActivity {
         map.put("place", "");
         map.put("eventType", "");
         map.put("taskID", "");
-        UploadEventRequest request = new UploadEventRequest(Tag, map);
-        request.send(new BaseDataRequest.RequestCallback<String>() {
-            @Override
-            public void onSuccess(String pojo) {
-
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                showToast(msg);
-            }
-        });
+//        UploadEventRequest request = new UploadEventRequest(Tag, map);
+//        request.send(new BaseDataRequest.RequestCallback<String>() {
+//            @Override
+//            public void onSuccess(String pojo) {
+//
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                showToast(msg);
+//            }
+//        });
     }
 
     @Override

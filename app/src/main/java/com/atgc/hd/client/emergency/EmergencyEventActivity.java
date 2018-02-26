@@ -35,9 +35,15 @@ import android.widget.TextView;
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.comm.Constants;
+import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.Utils;
+import com.atgc.hd.comm.config.DeviceParams;
 import com.atgc.hd.comm.net.BaseDataRequest;
 import com.atgc.hd.comm.net.request.UploadEventRequest;
+import com.atgc.hd.comm.net.response.TaskListResponse;
+import com.atgc.hd.comm.net.response.base.Response;
+import com.atgc.hd.comm.socket.OnActionAdapter;
+import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.utils.DateUtil;
 import com.atgc.hd.comm.utils.FileUtil;
 import com.atgc.hd.comm.utils.PermissonUtil.PermissionListener;
@@ -61,6 +67,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -127,7 +134,7 @@ public class EmergencyEventActivity extends BaseActivity implements
 //        gridView.setAdapter(pictureAdapter);
 //        gridView.setOnItemClickListener(new itemClickListener());
 //        pictureAdapter.initData();
-
+        registerOnReceiveListener();
         addView("lastItem");
 //        adapter = new MyAdapter();
 //        gridView.setAdapter(adapter);
@@ -232,6 +239,9 @@ public class EmergencyEventActivity extends BaseActivity implements
         }
     }
 
+    private EventEntity eventEntity = null;
+    private String serialNumTaskRequest;
+
     private void submit() {
         final String urls = getUrls(URLS_IMAGES);
         final String videos = getUrls(URLS_VIDEOS);
@@ -259,42 +269,76 @@ public class EmergencyEventActivity extends BaseActivity implements
             return;
         }
 
-        HashMap<String, String> map = new HashMap<>();
         final String time = DateUtil.currentTime();
-//        map.put("userID", "");
-        map.put("deviceID", "10012017020000000000");
-        map.put("longitude", "108.6");
-        map.put("latitude", "110");
-        map.put("uploadTime", time);
-        map.put("description", description);
-        map.put("picUrl", urls);
-        map.put("videoUrl", videos);
-        map.put("place", place);
-        map.put("eventType", "");
-//        map.put("eventStatus", "");
-        UploadEventRequest request = new UploadEventRequest(TAG, map);
-        request.send(new BaseDataRequest.RequestCallback<String>() {
+//        HashMap<String, String> map = new HashMap<>();
+//        map.put("deviceID", "10012017020000000000");
+//        map.put("longitude", "108.6");
+//        map.put("latitude", "110");
+//        map.put("uploadTime", time);
+//        map.put("description", description);
+//        map.put("picUrl", urls);
+//        map.put("videoUrl", videos);
+//        map.put("place", place);
+//        map.put("eventType", "");
+        String url = getUrls(URLS_ALL);
+        eventEntity = new EventEntity();
+        eventEntity.setTime(time);
+        eventEntity.setDescription(description);
+        eventEntity.setPlace(place);
+        eventEntity.setUrls(url);
+
+        UploadEventRequest request = new UploadEventRequest();
+        request.deviceID = DeviceParams.getInstance().getDeviceId();
+        request.longitude = "108.6";
+        request.latitude = "110";
+        request.uploadTime = time;
+        request.description = description;
+        request.picUrl = urls;
+        request.videoUrl = videos;
+        request.place = place;
+        request.eventType = "";
+        serialNumTaskRequest = SocketManager.intance().launch(request);
+        showProgressDialog();
+//        request.send(new BaseDataRequest.RequestCallback<String>() {
+//            @Override
+//            public void onSuccess(String json) {
+//                String url = getUrls(URLS_ALL);
+//                EventEntity entity = new EventEntity();
+//                entity.setTime(time);
+//                entity.setDescription(description);
+//                entity.setPlace(place);
+//                entity.setUrls(url);
+//                EventDao.getInstance().save(entity);
+//                openActvityForResult(UploadStateActivity.class, 100);
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                showToast(msg);
+//            }
+//        });
+    }
+
+    private void registerOnReceiveListener() {
+        SocketManager.intance().registertOnActionListener(DeviceCmd.UP_LOAD_EMERGENCY, new OnActionAdapter() {
             @Override
-            public void onSuccess(String json) {
-//                showToast(json);
-//                String url = urls + "," + videos;
-                String url = getUrls(URLS_ALL);
-                EventEntity entity = new EventEntity();
-                entity.setTime(time);
-                entity.setDescription(description);
-                entity.setPlace(place);
-                entity.setUrls(url);
-                EventDao.getInstance().save(entity);
-                openActvityForResult(UploadStateActivity.class, 100);
+            public void onSendSucess(String cmd, String serialNum) {
+                super.onSendSucess(cmd, serialNum);
+                if (!serialNum.equals(serialNumTaskRequest)) {
+                    return;
+                }
+                if (eventEntity != null) {
+                    EventDao.getInstance().save(eventEntity);
+                    openActvityForResult(UploadStateActivity.class, 100);
+                }
             }
 
             @Override
-            public void onFailure(String msg) {
-                showToast(msg);
+            public void onResponseFaile(String cmd, String serialNum, String errorCode, String errorMsg) {
+                super.onResponseFaile(cmd, serialNum, errorCode, errorMsg);
             }
         });
     }
-
 
     private void getPermission() {
         permissionListener = new PermissionListener() {
@@ -548,7 +592,12 @@ public class EmergencyEventActivity extends BaseActivity implements
                 }
             }
         }
-        return sb.toString();
+        String url = "";
+        String str = sb.toString();
+        if (str.contains(",")) {
+            url = str.substring(0, str.length() - 1);
+        }
+        return url;
     }
 
     private boolean isUploaded() {

@@ -8,6 +8,8 @@
 
 package com.atgc.hd.entity;
 
+import com.atgc.hd.comm.net.response.base.BaseResponse;
+
 /**
  * <p>描述：平台消息
  * <p>作者：duanjisi 2018年 02月 05日

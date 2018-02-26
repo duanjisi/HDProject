@@ -10,6 +10,8 @@ package com.atgc.hd.comm.net.request;
 
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.net.BaseDataRequest;
+import com.atgc.hd.comm.net.request.base.BaseRequest;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,25 +20,29 @@ import java.util.Map;
  * <p>作者：duanjisi 2018年 01月 19日
  */
 
-public class UploadEventRequest extends BaseDataRequest<String> {
-
-    public UploadEventRequest(String tag, Object... params) {
-        super(tag, params);
-    }
-
-    @Override
-    protected boolean isParse() {
-        return false;
-    }
-
-    @Override
-    protected Map<String, String> getParams() {
-        Map<String, String> map = (Map<String, String>) mParams[0];
-        return map;
-    }
+public class UploadEventRequest extends BaseRequest {
+    public String deviceID;
+    public String longitude;
+    public String latitude;
+    public String uploadTime;
+    public String description;
+    public String picUrl;
+    public String videoUrl;
+    public String place;
+    public String eventType;
 
     @Override
-    protected String getCommand() {
+    public String getRequestCommand() {
         return DeviceCmd.UP_LOAD_EMERGENCY;
+    }
+
+    @Override
+    public String getResponseCommand() {
+        return DeviceCmd.UP_LOAD_EMERGENCY;
+    }
+
+    @Override
+    public Class<?> getResponseClass() {
+        return null;
     }
 }
