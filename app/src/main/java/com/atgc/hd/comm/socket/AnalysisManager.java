@@ -52,15 +52,14 @@ public class AnalysisManager {
 
         Response response = JSON.parseObject(body, Response.class);
 
-        OnActionListener actionListener = null;
+        OnActionListener actionListener;
 
         // 当注册有该Command的listener时，才会对业务数据进行解析并回调
         if (mapActionListeners.containsKey(response.Command)) {
             actionListener = mapActionListeners.get(response.Command);
         }
-
         // 因为不用回调，所以数据也不需解析了
-        if (actionListener == null) {
+        else {
             return;
         }
 

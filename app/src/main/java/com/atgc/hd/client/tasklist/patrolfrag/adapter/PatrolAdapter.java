@@ -1,10 +1,9 @@
 package com.atgc.hd.client.tasklist.patrolfrag.adapter;
 
 import android.content.Context;
-import android.view.View;
 
 import com.atgc.hd.R;
-import com.atgc.hd.base.adapter.ViewHolder;
+import com.atgc.hd.base.adapter.holder.ViewHolder;
 import com.atgc.hd.client.tasklist.taskfrag.adapter.TaskListAdapter;
 import com.atgc.hd.client.tasklist.taskfrag.adapter.TaskListEntity;
 

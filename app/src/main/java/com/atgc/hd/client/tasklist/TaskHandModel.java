@@ -4,6 +4,7 @@ import android.nfc.Tag;
 import android.nfc.tech.MifareClassic;
 import android.util.SparseArray;
 
+import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.clock.InnerClock;
 import com.atgc.hd.comm.config.DeviceParams;
@@ -121,7 +122,7 @@ public class TaskHandModel implements TaskHandContract {
             public void onResponseSuccess(String cmd, String serialNum, Response response) {
                 super.onResponseSuccess(cmd, serialNum, response);
 
-                if (!serialNum.equals(serialNumTaskRequest)) {
+                if (!Constants.isDemo && !serialNum.equals(serialNumTaskRequest)) {
                     return;
                 }
 

@@ -1,6 +1,7 @@
 package com.atgc.hd.base.adapter;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,10 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.atgc.hd.base.adapter.holder.ViewHolder;
 import com.atgc.hd.base.adapter.interfaces.OnLoadMoreListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Author: Othershe
@@ -327,13 +331,37 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         notifyDataSetChanged();
     }
 
-    public List<T> getAllData() {
-        return mDatas;
+    public void addWithAnimation(int startIndex, List<T> src) {
+        int len = src.size();
+        for (int i = 0; i < len; i++) {
+            T entity = src.get(len - i - 1);
+            getAllData().add(startIndex, entity);
+            notifyItemInserted(startIndex + i);
+        }
+        if (startIndex < getAllData().size() - 1) {
+            notifyItemRangeChanged(startIndex, getAllData().size() - startIndex);
+        }
     }
 
     public void remove(int position) {
         mDatas.remove(position);
         notifyDataSetChanged();
+    }
+
+    public void removeWithAnimation(int startIndex, int count) {
+        for (int i = 0; i < count; i++) {
+            getAllData().remove(startIndex);
+            notifyItemRemoved(startIndex);
+        }
+
+        if (startIndex < getAllData().size() - 1) {
+            notifyItemRangeChanged(startIndex, getAllData().size() - startIndex);
+        }
+
+    }
+
+    public List<T> getAllData() {
+        return mDatas;
     }
 
     /**

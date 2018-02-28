@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.atgc.hd.base.adapter.holder.ViewHolder;
 import com.atgc.hd.base.adapter.interfaces.OnItemChildClickListener;
 import com.atgc.hd.base.adapter.interfaces.OnItemClickListener;
 import com.atgc.hd.base.adapter.interfaces.OnSwipeMenuClickListener;
