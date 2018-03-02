@@ -87,19 +87,20 @@ public class UploadTask implements Runnable {
                 out.write(buffer, 0, count);
                 length += count;
                 final int finalLength = length;
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (callback != null) {
-                            callback.onProgressUpdate((int) ((finalLength / (float) total) * 100));
-                        }
-                    }
-                });
+//                handler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (callback != null) {
+//                            callback.onProgressUpdate((int) ((finalLength / (float) total) * 100));
+//                        }
+//                    }
+//                });
                 //这里是测试时为了演示进度,休眠500毫秒，正常应去掉
-                Thread.sleep(25);
+//                Thread.sleep(25);
             }
             // flush输出流的缓冲
             out.flush();
+
             // 定义BufferedReader输入流来读取URL的响应
             in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line;
@@ -108,12 +109,32 @@ public class UploadTask implements Runnable {
 //                publishProgress((int) (((result.getBytes().length) / (float) total) * 100));
             }
             final String finalResult = result;
+
+            for (int i = 0; i < 100; i++) {
+                //发布进度
+                final int finalI = i;
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (callback != null) {
+                            callback.onProgressUpdate(finalI);
+                        }
+                    }
+                });
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         JSONObject object = new JSONObject(finalResult);
                         if (callback != null) {
+                            String str = Constants.IMAGE_HEADER + object.getString("id");
                             callback.onPostExecute(Constants.IMAGE_HEADER + object.getString("id"));
                         }
                     } catch (JSONException e) {

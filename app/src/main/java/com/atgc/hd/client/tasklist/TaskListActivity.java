@@ -15,6 +15,7 @@ import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.base.BaseFragment;
 import com.atgc.hd.client.emergency.EmergencyListActivity;
 import com.atgc.hd.client.platform.PlatformInfoActivity;
+import com.atgc.hd.client.player.VideoPlayerActivity;
 import com.atgc.hd.client.setting.SettingActivity;
 import com.atgc.hd.client.tasklist.adapter.ContentFragAdapter;
 import com.atgc.hd.comm.widget.PagerSlidingTabStrip;

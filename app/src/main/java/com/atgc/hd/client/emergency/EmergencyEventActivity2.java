@@ -33,15 +33,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.atgc.hd.R;
+import com.atgc.hd.adapter.PictureAdapter;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.Utils;
 import com.atgc.hd.comm.config.DeviceParams;
-import com.atgc.hd.comm.net.BaseDataRequest;
 import com.atgc.hd.comm.net.request.UploadEventRequest;
-import com.atgc.hd.comm.net.response.TaskListResponse;
-import com.atgc.hd.comm.net.response.base.Response;
 import com.atgc.hd.comm.socket.OnActionAdapter;
 import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.utils.DateUtil;
@@ -68,7 +66,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -81,9 +78,9 @@ import de.greenrobot.event.Subscribe;
  * <p>作者：duanjisi 2018年 01月 18日
  */
 
-public class EmergencyEventActivity extends BaseActivity implements
+public class EmergencyEventActivity2 extends BaseActivity implements
         ActionSheet.OnSheetItemClickListener {
-    private final String TAG = EmergencyEventActivity.class.getSimpleName();
+    private final String TAG = EmergencyEventActivity2.class.getSimpleName();
     private ActionSheet actionSheet;
     private int cameraType;//1:相机 2：相册
     private Uri imageUri;
@@ -108,8 +105,7 @@ public class EmergencyEventActivity extends BaseActivity implements
     Button btnSubmit;
     @BindView(R.id.grid)
     MyGridView gridView;
-    @BindView(R.id.ll_image)
-    LinearLayout ll_image;
+    private PictureAdapter pictureAdapter;
     private Handler handler = new Handler();
     private PermissionListener permissionListener;
     private int mImageHeight;
@@ -119,7 +115,7 @@ public class EmergencyEventActivity extends BaseActivity implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event);
+        setContentView(R.layout.activity_event3);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
         if (Build.VERSION.SDK_INT == 19 || Build.VERSION.SDK_INT == 20) {
@@ -127,18 +123,13 @@ public class EmergencyEventActivity extends BaseActivity implements
         } else {
             savePath = Environment.getExternalStorageDirectory() + "/HDProject/";
         }
-//        btnSubmit.setEnabled(false);
-//        mOutputPath = new File(getExternalCacheDir(), "chosen.jpg").getPath();
         barHelper.setTitleColor(getResources().getColor(R.color.white));
         mImageHeight = (UIUtils.getScreenWidth(context) - UIUtils.dip2px(context, 60)) / 4;
-//        pictureAdapter = new PictureAdapter(context);
-//        gridView.setAdapter(pictureAdapter);
-//        gridView.setOnItemClickListener(new itemClickListener());
-//        pictureAdapter.initData();
+        pictureAdapter = new PictureAdapter(context);
+        gridView.setAdapter(pictureAdapter);
+        gridView.setOnItemClickListener(new itemClickListener());
+        pictureAdapter.initData();
         registerOnReceiveListener();
-        addView("lastItem");
-//        adapter = new MyAdapter();
-//        gridView.setAdapter(adapter);
     }
 
     @Override
@@ -154,7 +145,8 @@ public class EmergencyEventActivity extends BaseActivity implements
 //                showActionSheet();
                 break;
             case R.id.btn_submit:
-                submit();
+//                submit();
+                showActionSheet();
                 break;
         }
     }
@@ -186,19 +178,19 @@ public class EmergencyEventActivity extends BaseActivity implements
     }
 
     private void showActionSheet() {
-        actionSheet = new ActionSheet(EmergencyEventActivity.this)
+        actionSheet = new ActionSheet(EmergencyEventActivity2.this)
                 .builder()
                 .setCancelable(false)
                 .setCanceledOnTouchOutside(true);
 
         actionSheet.addSheetItem("从手机相册选择", ActionSheet.SheetItemColor.Black,
-                EmergencyEventActivity.this)
+                EmergencyEventActivity2.this)
                 .addSheetItem("拍照片", ActionSheet.SheetItemColor.Black,
-                        EmergencyEventActivity.this)
+                        EmergencyEventActivity2.this)
                 .addSheetItem("本地视频", ActionSheet.SheetItemColor.Black,
-                        EmergencyEventActivity.this)
+                        EmergencyEventActivity2.this)
                 .addSheetItem("拍视频", ActionSheet.SheetItemColor.Black,
-                        EmergencyEventActivity.this);
+                        EmergencyEventActivity2.this);
         actionSheet.show();
     }
 
@@ -255,10 +247,10 @@ public class EmergencyEventActivity extends BaseActivity implements
             return;
         }
 
-        if (!isUploaded()) {
-            showToast("等待上传完毕，再提交!");
-            return;
-        }
+//        if (!isUploaded()) {
+//            showToast("等待上传完毕，再提交!");
+//            return;
+//        }
 
         if (TextUtils.isEmpty(place)) {
             showToast("地址不能为空!");
@@ -374,7 +366,7 @@ public class EmergencyEventActivity extends BaseActivity implements
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         String imageName = getNowTime() + ".jpg";
                         File file = new File(savePath, imageName);
-                        imageUri = FileProvider.getUriForFile(EmergencyEventActivity.this, "com.atgc.cotton.fileProvider", file);//这里进行替换uri的获得方式
+                        imageUri = FileProvider.getUriForFile(EmergencyEventActivity2.this, "com.atgc.cotton.fileProvider", file);//这里进行替换uri的获得方式
                         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//这里加入flag
                         startActivityForResult(intent, OPEN_CAMERA);
@@ -385,7 +377,7 @@ public class EmergencyEventActivity extends BaseActivity implements
                             showCamera(false).
                             count(1)
                             .multi() // 多选模式, 默认模式;
-                            .start(EmergencyEventActivity.this, OPEN_ALBUM);
+                            .start(EmergencyEventActivity2.this, OPEN_ALBUM);
                 } else if (cameraType == RECORD_VIDEO) {
                     Intent mIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                     //mIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
@@ -514,7 +506,7 @@ public class EmergencyEventActivity extends BaseActivity implements
                 MultiImageSelector.create(context).
                         showCamera(true).
                         count(1)
-                        .start(EmergencyEventActivity.this, 100);
+                        .start(EmergencyEventActivity2.this, 100);
             }
 
             @Override
@@ -529,73 +521,44 @@ public class EmergencyEventActivity extends BaseActivity implements
                 ).request(permissionListener);
     }
 
+    private int objId = 0;
+
     private void uploadImageFile(final String path) {
-//        UploadEntity entity = new UploadEntity();
-//        entity.setLocalPath(path);
-//        pictureAdapter.addItem2(entity);
-        imageCount++;
-        addView(path);
+        objId++;
+        UploadEntity entity = new UploadEntity();
+        entity.setLocalPath(path);
+        entity.id = objId;
+        pictureAdapter.addItem2(entity);
     }
 
     private void uploadVideoFile(final String path) {
         videoCount++;
-        addView(path);
+//        addView(path);
     }
 
 
     private ArrayList<String> images = new ArrayList<>();
 
-    private void addView(String path) {
-        if (!images.contains(path)) {
-            images.add(path);
-        }
-        int count = ll_image.getChildCount();
-        if (count == 4) {
-            deleteLastItem();
-        }
-        if (count >= 1) {
-            ll_image.addView(insertImage(path, 0), count - 1);
-        } else {
-            ll_image.addView(insertImage(path, 0), 0);
-        }
-        ll_image.requestLayout();
-    }
-
-    private void deleteLastItem() {
-        if (images.contains("lastItem")) {
-            images.remove("lastItem");
-        }
-        ll_image.removeViewAt(3);
-    }
-
-    private void addLastItem() {
-        if (!images.contains("lastItem")) {
-            ll_image.addView(insertImage("lastItem", 0), images.size());
-            images.add("lastItem");
-        }
-    }
-
+//    private void addView(String path) {
+//        if (!images.contains(path)) {
+//            images.add(path);
+//        }
+//        int count = ll_image.getChildCount();
+//        if (count == 4) {
+//            deleteLastItem();
+//        }
+//        if (count >= 1) {
+//            ll_image.addView(insertImage(path, 0), count - 1);
+//        } else {
+//            ll_image.addView(insertImage(path, 0), 0);
+//        }
+//        ll_image.requestLayout();
+//    }
 
 //    private StringBuilder sb = new StringBuilder();
 
     private String getUrls(int type) {
         StringBuilder sb = new StringBuilder();
-        int count = ll_image.getChildCount();
-        if (count != 0) {
-            for (int i = 0; i < count; i++) {
-                View view = ll_image.getChildAt(i);
-                String tag = (String) view.getTag(R.id.tag_url);
-                if (!TextUtils.isEmpty(tag) && !tag.equals("lastItem")) {
-                    if (type == URLS_IMAGES && isImage(tag)) {
-                        sb.append(tag).append(",");
-                    } else if (type == URLS_VIDEOS && isVideo(tag)) {
-                        sb.append(tag).append(",");
-                    } else if (type == URLS_ALL) {
-                        sb.append(tag).append(",");
-                    }
-                }
-            }
-        }
         String url = "";
         String str = sb.toString();
         if (str.contains(",")) {
@@ -604,25 +567,6 @@ public class EmergencyEventActivity extends BaseActivity implements
         return url;
     }
 
-    private boolean isUploaded() {
-        int sum = 0;
-        int sum2 = 0;
-        int count = ll_image.getChildCount();
-        if (count != 0) {
-            for (int i = 0; i < count; i++) {
-                View view = ll_image.getChildAt(i);
-                String tag = (String) view.getTag();
-                String tag_url = (String) view.getTag(R.id.tag_url);
-                if (!tag.equals("lastItem")) {
-                    sum++;
-                }
-                if (!TextUtils.isEmpty(tag_url)) {
-                    sum2++;
-                }
-            }
-        }
-        return (sum == sum2);
-    }
 
     private boolean isImage(String url) {
         if (url.contains(".jpg") ||
@@ -643,136 +587,4 @@ public class EmergencyEventActivity extends BaseActivity implements
             return false;
         }
     }
-
-//    private StringBuilder sb2 = new StringBuilder();
-//    private String getVideoUrls() {
-//        return sb2.toString();
-//    }
-
-    private View insertImage(String localPath, int position) {
-        final LinearLayout layout = new LinearLayout(getApplicationContext());
-        layout.setLayoutParams(new LinearLayout.LayoutParams(mImageHeight, mImageHeight));
-        layout.setGravity(Gravity.CENTER);
-        layout.setTag(localPath);
-        MyView child = new MyView(context);
-        child.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-        child.getLayoutParams().width = mImageHeight;
-        child.getLayoutParams().height = mImageHeight;
-        if (!localPath.equals("lastItem")) {
-            child.setCallback(new MyView.callback() {
-                @Override
-                public void getFileUrl(String url) {
-                    String fileName = FileUtil.getFileName(url);
-//                    showToast("=======Url:" + url);
-                    layout.setTag(R.id.tag_url, url);
-//                    if (fileName.contains(".mp4")) {
-//                        sb2.append(url);
-//                        sb2.append(",");
-//                    } else {
-//                        sb.append(url);
-//                        sb.append(",");
-//                    }
-                }
-            });
-            child.setCloseListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    deleteView((String) layout.getTag());
-                }
-            });
-        } else {
-            child.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showActionSheet();
-                }
-            });
-        }
-        child.startUpload(localPath);
-        layout.addView(child);
-        return layout;
-    }
-
-    private void deleteView(String path) {
-        if (images.contains(path)) {
-            images.remove(path);
-            String fileName = FileUtil.getFileName(path);
-            if (fileName.contains(".mp4") || fileName.contains(".MP4")) {
-                videoCount--;
-            } else {
-                imageCount--;
-            }
-        }
-        int count = ll_image.getChildCount();
-        if (count != 0) {
-            for (int i = 0; i < count; i++) {
-                View view = ll_image.getChildAt(i);
-                String tag = (String) view.getTag();
-                if (tag.equals(path)) {
-                    ll_image.removeView(view);
-                    ll_image.requestLayout();
-                    addLastItem();
-                    break;
-                }
-            }
-        }
-    }
-
-//    private MyAdapter adapter;
-//    private ArrayList<String> mList = new ArrayList<>();
-//    private HashMap<String, UploadEntity> map = new HashMap<>();
-//    private ViewHolder viewHolder = null;
-//
-//    private class MyAdapter extends BaseAdapter {
-//        @Override
-//        public int getCount() {
-//            //我们将map作为数据源
-//            if (map == null) {
-//                return 0;
-//            } else {
-//                return map.size();
-//            }
-//        }
-//
-//        @Override
-//        public Object getItem(int i) {
-//            return null;
-//        }
-//
-//        @Override
-//        public long getItemId(int i) {
-//            return 0;
-//        }
-//
-//        @Override
-//        public View getView(int position, View convertView, ViewGroup viewGroup) {
-//            viewHolder = null;
-//            if (convertView == null) {
-//                convertView = View.inflate(context, R.layout.item_picture, null);
-//                viewHolder = new ViewHolder(convertView);
-//                convertView.setTag(viewHolder);
-//            } else {
-//                viewHolder = (ViewHolder) convertView.getTag();
-//            }
-//            if (map != null && map.size() > 0) {
-//                //   mList.get(position)得到map的key          viewHolder.tv.setText(map.get(mList.get(position)).getCurrent() + "");
-//                viewHolder.tvProgress.setText(map.get(mList.get(position)).getCurrent() + "%" + "\n" + "正在上传");
-//            }
-//            return convertView;
-//        }
-//    }
-//
-//    public static class ViewHolder {
-//        public ImageView ivClose;
-//        public RoundImageView ivPic;
-//        public RoundImageView ivBg;
-//        public TextView tvProgress;
-//
-//        public ViewHolder(View view) {
-//            this.ivClose = (ImageView) view.findViewById(R.id.iv_close);
-//            this.ivPic = (RoundImageView) view.findViewById(R.id.iv_image);
-//            this.ivBg = (RoundImageView) view.findViewById(R.id.iv_bg);
-//            this.tvProgress = view.findViewById(R.id.tv_progress);
-//        }
-//    }
 }

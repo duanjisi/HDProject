@@ -18,12 +18,12 @@ import com.atgc.hd.comm.net.http.MyTask;
  */
 
 public class UploadEntity {
+    public int id;
+    public int progress = 0;       //下载进度
     private int type;
     private String localPath = "";
     private String url = "";
-    private int current;  //下载进度
-    private MyTask task;
-
+    boolean Downloaded = false;
 
     public int getType() {
         return type;
@@ -49,18 +49,27 @@ public class UploadEntity {
         this.url = url;
     }
 
-    public int getCurrent() {
-        return current;
+    public int getId() {
+        return id;
     }
 
-    public void setCurrent(int current) {
-        this.current = current;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public MyTask getTask(Context context) {
-        if (task == null) {
-            task = new MyTask(context, localPath);
-        }
-        return task;
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    public boolean isDownloaded() {
+        return Downloaded;
+    }
+
+    public void setDownloaded(boolean downloaded) {
+        Downloaded = downloaded;
     }
 }

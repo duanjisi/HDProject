@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atgc.hd.R;
+import com.atgc.hd.comm.net.http.MyAsyncTask;
 import com.atgc.hd.comm.net.http.MyTask;
 import com.atgc.hd.comm.utils.PreferenceUtils;
 import com.atgc.hd.comm.utils.UIUtils;
@@ -33,6 +34,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.WeakHashMap;
 
 /**
@@ -46,8 +48,8 @@ public class PictureAdapter extends BaseAdapter {
     private Context context;
     private float mImageHeight;
     private ArrayList<UploadEntity> images;
+    private List<View> viewList;
     private boolean isAddPager = false;
-    private WeakHashMap<String, View> maps = new WeakHashMap<>();
     private UpdateCallback updateCallback;
 
     public void setUpdateCallback(UpdateCallback updateCallback) {
@@ -56,6 +58,7 @@ public class PictureAdapter extends BaseAdapter {
 
     public PictureAdapter(Context context) {
         this.context = context;
+        this.viewList = new ArrayList<>();
         mImageHeight = (UIUtils.getScreenWidth(context) - UIUtils.dip2px(context, 60)) / 4;
         if (images == null) {
             images = new ArrayList<>();
@@ -81,8 +84,7 @@ public class PictureAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup viewGroup) {
         ViewHolder holder = null;
         if (convertView == null) {
-//            convertView = View.inflate(context, R.layout.item_picture, null);
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_picture, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_picture2, null);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
@@ -92,13 +94,29 @@ public class PictureAdapter extends BaseAdapter {
         convertView.getLayoutParams().width = (int) mImageHeight;
         convertView.getLayoutParams().height = (int) mImageHeight;
         final UploadEntity entity = images.get(position);
-        final String localPath = entity.getLocalPath();
-        holder.myView.setCloseListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        String localPath = entity.getLocalPath();
+        if (!localPath.equals("lastItem")) {
+            holder.tvProgress.setText("" + entity.getProgress());
+            final boolean downloaded = entity.isDownloaded();
+            if (!downloaded) {
+                if (entity.progress == 0) {
+                    entity.setProgress(0);
+                    //如果未开始下载，启动异步下载任务
+                    MyAsyncTask asyncTask = new MyAsyncTask(context, viewList, entity);
+                    //添加THREAD_POOL_EXECUTOR可启动多个异步任务
+                    asyncTask.executeOnExecutor(MyAsyncTask.THREAD_POOL_EXECUTOR, entity);
+                }
+            } else {
+//            holder.setText("删除");
             }
-        });
-        holder.myView.startUpload(localPath);
+            convertView.setTag(R.id.grid, entity.id);//此处将位置信息作为标识传递
+            viewList.add(convertView);
+        } else {
+            holder.tvProgress.setVisibility(View.GONE);
+            holder.ivBg.setVisibility(View.GONE);
+            holder.ivClose.setVisibility(View.GONE);
+            holder.ivBg.setImageResource(R.drawable.compose_pic_add);
+        }
         return convertView;
     }
 
@@ -154,10 +172,18 @@ public class PictureAdapter extends BaseAdapter {
     }
 
     public static class ViewHolder {
-        public MyView myView;
+        public ImageView ivClose;
+        public ImageView ivPlay;
+        public RoundImageView ivPic;
+        public RoundImageView ivBg;
+        public TextView tvProgress;
 
         public ViewHolder(View view) {
-            this.myView = (MyView) view.findViewById(R.id.my_view);
+            this.ivClose = view.findViewById(R.id.iv_close);
+            this.ivPlay = view.findViewById(R.id.iv_play);
+            this.ivPic = view.findViewById(R.id.iv_image);
+            this.ivBg = view.findViewById(R.id.iv_bg);
+            this.tvProgress = view.findViewById(R.id.tv_progress);
         }
     }
 }

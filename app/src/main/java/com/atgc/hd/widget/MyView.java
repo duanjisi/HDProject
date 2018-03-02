@@ -99,7 +99,7 @@ public class MyView extends RelativeLayout implements UploadTask.updateProgressC
                     tvProgress.setVisibility(View.VISIBLE);
                     ivBg.setVisibility(View.VISIBLE);
                     ivClose.setVisibility(View.GONE);
-                    tvProgress.setText("开始上传");
+                    tvProgress.setText("等待上传");
                     task = new UploadTask(context, path);
                     task.setCallback(this);
                     new Thread(task).start();

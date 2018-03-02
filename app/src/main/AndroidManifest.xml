@@ -4,6 +4,7 @@
     package="com.atgc.hd">
 
     <uses-sdk android:minSdkVersion="5" />
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -53,15 +54,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"></activity>
-        <activity android:name=".TestActivity"></activity>
-        <activity android:name=".SecondActivity"></activity>
-        <activity android:name=".FouthActivity"></activity>
         <activity android:name=".client.im.ConversationActivity"></activity>
         <activity android:name=".client.im.ContactBookActivity"></activity>
         <activity android:name=".client.im.ChatActivity"></activity>
         <activity android:name=".client.emergency.ClipImageActivity"></activity>
         <activity android:name=".client.emergency.EmergencyDetailsActivity"></activity>
         <activity android:name=".client.emergency.EmergencyEventActivity"></activity>
+        <activity android:name=".client.emergency.EmergencyEventActivity2"></activity>
         <activity android:name=".client.emergency.EmergencyListActivity"></activity>
         <activity android:name=".client.emergency.ImagePagerActivity"></activity>
         <activity android:name=".client.emergency.LocalVideoFilesActivity"></activity>

@@ -9,9 +9,11 @@
 
 package com.atgc.hd.client.setting;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -19,8 +21,12 @@ import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.comm.PrefKey;
 import com.atgc.hd.comm.net.TcpSocketClient;
+import com.atgc.hd.comm.socket.SocketManager;
+import com.atgc.hd.comm.socket.SocketTestManager;
 import com.atgc.hd.comm.utils.PreferenceUtils;
 import com.atgc.hd.widget.SuperEditText;
+import com.xuhao.android.libsocket.sdk.ConnectionInfo;
+import com.xuhao.android.libsocket.sdk.SocketActionAdapter;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -143,8 +149,59 @@ public class SettingActivity extends BaseActivity {
             return;
         }
         PreferenceUtils.putBoolean(context, PrefKey.SETTED, true);
-        TcpSocketClient.getInstance().resetSocket();
-        finish();
+//        TcpSocketClient.getInstance().resetSocket();
+        SocketTestManager.intance().initConfiguration(host, Integer.valueOf(port));
+        SocketTestManager.intance().test(socketActionAdapter());
+    }
+
+
+    private SocketActionAdapter socketActionAdapter() {
+        return new SocketActionAdapter() {
+            /**
+             * 当Socket连接建立成功后<br>
+             * 系统会回调该方法,此时有可能读写线程还未启动完成,不过不会影响大碍<br>
+             * 当回调此方法后,我们可以认为Socket连接已经建立完成,并且读写线程也初始化完
+             *
+             * @param context
+             * @param info 这次连接的连接信息
+             * @param action
+             */
+            @Override
+            public void onSocketConnectionSuccess(Context context, ConnectionInfo info, String action) {
+                super.onSocketConnectionSuccess(context, info, action);
+                Log.e("socketManager", "onSocketConnectionSuccess 连接成功");
+//                showMessage("连接成功！");
+                SocketTestManager.intance().onDestory();
+                finish();
+            }
+
+            /**
+             * 当Socket连接失败时会进行回调<br>
+             * 建立Socket连接,如果服务器出现故障,网络出现异常都将导致该方法被回调<br>
+             * 系统回调此方法时,IO线程均未启动.如果IO线程启动将会回调{@link #onSocketDisconnection(Context, ConnectionInfo, String, Exception)}
+             *
+             * @param context
+             * @param info 这次连接的连接信息
+             * @param action
+             * @param e 连接未成功建立的错误原因
+             */
+            @Override
+            public void onSocketConnectionFailed(Context context, ConnectionInfo info, String action, Exception e) {
+                super.onSocketConnectionFailed(context, info, action, e);
+                showMessage("socket连接失败！");
+                SocketTestManager.intance().onDestory();
+                Log.e("socketManager", "onSocketConnectionFailed 连接失败");
+            }
+        };
+    }
+
+    private void showMessage(final String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showToast(msg);
+            }
+        });
     }
 
     private boolean isHostMatcher(String str) {

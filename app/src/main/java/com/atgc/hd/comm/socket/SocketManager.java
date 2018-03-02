@@ -31,7 +31,8 @@ import java.nio.ByteOrder;
  * <p>作者：liangguokui 2018/2/6
  */
 public class SocketManager {
-    private static final String HOST = "172.16.10.77";
+//    private static final String HOST = "172.16.10.77";
+    private static final String HOST = "192.168.0.242";
     private static final int PORT = 20001;
 
     // 心跳包数据
