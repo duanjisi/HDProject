@@ -18,6 +18,7 @@ import com.atgc.hd.comm.net.response.base.Response;
 import com.atgc.hd.comm.service.DeviceBootService;
 import com.atgc.hd.comm.socket.OnActionAdapter;
 import com.atgc.hd.comm.socket.SocketManager;
+import com.atgc.hd.comm.socket.SocketTestManager;
 import com.atgc.hd.comm.utils.PreferenceUtils;
 
 import java.util.Timer;
@@ -35,11 +36,6 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.activity_splash);
 
         barHelper.displayActionBar(false);
-        if (!Utils.isServiceRunning(context, DeviceBootService.class.getName())) {
-            Intent i = new Intent(context, DeviceBootService.class);
-            context.startService(i);
-        }
-
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -60,6 +56,11 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void onResponseSuccess(String cmd, String serialNum, Response response) {
                 super.onResponseSuccess(cmd, serialNum, response);
+                SocketManager.intance().startPulse();
+                if (!Utils.isServiceRunning(context, DeviceBootService.class.getName())) {
+                    Intent i = new Intent(context, DeviceBootService.class);
+                    context.startService(i);
+                }
                 openActivity(TaskListActivity.class);
                 SplashActivity.this.finish();
             }

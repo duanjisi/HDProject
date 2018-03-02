@@ -141,6 +141,7 @@ public class DeviceBootService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Logger.i("info===============服务onDestroy");
         SocketManager.intance().unRegistertOnActionListener(DeviceCmd.PAT_SEND_MESSAGE);
     }
 }

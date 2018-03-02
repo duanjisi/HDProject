@@ -92,7 +92,7 @@ public class SocketManager {
         builder.setHeaderProtocol(headerProtocol());
         // ========修改参数设置========
         // 心跳包间隔数
-        builder.setPulseFrequency(60 * 1000);
+        builder.setPulseFrequency(5 * 1000);
         // 设置发送单个数据包的大小（默认50）
         builder.setSinglePackageBytes(500);
 
@@ -232,7 +232,7 @@ public class SocketManager {
             @Override
             public void onPulseSend(Context context, ConnectionInfo info, IPulseSendable data) {
                 super.onPulseSend(context, info, data);
-                Log.e("socketManager", "onPulseSend 心跳包发送");
+                Log.e("socketManager", "onPulseSend 心跳包发送成功");
             }
         };
     }
@@ -254,14 +254,13 @@ public class SocketManager {
         });
     }
 
-    private void startPulse() {
+    public void startPulse() {
         if (connectionManager != null) {
             Log.e("socketManager", "onSocketConnectionSuccess 开始心跳");
             PulseManager pulseManager = connectionManager.getPulseManager();
 
             //给心跳管理器设置心跳数据,一个连接只有一个心跳管理器,因此数据只用设置一次,如果断开请再次设置.
             pulseManager.setPulseSendable(mPulseData);
-
             //开始心跳,开始心跳后,心跳管理器会自动进行心跳触发
             pulseManager.pulse();
         }
