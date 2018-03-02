@@ -1,5 +1,7 @@
 package com.atgc.hd.comm.socket;
 
+import android.os.Bundle;
+
 import com.alibaba.fastjson.JSON;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.net.response.base.BaseResponse;
@@ -20,15 +22,7 @@ import java.util.Map;
  * <p>作者：liangguokui 2018/2/10
  */
 public class AnalysisManager {
-    private Map<String, Class<?>> mapResponseClass = new HashMap<>();
-    private Map<String, OnActionListener> mapActionListeners = new HashMap<>();
 
-    public void setResponseClass(String cmd, Class<?> responseClass) {
-        if (mapResponseClass.containsKey(cmd)) {
-        } else {
-            mapResponseClass.put(cmd, responseClass);
-        }
-    }
 
     public void onReceiveResponse(OriginalData data) {
         String header = DigitalUtils.byteArrayToHexString(data.getHeadBytes());
@@ -52,23 +46,20 @@ public class AnalysisManager {
 
         Response response = JSON.parseObject(body, Response.class);
 
-        OnActionListener actionListener;
-
-        // 当注册有该Command的listener时，才会对业务数据进行解析并回调
-        if (mapActionListeners.containsKey(response.Command)) {
-            actionListener = mapActionListeners.get(response.Command);
-        }
+        OnActionListener actionListener = getOnActionListener(response);
         // 因为不用回调，所以数据也不需解析了
-        else {
-            return;
+        if (actionListener == null) {
+          return;
         }
+
+        Bundle bundle = null;
 
         // 设备注册口需做特殊处理，网关不支持返回requestTag
         if (DeviceCmd.REGISTER.equals(response.Command)) {
             if (response.Result == 0) {
-                actionListener.onResponseSuccess(response.Command, "", response);
+                actionListener.onResponseSuccess(response.Command, "", response, bundle);
             } else {
-                actionListener.onResponseFaile(response.Command, "", "" + response.ErrorCode, response.ErrorMessage);
+                actionListener.onResponseFaile(response.Command, "", "" + response.ErrorCode, response.ErrorMessage, bundle);
             }
         }
 
@@ -84,12 +75,14 @@ public class AnalysisManager {
                     response.Command,
                     "",
                     "" + response.ErrorCode,
-                    response.ErrorMessage);
+                    response.ErrorMessage,
+                    bundle);
             actionListener.onResponseFaile(
                     response.Command,
                     "",
                     "999",
-                    "暂无数据");
+                    "暂无数据",
+                    bundle);
             return;
         }
 
@@ -117,13 +110,15 @@ public class AnalysisManager {
             if (response.Result == 0) {
                 actionListener.onSendSucess(
                         response.Command,
-                        serialNum);
+                        serialNum,
+                        bundle);
             } else {
                 actionListener.onSendFail(
                         response.Command,
                         serialNum,
                         "" + response.ErrorCode,
-                        response.ErrorMessage);
+                        response.ErrorMessage,
+                        bundle);
             }
         }
         // S 端下发到C 端的业务数据
@@ -132,47 +127,143 @@ public class AnalysisManager {
                 actionListener.onResponseSuccess(
                         response.Command,
                         serialNum,
-                        response);
+                        response,
+                        bundle);
             } else {
                 actionListener.onResponseFaile(
                         response.Command,
                         serialNum,
                         serverResult,
-                        errMsg);
+                        errMsg,
+                        bundle);
             }
         }
     }
 
-    /**
-     * 适用于：没有请求只有数据接收的情况注册
-     * <p>注意及时调用{@link #unRegistertOnActionListener(String)}注销
-     *
-     * @param cmd
-     * @param responseClass
-     * @param listener
-     */
-    public void registertOnActionListener(String cmd, Class<?> responseClass, OnActionListener listener) {
-        setResponseClass(cmd, responseClass);
-        registertOnActionListener(cmd, listener);
-    }
+    private OnActionListener getOnActionListener(Response response) {
+        String key = getPoolListenerKey(response);
 
-    /**
-     * 适用于：有请求有数据接收的情况注册
-     * <p>注意及时调用{@link #unRegistertOnActionListener(String)}注销
-     *
-     * @param cmd
-     * @param listener
-     */
-    public void registertOnActionListener(String cmd, OnActionListener listener) {
-        if (mapActionListeners.containsKey(cmd)) {
+        // 当注册有该Command的listener时，才会对业务数据进行解析并回调
+        if (mapPoolListener.containsKey(key)) {
+            return mapPoolListener.get(key);
+        } else if (mapPoolListenersNoRequestTag.containsKey(response.Command)) {
+            return mapPoolListenersNoRequestTag.get(response.Command);
         } else {
-            mapActionListeners.put(cmd, listener);
+            return null;
         }
     }
 
-    public void unRegistertOnActionListener(String cmd) {
-        mapActionListeners.remove(cmd);
+    private String getPoolListenerKey(Response response) {
+        String key;
+        if (response.dataArray == null) {
+            key = response.Command;
+        } else {
+            if (response.dataArray.isEmpty()) {
+                key = "";
+            } else {
+                BaseResponse baseResponse = (BaseResponse) response.dataArray.get(0);
+                key = baseResponse.serialNum;
+            }
+        }
+        return key;
+    }
+
+
+    private Map<String, Bundle> mapRequestBundle = new HashMap<>();
+    private Map<String, Class<?>> mapResponseClass = new HashMap<>();
+
+    private Map<String, Map<String, OnActionListener>> mapGroupListener = new HashMap<>();
+    private Map<String, OnActionListener> mapPoolListener = new HashMap<>();
+    private Map<String, OnActionListener> mapPoolListenersNoRequestTag = new HashMap<>();
+
+    private void setResponseClass(String cmd, Class<?> responseClass) {
+        if (mapResponseClass.containsKey(cmd)) {
+        } else {
+            mapResponseClass.put(cmd, responseClass);
+        }
+    }
+
+    /**
+     * 适用请求的响应报文有
+     *
+     * @param groupTag
+     * @param cmd
+     * @param requestTag
+     * @param onResponseNoRequestTag 响应报文是否有requestTag返回
+     */
+    public void preAnalysisResponse(String groupTag,
+                                    String cmd,
+                                    String requestTag,
+                                    Bundle bundle,
+                                    boolean onResponseNoRequestTag) {
+        mapRequestBundle.put(requestTag, bundle);
+
+        Map<String, OnActionListener> mapListener = mapGroupListener.get(groupTag);
+
+        if (mapListener == null) {
+            return;
+        }
+
+        OnActionListener listener = mapListener.get(cmd);
+        if (onResponseNoRequestTag) {
+            mapPoolListenersNoRequestTag.put(cmd, listener);
+        } else {
+            mapPoolListener.put(requestTag, listener);
+        }
+    }
+
+    /**
+     * @param groupTag
+     * @param cmd
+     */
+    public void preAnalysisResponseNoRequestTag(String groupTag, String cmd, Bundle bundle) {
+        mapRequestBundle.put(cmd, bundle);
+        Map<String, OnActionListener> mapListener = mapGroupListener.get(groupTag);
+        if (mapListener == null) {
+        } else {
+            OnActionListener listener = mapListener.get(cmd);
+            mapPoolListenersNoRequestTag.put(cmd, listener);
+        }
+    }
+
+    /**
+     * groupTag相同的情况下，一个cmd只能注册一次，否则回调会出现问题
+     * <p>注意及时调用{@link #unRegistertOnActionListener(String)}注销
+     *
+     * @param groupTag      同一个类里面，多次注册传相同的groupTag，
+     *                      在注销接口传groupTag，可将同一groupTag的listener都移除
+     * @param cmd           响应接口命令字
+     * @param responseClass 响应报文解析类
+     * @param listener      回调监听器
+     */
+    public void registertOnActionListener(String groupTag,
+                                          String cmd,
+                                          Class<?> responseClass,
+                                          OnActionListener listener) {
+        setResponseClass(cmd, responseClass);
+        Map<String, OnActionListener> mapListener = mapGroupListener.get(groupTag);
+
+        if (mapListener == null) {
+            mapListener = new HashMap<>();
+            mapGroupListener.put(groupTag, mapListener);
+        } else if (mapListener.containsKey(cmd)) {
+            throw new IllegalArgumentException("暂不支持同一【groupTag：" + groupTag + "】注册多次【cmd：" + cmd + "】");
+        }
+
+        mapListener.put(cmd, listener);
+    }
+
+    public void unRegistertOnActionListener(String groupTag) {
+        mapGroupListener.remove(groupTag);
+    }
+
+    public void unRegistertOnActionListener(String groupTag, String cmd) {
         mapResponseClass.remove(cmd);
+        Map<String, OnActionListener> mapListeners = mapGroupListener.get(groupTag);
+        if (mapListeners == null) {
+        } else {
+            mapListeners.remove(cmd);
+        }
     }
 
     private boolean checkCrc(OriginalData data) {

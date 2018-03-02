@@ -2,9 +2,11 @@ package com.atgc.hd.comm.socket;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.atgc.hd.comm.Constants;
+import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.net.request.PulseRequest;
 import com.atgc.hd.comm.net.request.base.BaseRequest;
 import com.atgc.hd.comm.net.request.base.SendableBase;
@@ -34,6 +36,7 @@ public class SocketManager {
 //    private static final String HOST = "172.16.10.77";
     private static final String HOST = "192.168.0.242";
     private static final int PORT = 20001;
+//    private static final int PORT = 39083;
 
     // 心跳包数据
     private SendablePulse mPulseData;
@@ -53,7 +56,12 @@ public class SocketManager {
     }
 
     public void onDestory() {
-        connectionManager.disConnect();
+        if (connectionManager == null) {
+
+        } else {
+            connectionManager.disConnect();
+            connectionManager = null;
+        }
     }
 
     /**
@@ -66,9 +74,19 @@ public class SocketManager {
     }
 
     public void initConfiguration() {
+        if (connectionManager != null) {
+            onDestory();
+        }
 
         //连接参数设置(IP,端口号),这也是一个连接的唯一标识,不同连接,该参数中的两个值至少有其一不一样
-        ConnectionInfo info = new ConnectionInfo(HOST, PORT);
+//        ConnectionInfo info = new ConnectionInfo(HOST, PORT);
+        String host = IPPort.getHOST();
+        String port = IPPort.getPORT();
+        connect(host, port);
+    }
+
+    public void connect(String host, String port) {
+        ConnectionInfo info = new ConnectionInfo(host, Integer.valueOf(port));
 
         //调用OkSocket,开启这次连接的通道,拿到通道Manager
         connectionManager = OkSocket.open(info);
@@ -237,23 +255,6 @@ public class SocketManager {
         };
     }
 
-    private void registerDevice() {
-
-        registertOnActionListener("", new OnActionAdapter() {
-            @Override
-            public void onSendSucess(String cmd, String serialNum) {
-                startPulse();
-                uploadGps();
-
-                unRegistertOnActionListener(cmd);
-            }
-
-            @Override
-            public void onSendFail(String cmd, String serialNum, String errorCode, String errorMsg) {
-            }
-        });
-    }
-
     public void startPulse() {
         if (connectionManager != null) {
             Log.e("socketManager", "onSocketConnectionSuccess 开始心跳");
@@ -261,6 +262,7 @@ public class SocketManager {
 
             //给心跳管理器设置心跳数据,一个连接只有一个心跳管理器,因此数据只用设置一次,如果断开请再次设置.
             pulseManager.setPulseSendable(mPulseData);
+
             //开始心跳,开始心跳后,心跳管理器会自动进行心跳触发
             pulseManager.pulse();
         }
@@ -276,71 +278,113 @@ public class SocketManager {
      * @param object 请求数据
      * @return
      */
-    public String launch(BaseRequest object) {
+    public String launch(String groupTag, BaseRequest object, Bundle bundle) {
+        return launch(groupTag, object, bundle, false);
+    }
+
+    public String launch(String groupTag,
+                         BaseRequest object,
+                         Bundle bundle,
+                         boolean onResponseNoRequestTag) {
         // demo模式下读取模拟响应报文文件
         if (Constants.isDemo) {
-            analysisManager.setResponseClass(object.getResponseCommand(), object.responseClass());
-
-            String cmd = object.getRequestCommand();
-            String demoResop = FileUtil.getAssets(cmd + "_req.txt");
-
-            if (StringUtils.isEmpty(demoResop)) {
-                Logger.d("未读取配置文件：" + cmd + "_req.txt 或 配置文件内容为空");
-            } else {
-                Logger.d("已读取配置文件：" + cmd + "_req.txt\n配置文件的内容：\n" + demoResop);
-            }
-
-            analysisManager.onReceiveResponse(demoResop);
-
-            return object.serialNum;
+            return doLaunchDemo(groupTag, object, bundle, onResponseNoRequestTag);
         }
         // 非demo模式发送请求
         else {
-            if (connectionManager == null) {
-                return "";
-            }
-
-            analysisManager.setResponseClass(object.getResponseCommand(), object.responseClass());
-
-            if (object.serialNum == null || object.serialNum.length() == 0) {
-                object.serialNum = StringUtils.getRandomString(20);
-            }
-
-            connectionManager.send(new SendableBase(object));
-
-            return object.serialNum;
+            return doLaunch(groupTag, object, bundle, onResponseNoRequestTag);
         }
+    }
+
+    private String doLaunchDemo(String groupTag, BaseRequest object, Bundle bundle, boolean onResponseNoRequestTag) {
+        if (object.serialNum == null || object.serialNum.length() == 0) {
+            object.serialNum = StringUtils.getRandomString(20);
+        }
+
+        analysisManager.preAnalysisResponse(
+                groupTag,
+                object.getResponseCommand(),
+                object.serialNum,
+                bundle,
+                onResponseNoRequestTag);
+
+        new SendableBase(object).parse();
+
+        String cmd = object.getRequestCommand();
+        String demoResop = FileUtil.getAssets(cmd + "_req.txt");
+        if (StringUtils.isEmpty(demoResop)) {
+            Logger.d("未读取配置文件：" + cmd + "_req.txt 或 配置文件内容为空");
+        } else {
+            Logger.d("已读取配置文件：" + cmd + "_req.txt\n配置文件的内容：\n" + demoResop);
+            analysisManager.onReceiveResponse(demoResop);
+        }
+
+        return object.serialNum;
+    }
+
+
+    private String doLaunch(String groupTag, BaseRequest object, Bundle bundle, boolean onResponseNoRequestTag) {
+        if (connectionManager == null) {
+            return "";
+        }
+
+        if (object.serialNum == null || object.serialNum.length() == 0) {
+            object.serialNum = StringUtils.getRandomString(20);
+        }
+
+        analysisManager.preAnalysisResponse(
+                groupTag,
+                object.getResponseCommand(),
+                object.serialNum,
+                bundle,
+                onResponseNoRequestTag);
+
+        connectionManager.send(new SendableBase(object));
+
+        return object.serialNum;
     }
 
     /**
      * 适用于：没有请求只有数据接收的情况注册
-     * <p>注意及时调用{@link #unRegistertOnActionListener(String)}注销
+     * <p>注意必需调用注销监听方法
+     * <p>{@link #unRegistertOnActionListener(String)}、{@link #unRegistertOnActionListener(String, String)}
      *
+     * @param groupTag
      * @param cmd
      * @param responseClass
      * @param listener
      */
-    public void registertOnActionListener(String cmd, Class<?> responseClass, OnActionListener listener) {
-        analysisManager.registertOnActionListener(cmd, responseClass, listener);
+    public void registertOnActionListener(String groupTag,
+                                          String cmd,
+                                          Class<?> responseClass,
+                                          OnActionListener listener) {
+        registertOnActionListener(groupTag, cmd, responseClass, listener, null);
+    }
+
+    public void registertOnActionListener(String groupTag,
+                                          String cmd,
+                                          Class<?> responseClass,
+                                          OnActionListener listener,
+                                          Bundle bundle) {
+        analysisManager.registertOnActionListener(groupTag, cmd, responseClass, listener);
     }
 
     /**
-     * 适用于：有请求有数据接收的情况注册
-     * <p>注意及时调用{@link #unRegistertOnActionListener(String)}注销
+     * 注销一组监听
      *
-     * @param cmd
-     * @param listener
+     * @param groupTag
      */
-    public void registertOnActionListener(String cmd, OnActionListener listener) {
-        analysisManager.registertOnActionListener(cmd, listener);
+    public void unRegistertOnActionListener(String groupTag) {
+        analysisManager.unRegistertOnActionListener(groupTag);
     }
 
     /**
-     * 注销监听
+     * 注销指定监听
      *
+     * @param groupTag
      * @param cmd
      */
-    public void unRegistertOnActionListener(String cmd) {
+    public void unRegistertOnActionListener(String groupTag, String cmd) {
         analysisManager.unRegistertOnActionListener(cmd);
     }
 }

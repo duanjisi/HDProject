@@ -20,6 +20,7 @@ import com.atgc.hd.client.widgethelper.BarHelper;
 import com.atgc.hd.comm.net.request.base.BaseRequest;
 import com.atgc.hd.comm.socket.OnActionListener;
 import com.atgc.hd.comm.socket.SocketManager;
+import com.atgc.hd.comm.utils.StringUtils;
 import com.atgc.hd.comm.utils.SysManager;
 import com.atgc.hd.comm.widget.NiftyDialog;
 
@@ -27,6 +28,7 @@ import com.atgc.hd.comm.widget.NiftyDialog;
  * Created by duanjisi on 2018/1/15.
  */
 public abstract class BaseActivity extends AppCompatActivity {
+    public final String requestGroupTag = StringUtils.getRandomString(20);
 
     public Context context;
 
@@ -106,22 +108,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 BaseActivity.this.finish();
             }
         });
-    }
-
-    /**
-     * 发送请求
-     * @param request
-     */
-    public void launch(BaseRequest request) {
-        SocketManager.intance().launch(request);
-    }
-
-    public void registerOnActionListener(String cmd, OnActionListener listener) {
-        SocketManager.intance().registertOnActionListener(cmd, listener);
-    }
-
-    public void unRegisterOnActionListener(String cmd) {
-        SocketManager.intance().unRegistertOnActionListener(cmd);
     }
 
     public void openActivity(Class<?> clazz) {

@@ -15,6 +15,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -30,6 +31,7 @@ import com.atgc.hd.comm.net.response.base.Response;
 import com.atgc.hd.comm.socket.OnActionAdapter;
 import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.utils.PreferenceUtils;
+import com.atgc.hd.comm.utils.StringUtils;
 import com.atgc.hd.db.dao.PlatformInfoDao;
 import com.atgc.hd.entity.ActionEntity;
 import com.atgc.hd.entity.PatInfo;
@@ -48,6 +50,8 @@ import de.greenrobot.event.EventBus;
  * <p>作者：duanjisi 2018年 01月 16日
  */
 public class DeviceBootService extends Service {
+    private static final String REQUEST_GROUP_TAG = StringUtils.getRandomString(20);
+
     private static final int notifyID = 1002;
     private PlatformInfoDao infoDao;
     private LocationService locationService;
@@ -69,13 +73,14 @@ public class DeviceBootService extends Service {
         locationService = LocationService.intance();
         locationService.initService(this);
 //        locationService.start();
+
+        registerOnReceiveListener();
     }
 
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
         Logger.i("info===============开启服务onStart");
-        registerOnReceiveListener();
     }
 
     @Override
@@ -87,18 +92,12 @@ public class DeviceBootService extends Service {
      * 注册监听平台消息
      */
     private void registerOnReceiveListener() {
-        SocketManager.intance().registertOnActionListener(DeviceCmd.PAT_SEND_MESSAGE, PatInfo.class, new OnActionAdapter() {
+        SocketManager.intance().registertOnActionListener(REQUEST_GROUP_TAG, DeviceCmd.PAT_SEND_MESSAGE, PatInfo.class, new OnActionAdapter() {
             @Override
-            public void onResponseSuccess(String cmd, String serialNum, Response response) {
-                super.onResponseSuccess(cmd, serialNum, response);
+            public void onResponseSuccess(String cmd, String serialNum, Response response, Bundle bundle) {
                 List<PatInfo> patInfos = response.dataArray;
                 final PatInfo patInfo = patInfos.get(0);
                 bindDatas(patInfo);
-            }
-
-            @Override
-            public void onResponseFaile(String cmd, String serialNum, String errorCode, String errorMsg) {
-                super.onResponseFaile(cmd, serialNum, errorCode, errorMsg);
             }
         });
     }

@@ -1,5 +1,5 @@
 {
-    "Command": "PAT_POINT_RESULT",
+    "Command": "PAT_UPLOAD_GPS",
     "Result": 0,
     "Data": [
         {

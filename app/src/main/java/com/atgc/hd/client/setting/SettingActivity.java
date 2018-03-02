@@ -10,6 +10,7 @@
 package com.atgc.hd.client.setting;
 
 import android.content.Context;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -112,12 +113,6 @@ public class SettingActivity extends BaseActivity {
         }
         if (!TextUtils.isEmpty(port)) {
             PreferenceUtils.putString(context, PrefKey.PORT, port);
-//            if (isPortMatcher(port)) {
-//                PreferenceUtils.putInt(context, PrefKey.PORT, Integer.parseInt(port));
-//            } else {
-//                showToast("端口号不合法");
-//                return;
-//            }
         } else {
             showToast("端口为空");
             return;

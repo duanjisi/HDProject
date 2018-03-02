@@ -2,6 +2,7 @@ package com.atgc.hd.comm.net.response;
 
 import android.support.annotation.NonNull;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.atgc.hd.comm.net.response.base.BaseResponse;
 import com.atgc.hd.comm.utils.DateUtil;
 import com.atgc.hd.comm.utils.StringUtils;
@@ -43,11 +44,16 @@ public class TaskListResponse extends BaseResponse<TaskListResponse.TaskInfo> im
         // 结束时间，格式“yyyy-MM-dd HH:mm:ss”
         private String endTime;
         // 巡更点信息
+        @JSONField(name = "data")
         private List<PointInfo> PointArray;
+        // 任务状态，0-未下发 1-未执行 2-正在执行 3-时间范围内结束任务 4-强制结束任务 5-解除异常
+        private String taskStatus;
 
         private String taskPeriod;
 
-        private String taskStatus;
+        private Date startTimeDate;
+
+        private Date endTimeDate;
 
         // 0-有部分点未巡查 1-所有点已正常巡查 2-所有点已巡查但有异常点
         private String inspectStatus = "1";
@@ -80,16 +86,33 @@ public class TaskListResponse extends BaseResponse<TaskListResponse.TaskInfo> im
             return startTime;
         }
 
+        public Date taskStartTime() {
+            if (startTimeDate == null) {
+                startTimeDate = DateUtil.dateParse(getStartTime());
+            }
+
+            return startTimeDate;
+        }
+
         public void setStartTime(String startTime) {
             this.startTime = startTime;
+            startTimeDate = DateUtil.dateParse(getStartTime());
         }
 
         public String getEndTime() {
             return endTime;
         }
 
+        public Date taskEndTime() {
+            if (endTimeDate == null) {
+                endTimeDate = DateUtil.dateParse(getEndTime());
+            }
+            return endTimeDate;
+        }
+
         public void setEndTime(String endTime) {
             this.endTime = endTime;
+            endTimeDate = DateUtil.dateParse(getEndTime());
         }
 
         public List<PointInfo> getPointArray() {

@@ -100,10 +100,10 @@ public class PlatformInfoActivity extends BaseActivity {
      * 注册监听网关发送巡更报文
      */
     private void registerOnReceiveListener() {
-        SocketManager.intance().registertOnActionListener(DeviceCmd.PAT_SEND_MESSAGE, PatInfo.class, new OnActionAdapter() {
+        SocketManager.intance().registertOnActionListener(requestGroupTag, DeviceCmd.PAT_SEND_MESSAGE, PatInfo.class, new OnActionAdapter() {
             @Override
-            public void onResponseSuccess(String cmd, String serialNum, Response response) {
-                super.onResponseSuccess(cmd, serialNum, response);
+            public void onResponseSuccess(String cmd, String serialNum, Response response, Bundle bundle) {
+
                 List<PatInfo> patInfos = response.dataArray;
                 final PatInfo patInfo = patInfos.get(0);
                 runOnUiThread(new Runnable() {
@@ -115,8 +115,8 @@ public class PlatformInfoActivity extends BaseActivity {
             }
 
             @Override
-            public void onResponseFaile(String cmd, String serialNum, String errorCode, String errorMsg) {
-                super.onResponseFaile(cmd, serialNum, errorCode, errorMsg);
+            public void onResponseFaile(String cmd, String serialNum, String errorCode, String errorMsg, Bundle bundle) {
+
             }
         });
     }

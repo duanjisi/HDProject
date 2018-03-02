@@ -4,6 +4,7 @@ import com.atgc.hd.client.tasklist.TaskHandContract;
 import com.atgc.hd.client.tasklist.taskfrag.adapter.TaskListEntity;
 import com.atgc.hd.comm.net.response.TaskListResponse;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public interface PatrolContract {
     interface IPresenterModel {
     }
 
-    interface OnReportTaskListener {
+    interface OnReportTaskListener extends Serializable{
         void onReportSuccess();
 
         void onReportFail(String msg);

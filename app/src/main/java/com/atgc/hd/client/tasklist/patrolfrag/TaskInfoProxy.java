@@ -47,23 +47,27 @@ public class TaskInfoProxy {
     }
 
     private void initPlanTime() {
+        Date planTime;
+        PointInfo currentPointInfo = taskInfo.getPointArray().get(currentPointIndex);
         // 当任务列表的第1个点为未打点状态时，需要设置该点的最晚打点时间
         if (currentPointIndex == 0) {
-            PointInfo currentPointInfo = taskInfo.getPointArray().get(currentPointIndex);
-            Date taskStart = DateUtil.dateParse(taskInfo.getStartTime());
-            Date planTime = DateUtil.dateAddMinutes(taskStart, currentPointInfo.getInterval());
-
-            currentPointInfo.setPlanTime(DateUtil.dateFormat(planTime, DateUtil.DATE_TIME_PATTERN));
+            Date taskStart = taskInfo.taskStartTime();
+            planTime = DateUtil.dateAddMinutes(taskStart, currentPointInfo.getInterval());
         }
         // 当任务列表的第N个点为未打点状态时，需要根据第N-1个点的已打点时间设置第N个点的最晚打点时间
         else {
             PointInfo lastCheckedPointInfo = taskInfo.getPointArray().get(currentPointIndex - 1);
-            PointInfo currentPointInfo = taskInfo.getPointArray().get(currentPointIndex);
-
             Date taskStart = DateUtil.dateParse(lastCheckedPointInfo.getPointTime());
-            Date planTime = DateUtil.dateAddMinutes(taskStart, currentPointInfo.getInterval());
+            planTime = DateUtil.dateAddMinutes(taskStart, currentPointInfo.getInterval());
+        }
 
+        // 若最晚打点时间早于巡查任务的最晚打点时间，则设置当前最晚打点时间
+        if (planTime.before(taskInfo.taskEndTime())) {
             currentPointInfo.setPlanTime(DateUtil.dateFormat(planTime, DateUtil.DATE_TIME_PATTERN));
+        }
+        // 否则设置任务的最晚打点时间
+        else {
+            currentPointInfo.setPlanTime(taskInfo.getEndTime());
         }
     }
 
@@ -148,7 +152,7 @@ public class TaskInfoProxy {
      */
     public String getTaskStatus() {
         Date nowTime = InnerClock.instance().nowDate();
-        Date taskEndTime = taskEndTime();
+        Date taskEndTime = taskInfo.taskEndTime();
         String taskStatus = nowTime.before(taskEndTime) ? "3" : "4";
 
         return taskStatus;
@@ -171,20 +175,6 @@ public class TaskInfoProxy {
             }
         }
         return carryStatus;
-    }
-
-    /**
-     * @return 任务开始时间
-     */
-    public Date taskStartTime() {
-        return DateUtil.dateParse(taskInfo.getStartTime());
-    }
-
-    /**
-     * @return 任务结束时间
-     */
-    public Date taskEndTime() {
-        return DateUtil.dateParse(taskInfo.getEndTime());
     }
 
     public TaskListResponse.TaskInfo getTaskInfo() {

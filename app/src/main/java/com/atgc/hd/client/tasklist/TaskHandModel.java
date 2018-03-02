@@ -2,12 +2,14 @@ package com.atgc.hd.client.tasklist;
 
 import android.nfc.Tag;
 import android.nfc.tech.MifareClassic;
+import android.os.Bundle;
 import android.util.SparseArray;
 
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.clock.InnerClock;
 import com.atgc.hd.comm.config.DeviceParams;
+import com.atgc.hd.comm.net.request.GPSRequest;
 import com.atgc.hd.comm.net.request.GetTaskRequest;
 import com.atgc.hd.comm.net.response.TaskListResponse;
 import com.atgc.hd.comm.net.response.TaskListResponse.TaskInfo;
@@ -15,6 +17,7 @@ import com.atgc.hd.comm.net.response.base.Response;
 import com.atgc.hd.comm.socket.OnActionAdapter;
 import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.utils.DateUtil;
+import com.atgc.hd.comm.utils.StringUtils;
 import com.atgc.hd.entity.EventMessage;
 import com.atgc.hd.entity.NfcCard;
 import com.orhanobut.logger.Logger;
@@ -23,6 +26,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,6 +39,7 @@ import de.greenrobot.event.Subscribe;
  */
 
 public class TaskHandModel implements TaskHandContract {
+    private static final String GROUP_TAG = StringUtils.getRandomString(20);
 
     private OnCurrentTaskListener onCurrentTaskListener;
     private OnAllTaskLlistener onAllTaskListener;
@@ -58,6 +63,8 @@ public class TaskHandModel implements TaskHandContract {
 
         arrayTaskInfos = new SparseArray<>();
 
+        startUploadGps();
+
         EventBus.getDefault().register(this);
     }
 
@@ -69,6 +76,7 @@ public class TaskHandModel implements TaskHandContract {
 
     @Override
     public void onDestroy() {
+        timer.cancel();
         SocketManager.intance().unRegistertOnActionListener(DeviceCmd.PAT_SEND_TASK);
         EventBus.getDefault().unregister(this);
     }
@@ -109,7 +117,7 @@ public class TaskHandModel implements TaskHandContract {
         GetTaskRequest taskRequest = new GetTaskRequest();
         taskRequest.deviceID = DeviceParams.getInstance().getDeviceId();
 
-        serialNumTaskRequest = SocketManager.intance().launch(taskRequest);
+        serialNumTaskRequest = SocketManager.intance().launch(GROUP_TAG, taskRequest, null);
     }
 
     /**
@@ -117,29 +125,32 @@ public class TaskHandModel implements TaskHandContract {
      */
     private void registerOnReceiveListener() {
 
-        SocketManager.intance().registertOnActionListener(DeviceCmd.PAT_SEND_TASK, new OnActionAdapter() {
-            @Override
-            public void onResponseSuccess(String cmd, String serialNum, Response response) {
-                super.onResponseSuccess(cmd, serialNum, response);
+        SocketManager.intance().registertOnActionListener(
+                GROUP_TAG,
+                DeviceCmd.PAT_SEND_TASK,
+                TaskListResponse.class,
+                new OnActionAdapter() {
+                    @Override
+                    public void onResponseSuccess(String cmd, String serialNum, Response response, Bundle bundle) {
 
-                if (!Constants.isDemo && !serialNum.equals(serialNumTaskRequest)) {
-                    return;
-                }
+                        if (!Constants.isDemo && !serialNum.equals(serialNumTaskRequest)) {
+                            return;
+                        }
 
-                List<TaskListResponse> datas = response.dataArray;
-                TaskListResponse taskListResponse = datas.get(0);
+                        List<TaskListResponse> datas = response.dataArray;
+                        TaskListResponse taskListResponse = datas.get(0);
 
-                handTaskData(taskListResponse);
+                        handTaskData(taskListResponse);
 
-                iView.dimssProgressDialog();
-                iView.toastMessage("数据已更新");
-            }
+                        iView.dimssProgressDialog();
+                        iView.toastMessage("数据已更新");
+                    }
 
-            @Override
-            public void onResponseFaile(String cmd, String serialNum, String errorCode, String errorMsg) {
-                super.onResponseFaile(cmd, serialNum, errorCode, errorMsg);
-            }
-        });
+                    @Override
+                    public void onResponseFaile(String cmd, String serialNum, String errorCode, String errorMsg, Bundle bundle) {
+
+                    }
+                });
     }
 
     private void handTaskData(TaskListResponse taskListResponse) {
@@ -153,49 +164,71 @@ public class TaskHandModel implements TaskHandContract {
         // 按任务开始时间进行排序
         Collections.sort(taskInfos);
 
+        // 任务状态为：1、2，但任务结束时间小于当前时间的为异常任务，需要上报任务结束状态
+        SparseArray<TaskInfo> exceptionTaskInfos = new SparseArray<>();
+
         currentTaskIndex = -1;
-        boolean taskOnGoing = false;
-        Date currentTime = currentTime();
+
+        int undoTaskIndex = -1;
+
+        int taskDoneNumber = 0;
+
+        Date currentTime = InnerClock.instance().nowDate();
 
         for (int i = 0, count = taskInfos.size(); i < count; i++) {
             TaskInfo taskInfo = taskInfos.get(i);
             taskInfo.initTaskPeriod();
             taskInfo.initInspectStatus();
-            taskInfo.initTaskStatus(currentTime);
+//            taskInfo.initTaskStatus(currentTime);
 
             arrayTaskInfos.append(i, taskInfo);
 
             String taskStatus = taskInfo.getTaskStatus();
-            // 任务未开始
-            if (TaskInfo.STATUS_UNDO.equals(taskStatus)) {
-                if (currentTaskIndex == -1) {
-                    currentTaskIndex = i;
+            // 任务未执行
+            if ("1".equals(taskStatus)) {
+                if (undoTaskIndex == -1) {
+                    undoTaskIndex = i;
+                }
+
+                if (taskInfo.taskEndTime().before(currentTime)) {
+                    exceptionTaskInfos.append(exceptionTaskInfos.size(), taskInfo);
+                    taskInfo.setTaskStatus("4");
+                    undoTaskIndex = -1;
                 }
             }
-            // 任务进行中
-            else if (TaskInfo.STATUS_DOING.equals(taskStatus)) {
+            // 任务正在执行
+            else if ("2".equals(taskStatus)) {
                 currentTaskIndex = i;
-                taskOnGoing = true;
+
+                if (taskInfo.taskEndTime().before(currentTime)) {
+                    exceptionTaskInfos.append(exceptionTaskInfos.size(), taskInfo);
+                    taskInfo.setTaskStatus("4");
+                    currentTaskIndex = -1;
+                }
             }
-            // 任务已过最后时间
+            // 其他状态
+            // 0-未下发 3-时间范围内结束任务 4-强制结束任务 5-解除异常
             else {
+                taskDoneNumber++;
             }
         }
 
         // 当天任务已全部巡查完毕
-        if (currentTaskIndex == -1) {
-            noTaskOnGoing();
+        if (taskDoneNumber == taskInfos.size()) {
+            currentTaskDone();
         }
         // 有任务正在进行中
-        else if (taskOnGoing) {
+        else if (currentTaskIndex != -1) {
             startTask();
         }
         // 无任务进行中，但有任务未开始
         else {
             // 需将索引减1，否则会跳过一个任务
-            currentTaskIndex--;
+            currentTaskIndex = undoTaskIndex - 1;
             moveToNextTask();
         }
+
+        onCurrentTaskListener.onReceiveExceptionTask(exceptionTaskInfos);
 
         showTaskList();
     }
@@ -210,11 +243,6 @@ public class TaskHandModel implements TaskHandContract {
         Date taskPlanTime = DateUtil.dateParse(currentTaskInfo.getStartTime());
         Date date = currentTime();
         long delay = taskPlanTime.getTime() - date.getTime();
-
-        StringBuilder builder = new StringBuilder();
-        builder.append("planTime：" + currentTaskInfo.getStartTime());
-        builder.append("\ncurrentTime：" + date.toString());
-        builder.append("\ndelay：" + delay);
 
         if (delay <= 0) {
             startTask();
@@ -251,19 +279,21 @@ public class TaskHandModel implements TaskHandContract {
     private void startTask() {
         if (-1 < currentTaskIndex && currentTaskIndex < arrayTaskInfos.size()) {
             TaskInfo currentTaskInfo = arrayTaskInfos.get(currentTaskIndex);
-            currentTaskInfo.setTaskStatus(TaskInfo.STATUS_DOING);
-            onCurrentTaskListener.onReceiveTask(currentTaskInfo);
+            currentTaskInfo.setTaskStatus("2");
+            onCurrentTaskListener.onReceiveCurrentTask(currentTaskInfo);
 
             onAllTaskListener.onReceiveAllTask(arrayTaskInfos);
             onAllTaskListener.onCurrentTask(currentTaskInfo.getTaskID());
 
+            this.currentTaskInfo = currentTaskInfo;
         } else {
-            noTaskOnGoing();
+            currentTaskDone();
         }
     }
 
-    private void noTaskOnGoing() {
-        onCurrentTaskListener.onReceiveTask(null);
+    private void currentTaskDone() {
+        this.currentTaskInfo = null;
+        onCurrentTaskListener.onReceiveCurrentTask(null);
         onAllTaskListener.onCurrentTask("");
     }
 
@@ -279,9 +309,9 @@ public class TaskHandModel implements TaskHandContract {
 
         arrayTaskInfos.setValueAt(currentTaskIndex, newTaskInfo);
 
-        noTaskOnGoing();
-        showTaskList();
+        currentTaskDone();
         moveToNextTask();
+        showTaskList();
     }
 
     private Date currentTime() {
@@ -308,4 +338,98 @@ public class TaskHandModel implements TaskHandContract {
         }
     }
 
+
+    private Timer timer = new Timer();
+    private TimerTask timerTask;
+    private String srcLongitude = "113.62";
+    private String srcLatitude = "23.30";
+    private TaskInfo currentTaskInfo;
+    private boolean isOK = false;
+
+    String[] lngs = {"113.270965060937",
+            "113.271335615991",
+            "113.27089768729",
+            "113.269516527541",
+            "113.267731125914",
+            "113.255267001347",
+            "113.259983156588",
+            "113.264429817245",
+            "113.252437308202",
+            "113.251089835276"};
+
+
+    String[] lats = {"23.1558540183462",
+            "23.1540266009255",
+            "23.1516726027691",
+            "23.1485441991151",
+            "23.1455705992316",
+            "23.1447962134344",
+            "23.1440527988601",
+            "23.1438049930857",
+            "23.1478627549692",
+            "23.1504026655377"};
+
+
+    private void startUploadGps() {
+        if (isOK) {
+            return;
+        }
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        timer = new Timer();
+
+        timerTask = new TimerTask() {
+            int times = 0;
+            int size = lngs.length;
+
+            @Override
+            public void run() {
+                times++;
+
+                String NLongitude = lngs[times % size];
+                String NLatitude = lats[times % size];
+//
+                uploadGps(NLongitude, NLatitude);
+//                113.622282,23.306056	  113.623147,23.305834
+//                times++;
+//                if (times % 2 == 0) {
+//                    uploadGps("113.622282", "23.306056");
+//                } else {
+//                    uploadGps("113.623147", "23.305834");
+//                }
+            }
+        };
+
+        timer.schedule(timerTask, 500, 10 * 1000);
+    }
+
+    private void uploadGps(final String longitude, final String latitude) {
+        GPSRequest gpsRequest = new GPSRequest();
+        gpsRequest.setDeviceID(DeviceParams.getInstance().getDeviceId());
+        if (currentTaskInfo == null) {
+            gpsRequest.setTaskId("");
+            gpsRequest.setUserID("");
+        } else {
+            gpsRequest.setTaskId(currentTaskInfo.getTaskID());
+            gpsRequest.setUserID(currentTaskInfo.getUserId());
+        }
+        gpsRequest.setLongitude(longitude);
+        gpsRequest.setLatitude(latitude);
+
+        SocketManager.intance().launch(GROUP_TAG, gpsRequest, null);
+    }
+
+    private static final String str = "0123456789";
+
+    public static String getRandomString(int length) {
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(10);
+            sb.append(str.charAt(number));
+        }
+        return sb.toString();
+    }
 }

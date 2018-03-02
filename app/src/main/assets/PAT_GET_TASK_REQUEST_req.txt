@@ -14,7 +14,7 @@
                         {
                             "cardNumber": "636B3EA4928804008500000004134501",
                             "interval": 1,
-                            "orderNo": 0,
+                            "orderNo": 1,
                             "pointName": "任务A巡查点 1",
                             "resultType": "0",
                             "taskPointID": "4c55fd6efc80434fbe8de60f25a039ad",
@@ -26,7 +26,7 @@
                         {
                             "cardNumber": "636B3EA4928804008500000004134501",
                             "interval": 1,
-                            "orderNo": 1,
+                            "orderNo": 2,
                             "pointName": "任务A巡查点 2",
                             "resultType": "0",
                             "taskPointID": "97fed561547547bb8cc80b52e420dca6",
@@ -35,8 +35,8 @@
                         },
                         {
                             "cardNumber": "636B3EA4928804008500000004134501",
-                            "interval": 20,
-                            "orderNo": 2,
+                            "interval": 1,
+                            "orderNo": 3,
                             "pointName": "任务A巡查点 3",
                             "resultType": "0",
                             "taskPointID": "2d5b3ff7e4154bc8b55b1cf13da302dd",
@@ -45,8 +45,8 @@
                         },
                         {
                             "cardNumber": "636B3EA4928804008500000004134501",
-                            "interval": 20,
-                            "orderNo": 3,
+                            "interval": 1,
+                            "orderNo": 4,
                             "pointName": "任务A巡查点 4",
                             "resultType": "0",
                             "taskPointID": "f2755f9734a74f0f90a6318e640eedc3",
@@ -55,16 +55,17 @@
                         }
                     ],
                     "deviceID": "10012017020000000000",
-                    "startTime": "2018-02-08 10:00:20",
-                    "endTime": "2018-02-08 18:54:00",
-                    "taskID": "db2c8e017b724cbc9be5dbd6c1018076",
+                    "startTime": "2018-02-27 10:00:20",
+                    "endTime": "2018-02-27 10:38:00",
+                    "taskID": "任务a的taskid",
+                    "taskStatus":"1",
                     "taskName": "任务A"
                 },
                 {
                     "PointArray": [
                         {
                             "interval": 20,
-                            "orderNo": 0,
+                            "orderNo": 1,
                             "pointName": "任务B巡查点 1",
                             "resultType": "0",
                             "taskPointID": "ca484c9fe94c456de909ee5239b705651"
@@ -72,7 +73,7 @@
                         {
                             "cardNumber": "11",
                             "interval": 20,
-                            "orderNo": 1,
+                            "orderNo": 2,
                             "pointName": "任务B巡查点 2",
                             "resultType": "0",
                             "taskPointID": "5aca806447594624ba2267c911771d43"
@@ -80,7 +81,7 @@
                         {
                             "cardNumber": "12",
                             "interval": 20,
-                            "orderNo": 2,
+                            "orderNo": 3,
                             "pointName": "任务B巡查点 3",
                             "resultType": "0",
                             "taskPointID": "e405f54909984bbaa2f27fbe0d0fef80"
@@ -88,23 +89,24 @@
                         {
                             "cardNumber": "13",
                             "interval": 20,
-                            "orderNo": 3,
+                            "orderNo": 4,
                             "pointName": "任务B巡查点 4",
                             "resultType": "0",
                             "taskPointID": "4f94ed04b30a4ac9b9b439b38d2e1c1f"
                         }
                     ],
                     "deviceID": "10012017020000000000",
-                    "startTime": "2018-02-08 18:54:30",
-                    "endTime": "2018-02-08 19:18:00",
-                    "taskID": "1bd1eb9c0c814994a7d12125030d69f2",
+                    "startTime": "2018-02-27 18:54:30",
+                    "endTime": "2018-02-27 19:18:00",
+                    "taskID": "任务b的taskid",
+                    "taskStatus":"1",
                     "taskName": "任务B"
                 },
                 {
                     "PointArray": [
                         {
                             "interval": 20,
-                            "orderNo": 0,
+                            "orderNo": 1,
                             "pointName": "任务C巡查点 1",
                             "resultType": "0",
                             "taskPointID": "34c35155079742369507506d1a543a84"
@@ -112,7 +114,7 @@
                         {
                             "cardNumber": "11",
                             "interval": 20,
-                            "orderNo": 1,
+                            "orderNo": 2,
                             "pointName": "任务C巡查点 2",
                             "resultType": "0",
                             "taskPointID": "e27ea482c32b4c3ea2299c957fd852d3"
@@ -120,7 +122,7 @@
                         {
                             "cardNumber": "12",
                             "interval": 20,
-                            "orderNo": 2,
+                            "orderNo": 3,
                             "pointName": "任务C巡查点 3",
                             "resultType": "0",
                             "taskPointID": "8ddb00e070e345b4a7d7574bfdc26739"
@@ -128,23 +130,24 @@
                         {
                             "cardNumber": "13",
                             "interval": 20,
-                            "orderNo": 3,
+                            "orderNo": 4,
                             "pointName": "任务C巡查点 4",
                             "resultType": "0",
                             "taskPointID": "201790a118414a62b7b05f5b1af36f64"
                         }
                     ],
                     "deviceID": "10012017020000000000",
-                    "startTime": "2018-02-27 06:30:00",
-                    "endTime": "2018-02-27 08:30:00",
-                    "taskID": "c596cd909f004616842faa079e5a80a8",
+                    "startTime": "2018-03-01 06:30:00",
+                    "endTime": "2018-03-01 11:58:00",
+                    "taskID": "任务c的taskid",
+                    "taskStatus":"2",
                     "taskName": "任务C"
                 },
                 {
                     "PointArray": [
                         {
                             "interval": 20,
-                            "orderNo": 0,
+                            "orderNo": 1,
                             "pointName": "任务D巡查点 1",
                             "resultType": "0",
                             "taskPointID": "97ca43129d3b41699addacd0efe80087",
@@ -154,7 +157,7 @@
                         {
                             "cardNumber": "11",
                             "interval": 20,
-                            "orderNo": 1,
+                            "orderNo": 2,
                             "pointName": "任务D巡查点 2",
                             "resultType": "0",
                             "taskPointID": "8eadc80b9fc14347aac7d54f31f54d04"
@@ -162,24 +165,25 @@
                         {
                             "cardNumber": "12",
                             "interval": 20,
-                            "orderNo": 2,
+                            "orderNo": 3,
                             "pointName": "任务D巡查点 3",
-                            "resultType": "2",
+                            "resultType": "0",
                             "taskPointID": "361594084bc44ea18974370f398b1146"
                         },
                         {
                             "cardNumber": "13",
                             "interval": 20,
-                            "orderNo": 3,
+                            "orderNo": 4,
                             "pointName": "任务D巡查点 4",
                             "resultType": "0",
                             "taskPointID": "90a75854e5cd4d4c9a96fb08f9c1d28a"
                         }
                     ],
                     "deviceID": "10012017020000000000",
-                    "startTime": "2018-02-27 09:00:00",
-                    "endTime": "2018-02-27 09:00:10",
-                    "taskID": "87f4586086ca4ed2a9d4dddf76776b4c",
+                    "startTime": "2018-03-28 15:00:00",
+                    "endTime": "2018-03-28 15:40:10",
+                    "taskID": "任务d的taskid",
+                    "taskStatus":"1",
                     "taskName": "任务D"
                 }
             ]

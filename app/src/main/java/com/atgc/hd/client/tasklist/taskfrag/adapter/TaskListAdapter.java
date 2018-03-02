@@ -10,8 +10,6 @@ import com.atgc.hd.base.adapter.MultiBaseAdapter;
 import com.atgc.hd.base.adapter.holder.ViewHolder;
 import com.atgc.hd.comm.net.response.TaskListResponse.TaskInfo;
 
-import java.util.List;
-
 /**
  * <p>描述： 巡更任务列表适配器
  * <p>作者： liangguokui 2018/1/18
@@ -74,30 +72,31 @@ public class TaskListAdapter extends MultiBaseAdapter<TaskListEntity> {
         tvTaskPeriod.setSelected(true);
 
         String taskStatus = taskInfo.getTaskStatus();
-        if (TaskInfo.STATUS_UNDO.equals(taskStatus)) {
+        if ("1".equals(taskStatus)) {
             tvPointStatus.setText("暂未开始");
             tvTaskTitle.setSelected(false);
             tvTaskPeriod.setSelected(false);
-        } else if (TaskInfo.STATUS_DOING.equals(taskStatus)) {
+        } else if ("2".equals(taskStatus)) {
             tvPointStatus.setText("进行中...");
             tvPointStatus.setTextColor(colorGreen);
-        } else if (TaskInfo.STATUS_DONE.equals(taskStatus)
-                && "1".equals(taskInfo.getInspectStatus())) {
+        } else if ("1".equals(taskInfo.getInspectStatus())
+                && ("3".equals(taskStatus) || "4".equals(taskStatus))) {
             tvPointStatus.setText("已全部打点");
         } else {
             tvPointStatus.setText("存在异常");
         }
 
         // 巡查任务未开始
-        if (TaskInfo.STATUS_UNDO.equals(taskStatus)) {
+        if ("1".equals(taskStatus)) {
             ivTaskStatus.setImageResource(R.drawable.task_status_gray);
         }
         // 巡查任务进行中
-        else if (TaskInfo.STATUS_DOING.equals(taskStatus)) {
+        else if ("2".equals(taskStatus)) {
             ivTaskStatus.setImageResource(R.drawable.task_status_green);
         }
         // 巡查任务已过计划时间点且所有点已正常巡查
-        else if ("1".equals(taskInfo.getInspectStatus()) && TaskInfo.STATUS_DONE.equals(taskStatus)) {
+        else if ("1".equals(taskInfo.getInspectStatus())
+                && ("3".equals(taskStatus) || "4".equals(taskStatus))) {
             ivTaskStatus.setImageResource(R.drawable.task_status_green);
         }
         // 所有点已巡查但有异常点或其他异常情况

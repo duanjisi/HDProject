@@ -38,8 +38,7 @@ public class PreferenceUtils {
      */
     public static String getString(final Context context, String key,
                                    String defValue) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(key, defValue);
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(key, defValue);
     }
 
     /**

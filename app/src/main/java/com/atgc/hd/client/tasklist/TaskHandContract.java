@@ -17,7 +17,20 @@ public interface TaskHandContract {
     void onDestroy();
 
     interface OnCurrentTaskListener {
-        void onReceiveTask(TaskListResponse.TaskInfo taskInfo);
+
+        /**
+         * 任务状态为未开始且任务完成时间大于当前时间，则会调用该方法
+         *
+         * @param taskInfo
+         */
+        void onReceiveCurrentTask(TaskListResponse.TaskInfo taskInfo);
+
+        /**
+         * 任务状态为未开始、进行中，但任务完成时间小于当前时间，需要上报任务结束状态
+         *
+         * @param exceptionTasks
+         */
+        void onReceiveExceptionTask(SparseArray<TaskListResponse.TaskInfo> exceptionTasks);
 
         void onReceiveNfcCardNum(String cardNum);
 
@@ -25,6 +38,7 @@ public interface TaskHandContract {
     }
 
     interface OnAllTaskLlistener {
+
         void onReceiveAllTask(SparseArray<TaskListResponse.TaskInfo> taskInfos);
 
         void onCurrentTask(String taskId);

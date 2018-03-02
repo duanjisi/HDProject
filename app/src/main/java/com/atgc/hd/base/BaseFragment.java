@@ -113,6 +113,10 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
+    public void runOnParentAtyUIThread(Runnable runnable) {
+        parentActivity.runOnUiThread(runnable);
+    }
+
     public final <T extends View> T findViewById(int id) {
         View childView = getView().findViewById(id);
         return (T) childView;

@@ -69,7 +69,7 @@ public class PatrolFrag extends BaseFragment implements PatrolContract.IView {
         View contentView = inflate(R.layout.layout_reason);
         final EditText edtReason = findViewById(contentView, R.id.edt_reason);
 
-        NiftyDialog.create(parentActivity)
+        final NiftyDialog niftyDialog = NiftyDialog.create(parentActivity)
                 .setCustomView(contentView)
                 .withCustomViewOnClick(R.id.btn_commit, new NiftyDialog.OnClickActionListener() {
                     @Override
@@ -97,8 +97,14 @@ public class PatrolFrag extends BaseFragment implements PatrolContract.IView {
                         });
                     }
                 })
-                .isCancelableOnTouchOutside(false)
-                .show();
+                .isCancelableOnTouchOutside(false);
+
+        runOnParentAtyUIThread(new Runnable() {
+            @Override
+            public void run() {
+                niftyDialog.show();
+            }
+        });
 
     }
 

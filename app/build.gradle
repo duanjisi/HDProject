@@ -77,4 +77,5 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.4.0'
     compile 'com.loopj.android:android-async-http:1.4.5'
     compile 'com.tonystark.android:socket:1.2.1'
+    compile 'com.airbnb.android:lottie:2.5.0'
 }

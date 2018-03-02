@@ -1,12 +1,14 @@
 package com.atgc.hd.comm.socket;
 
+import android.os.Bundle;
+
 import com.atgc.hd.comm.net.response.base.Response;
 
 /**
  * <p>描述：
  * <p>作者：liangguokui 2018/2/10
  */
-public interface OnActionListener<T> {
+public interface OnActionListener {
     /**
      * {
      * "Command": "PAT_SEND_TASK",
@@ -39,7 +41,7 @@ public interface OnActionListener<T> {
      * @param cmd
      * @param serialNum
      */
-    void onSendSucess(String cmd, String serialNum);
+    void onSendSucess(String cmd, String serialNum, Bundle bundle);
 
     /**
      * C 端发送数据收到S 端回执，Result != 0 && Data != null时回调
@@ -49,7 +51,7 @@ public interface OnActionListener<T> {
      * @param errorCode
      * @param errorMsg
      */
-    void onSendFail(String cmd, String serialNum, String errorCode, String errorMsg);
+    void onSendFail(String cmd, String serialNum, String errorCode, String errorMsg, Bundle bundle);
 
     /**
      * S 端下发回执到C 端，Result == 0 && Data == null && serverResult == 0 时回调
@@ -58,7 +60,7 @@ public interface OnActionListener<T> {
      * @param serialNum
      * @param response
      */
-    void onResponseSuccess(String cmd, String serialNum, Response response);
+    void onResponseSuccess(String cmd, String serialNum, Response response, Bundle bundle);
 
     /**
      * S 端下发回执到C 端，Result != 0 || Data == null  || serverResult != 0 时回调
@@ -68,5 +70,5 @@ public interface OnActionListener<T> {
      * @param errorCode Result != 0 返回ErrorCode，serverResult != 0 返回serverResult
      * @param errorMsg  Result != 0 返回ErrorMessage，serverResult != 0 errMsg
      */
-    void onResponseFaile(String cmd, String serialNum, String errorCode, String errorMsg);
+    void onResponseFaile(String cmd, String serialNum, String errorCode, String errorMsg, Bundle bundle);
 }

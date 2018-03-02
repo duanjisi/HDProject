@@ -1,1 +1,9 @@
-{"Command":"PAT_TASK_STATUS","Result":0}
+{
+    "Command": "PAT_TASK_STATUS",
+    "Result": 0,
+    "Data": [
+        {
+            "requestTag": "1354jhjy546hjvj"
+        }
+    ]
+}

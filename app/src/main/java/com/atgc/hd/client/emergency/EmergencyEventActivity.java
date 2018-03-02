@@ -23,14 +23,11 @@ import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
@@ -38,11 +35,11 @@ import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.Utils;
 import com.atgc.hd.comm.config.DeviceParams;
-import com.atgc.hd.comm.net.BaseDataRequest;
 import com.atgc.hd.comm.net.request.UploadEventRequest;
-import com.atgc.hd.comm.net.response.TaskListResponse;
+import com.atgc.hd.comm.net.response.base.BaseResponse;
 import com.atgc.hd.comm.net.response.base.Response;
 import com.atgc.hd.comm.socket.OnActionAdapter;
+import com.atgc.hd.comm.socket.OnActionListener;
 import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.utils.DateUtil;
 import com.atgc.hd.comm.utils.FileUtil;
@@ -59,7 +56,6 @@ import com.atgc.hd.entity.UploadEntity;
 import com.atgc.hd.widget.ActionSheet;
 import com.atgc.hd.widget.MyGridView;
 import com.atgc.hd.widget.MyView;
-import com.atgc.hd.widget.RoundImageView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -67,8 +63,6 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -299,7 +293,7 @@ public class EmergencyEventActivity extends BaseActivity implements
         request.place = place;
         request.eventType = "";
         request.serialNum = StringUtils.getRandomString(20);
-        serialNumTaskRequest = SocketManager.intance().launch(request);
+        serialNumTaskRequest = SocketManager.intance().launch(requestGroupTag, request, null);
 //        showProgressDialog();
 //        request.send(new BaseDataRequest.RequestCallback<String>() {
 //            @Override
@@ -321,27 +315,32 @@ public class EmergencyEventActivity extends BaseActivity implements
 //        });
     }
 
-    private void registerOnReceiveListener() {
-        SocketManager.intance().registertOnActionListener(DeviceCmd.UP_LOAD_EMERGENCY, new OnActionAdapter() {
-            @Override
-            public void onSendSucess(String cmd, String serialNum) {
-                super.onSendSucess(cmd, serialNum);
-                dismissProgressDialog();
-                if (!serialNum.equals(serialNumTaskRequest)) {
-                    return;
-                }
-                if (eventEntity != null) {
-                    EventDao.getInstance().save(eventEntity);
-                    openActvityForResult(UploadStateActivity.class, 100);
-                }
+    private OnActionListener listener = new OnActionAdapter() {
+        @Override
+        public void onSendSucess(String cmd, String serialNum, Bundle bundle) {
+            dismissProgressDialog();
+            if (!serialNum.equals(serialNumTaskRequest)) {
+                return;
             }
+            if (eventEntity != null) {
+                EventDao.getInstance().save(eventEntity);
+                openActvityForResult(UploadStateActivity.class, 100);
+            }
+        }
 
-            @Override
-            public void onResponseFaile(String cmd, String serialNum, String errorCode, String errorMsg) {
-                super.onResponseFaile(cmd, serialNum, errorCode, errorMsg);
-                dismissProgressDialog();
-            }
-        });
+        @Override
+        public void onSendFail(String cmd, String serialNum, String errorCode, String errorMsg, Bundle bundle) {
+            super.onSendFail(cmd, serialNum, errorCode, errorMsg, bundle);
+            dismissProgressDialog();
+        }
+    };
+
+    private void registerOnReceiveListener() {
+        SocketManager.intance().registertOnActionListener(
+                requestGroupTag,
+                DeviceCmd.UP_LOAD_EMERGENCY,
+                BaseResponse.class,
+                listener);
     }
 
     private void getPermission() {
