@@ -45,11 +45,13 @@ public class AnalysisManager {
         }
 
         Response response = JSON.parseObject(body, Response.class);
+        Class<?> respClass = mapResponseClass.get(response.Command);
+        response.parseData(respClass);
 
         OnActionListener actionListener = getOnActionListener(response);
         // 因为不用回调，所以数据也不需解析了
         if (actionListener == null) {
-          return;
+            return;
         }
 
         Bundle bundle = null;
@@ -66,9 +68,6 @@ public class AnalysisManager {
         if (response.Data == null) {
             return;
         }
-
-        Class<?> respClass = mapResponseClass.get(response.Command);
-        response.parseData(respClass);
 
         if (response.dataArray.isEmpty()) {
             actionListener.onSendFail(
