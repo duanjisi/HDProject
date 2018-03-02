@@ -67,6 +67,7 @@ public class TaskListEntity {
     }
 
     public void setTaskInfo(TaskInfo taskInfo) {
+        entities.clear();
         this.taskInfo = taskInfo;
     }
 
@@ -106,9 +107,13 @@ public class TaskListEntity {
         }
     }
 
+    private List<TaskListEntity> entities = new ArrayList<>();
+
     public List<TaskListEntity> getPointInfoEntities() {
         if (ITEM_GROUP == entityType) {
-            List<TaskListEntity> entities = new ArrayList<>();
+            if (!entities.isEmpty()) {
+                return entities;
+            }
             for (int i = 0, count = taskInfo.getPointArray().size(); i < count; i++) {
                 PointInfo info = taskInfo.getPointArray().get(i);
                 TaskListEntity entity = new TaskListEntity(info);

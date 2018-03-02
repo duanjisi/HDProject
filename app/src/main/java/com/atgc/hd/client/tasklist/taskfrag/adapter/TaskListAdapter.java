@@ -7,8 +7,10 @@ import android.widget.TextView;
 
 import com.atgc.hd.R;
 import com.atgc.hd.base.adapter.MultiBaseAdapter;
-import com.atgc.hd.base.adapter.ViewHolder;
+import com.atgc.hd.base.adapter.holder.ViewHolder;
 import com.atgc.hd.comm.net.response.TaskListResponse.TaskInfo;
+
+import java.util.List;
 
 /**
  * <p>描述： 巡更任务列表适配器

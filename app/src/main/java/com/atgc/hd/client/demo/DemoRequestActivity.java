@@ -10,19 +10,12 @@ import android.widget.TextView;
 
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
-import com.atgc.hd.base.adapter.ViewHolder;
+import com.atgc.hd.base.adapter.holder.ViewHolder;
 import com.atgc.hd.base.adapter.interfaces.OnItemClickListener;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.IPPort;
-import com.atgc.hd.comm.config.DeviceParams;
 import com.atgc.hd.comm.net.BaseDataRequest;
 import com.atgc.hd.comm.net.TcpSocketClient;
-import com.atgc.hd.comm.net.request.GPSRequest;
-import com.atgc.hd.comm.net.request.GetTaskRequest;
-import com.atgc.hd.comm.net.request.RegisterRequest;
-import com.atgc.hd.comm.net.request.ReportPointStatusRequest;
-import com.atgc.hd.comm.net.request.ReportTaskStatusRequest;
-import com.atgc.hd.comm.utils.StringUtils;
 import com.atgc.hd.comm.widget.NiftyDialog;
 import com.orhanobut.logger.Logger;
 

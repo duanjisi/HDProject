@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.atgc.hd.R;
 import com.atgc.hd.base.adapter.BaseSingleAdapter;
-import com.atgc.hd.base.adapter.ViewHolder;
+import com.atgc.hd.base.adapter.holder.ViewHolder;
 
 /**
  * <p>描述：

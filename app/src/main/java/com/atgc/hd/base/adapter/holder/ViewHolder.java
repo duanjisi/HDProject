@@ -1,4 +1,4 @@
-package com.atgc.hd.base.adapter;
+package com.atgc.hd.base.adapter.holder;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

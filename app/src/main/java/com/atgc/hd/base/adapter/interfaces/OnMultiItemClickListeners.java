@@ -1,6 +1,6 @@
 package com.atgc.hd.base.adapter.interfaces;
 
-import com.atgc.hd.base.adapter.ViewHolder;
+import com.atgc.hd.base.adapter.holder.ViewHolder;
 
 /**
  * Author: Othershe
