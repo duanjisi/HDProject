@@ -23,7 +23,6 @@ import java.util.Map;
  */
 public class AnalysisManager {
 
-
     public void onReceiveResponse(OriginalData data) {
         String header = DigitalUtils.byteArrayToHexString(data.getHeadBytes());
         String body = new String(data.getBodyBytes(), Charset.forName("utf-8"));
@@ -55,6 +54,10 @@ public class AnalysisManager {
         }
 
         Bundle bundle = null;
+        if (response.dataArray != null && !response.dataArray.isEmpty()) {
+            BaseResponse baseResponse = (BaseResponse) response.dataArray.get(0);
+            bundle = mapRequestBundle.get(baseResponse.serialNum);
+        }
 
         // 设备注册口需做特殊处理，网关不支持返回requestTag
         if (DeviceCmd.REGISTER.equals(response.Command)) {
@@ -160,8 +163,13 @@ public class AnalysisManager {
             if (response.dataArray.isEmpty()) {
                 key = "";
             } else {
-                BaseResponse baseResponse = (BaseResponse) response.dataArray.get(0);
-                key = baseResponse.serialNum;
+                Object object = response.dataArray.get(0);
+                if (object instanceof BaseResponse) {
+                    BaseResponse baseResponse = (BaseResponse) object;
+                    key = baseResponse.serialNum;
+                } else {
+                    key = response.Command;
+                }
             }
         }
         return key;

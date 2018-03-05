@@ -9,21 +9,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.EditText;
 
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.base.BaseFragment;
 import com.atgc.hd.client.emergency.EmergencyListActivity;
 import com.atgc.hd.client.platform.PlatformInfoActivity;
-import com.atgc.hd.client.player.VideoPlayerActivity;
 import com.atgc.hd.client.setting.SettingActivity;
 import com.atgc.hd.client.tasklist.adapter.ContentFragAdapter;
 import com.atgc.hd.comm.widget.PagerSlidingTabStrip;
 import com.atgc.hd.entity.EventMessage;
-import com.orhanobut.logger.Logger;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;

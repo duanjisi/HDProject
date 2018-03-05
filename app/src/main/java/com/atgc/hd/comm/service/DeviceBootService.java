@@ -24,24 +24,17 @@ import com.atgc.hd.R;
 import com.atgc.hd.client.platform.PlatformInfoActivity;
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.DeviceCmd;
-import com.atgc.hd.comm.PrefKey;
 import com.atgc.hd.comm.local.LocationService;
-import com.atgc.hd.comm.net.PreRspPojo;
 import com.atgc.hd.comm.net.response.base.Response;
 import com.atgc.hd.comm.socket.OnActionAdapter;
 import com.atgc.hd.comm.socket.SocketManager;
-import com.atgc.hd.comm.utils.PreferenceUtils;
 import com.atgc.hd.comm.utils.StringUtils;
 import com.atgc.hd.db.dao.PlatformInfoDao;
 import com.atgc.hd.entity.ActionEntity;
 import com.atgc.hd.entity.PatInfo;
 import com.orhanobut.logger.Logger;
 
-import org.json.JSONObject;
-
 import java.util.List;
-import java.util.Map;
-import java.util.TimerTask;
 
 import de.greenrobot.event.EventBus;
 
@@ -78,13 +71,10 @@ public class DeviceBootService extends Service {
     }
 
     @Override
-    public void onStart(Intent intent, int startId) {
-        super.onStart(intent, startId);
-        Logger.i("info===============开启服务onStart");
-    }
-
-    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        Logger.i("info===============开启服务onStart");
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -92,14 +82,22 @@ public class DeviceBootService extends Service {
      * 注册监听平台消息
      */
     private void registerOnReceiveListener() {
-        SocketManager.intance().registertOnActionListener(REQUEST_GROUP_TAG, DeviceCmd.PAT_SEND_MESSAGE, PatInfo.class, new OnActionAdapter() {
-            @Override
-            public void onResponseSuccess(String cmd, String serialNum, Response response, Bundle bundle) {
-                List<PatInfo> patInfos = response.dataArray;
-                final PatInfo patInfo = patInfos.get(0);
-                bindDatas(patInfo);
-            }
-        });
+        SocketManager.intance().registertOnActionListener(
+                REQUEST_GROUP_TAG,
+                DeviceCmd.PAT_SEND_MESSAGE,
+                PatInfo.class,
+                new OnActionAdapter() {
+                    @Override
+                    public void onResponseSuccess(String cmd, String serialNum, Response response, Bundle bundle) {
+                        List<PatInfo> patInfos = response.dataArray;
+                        final PatInfo patInfo = patInfos.get(0);
+                        bindDatas(patInfo);
+                    }
+                });
+        SocketManager.intance().preAnalysisResponseNoRequestTag(
+                REQUEST_GROUP_TAG,
+                DeviceCmd.PAT_SEND_MESSAGE,
+                null);
     }
 
     private void bindDatas(PatInfo platform) {

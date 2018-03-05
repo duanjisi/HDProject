@@ -108,8 +108,8 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
         // 找到当前应该进行打点的巡查点
         PointInfo currentPointInfo = taskInfoProxy.getCurrentPointInfo();
 
-        // 若当前巡查点为第一个点，则应进行一次任务状态上报
-        if (currentPointInfo.getOrderNo() == 1) {
+        // 若当前巡查点为第一个点且该任务为未执行状态，则应进行一次任务状态上报
+        if (currentPointInfo.getOrderNo() == 1 && "1".equals(taskInfo.getTaskStatus())) {
             reportTaskStatus("2", "0", "", null);
         }
 

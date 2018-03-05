@@ -83,7 +83,12 @@ public class TaskHandModel implements TaskHandContract {
 
     @Override
     public void handleNfcTag(Tag nfcTag) {
+        if (nfcTag == null) {
+            return;
+        }
+
         MifareClassic mfc = MifareClassic.get(nfcTag);
+
         try {
             mfc.connect();
 
@@ -107,6 +112,7 @@ public class TaskHandModel implements TaskHandContract {
 
     public void demoNfcCardNum(String cardNum) {
         Logger.e("卡号：" + cardNum);
+
         onCurrentTaskListener.onReceiveNfcCardNum(cardNum);
     }
 
@@ -344,7 +350,7 @@ public class TaskHandModel implements TaskHandContract {
     private String srcLongitude = "113.62";
     private String srcLatitude = "23.30";
     private TaskInfo currentTaskInfo;
-    private boolean isOK = false;
+    private boolean isOK = true;
 
     String[] lngs = {"113.270965060937",
             "113.271335615991",

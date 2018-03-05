@@ -33,7 +33,7 @@ import java.nio.ByteOrder;
  * <p>作者：liangguokui 2018/2/6
  */
 public class SocketManager {
-//    private static final String HOST = "172.16.10.77";
+    //    private static final String HOST = "172.16.10.77";
     private static final String HOST = "192.168.0.242";
     private static final int PORT = 20001;
 //    private static final int PORT = 39083;
@@ -250,6 +250,7 @@ public class SocketManager {
             @Override
             public void onPulseSend(Context context, ConnectionInfo info, IPulseSendable data) {
                 super.onPulseSend(context, info, data);
+                connectionManager.getPulseManager().feed();
                 Log.e("socketManager", "onPulseSend 心跳包发送成功");
             }
         };
@@ -257,7 +258,6 @@ public class SocketManager {
 
     public void startPulse() {
         if (connectionManager != null) {
-            Log.e("socketManager", "onSocketConnectionSuccess 开始心跳");
             PulseManager pulseManager = connectionManager.getPulseManager();
 
             //给心跳管理器设置心跳数据,一个连接只有一个心跳管理器,因此数据只用设置一次,如果断开请再次设置.
@@ -358,16 +358,15 @@ public class SocketManager {
                                           String cmd,
                                           Class<?> responseClass,
                                           OnActionListener listener) {
-        registertOnActionListener(groupTag, cmd, responseClass, listener, null);
-    }
-
-    public void registertOnActionListener(String groupTag,
-                                          String cmd,
-                                          Class<?> responseClass,
-                                          OnActionListener listener,
-                                          Bundle bundle) {
         analysisManager.registertOnActionListener(groupTag, cmd, responseClass, listener);
     }
+
+    public void preAnalysisResponseNoRequestTag(String groupTag,
+                                                String cmd,
+                                                Bundle bundle) {
+        analysisManager.preAnalysisResponseNoRequestTag(groupTag, cmd, null);
+    }
+
 
     /**
      * 注销一组监听

@@ -18,20 +18,15 @@ import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.PrefKey;
 import com.atgc.hd.comm.Utils;
 import com.atgc.hd.comm.config.DeviceParams;
-import com.atgc.hd.comm.net.request.GPSRequest;
 import com.atgc.hd.comm.net.request.RegisterRequest;
 import com.atgc.hd.comm.net.response.base.Response;
 import com.atgc.hd.comm.service.DeviceBootService;
 import com.atgc.hd.comm.socket.OnActionAdapter;
 import com.atgc.hd.comm.socket.OnActionListener;
 import com.atgc.hd.comm.socket.SocketManager;
-import com.atgc.hd.comm.socket.SocketTestManager;
 import com.atgc.hd.comm.utils.PreferenceUtils;
-import com.atgc.hd.comm.utils.StringUtils;
 import com.orhanobut.logger.Logger;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -89,13 +84,10 @@ public class SplashActivity extends BaseActivity {
         @Override
         public void onResponseSuccess(String cmd, String serialNum, Response response, Bundle bundle) {
             SocketManager.intance().startPulse();
-            if (!Utils.isServiceRunning(context, DeviceBootService.class.getName())) {
-                Intent i = new Intent(context, DeviceBootService.class);
-                context.startService(i);
-            }
+
             openActivity(TaskListActivity.class);
             SplashActivity.this.finish();
-                    }
+        }
 
         @Override
         public void onResponseFaile(String cmd, String serialNum, String errorCode, String errorMsg, Bundle bundle) {
