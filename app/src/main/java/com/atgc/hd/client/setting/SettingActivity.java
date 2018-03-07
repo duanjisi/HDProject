@@ -10,7 +10,6 @@
 package com.atgc.hd.client.setting;
 
 import android.content.Context;
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -21,8 +20,6 @@ import android.widget.EditText;
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.comm.PrefKey;
-import com.atgc.hd.comm.net.TcpSocketClient;
-import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.socket.SocketTestManager;
 import com.atgc.hd.comm.utils.PreferenceUtils;
 import com.atgc.hd.widget.SuperEditText;
@@ -52,6 +49,8 @@ public class SettingActivity extends BaseActivity {
     EditText etImagePort;
     @BindView(R.id.btn_next)
     Button btnNext;
+
+    private SocketTestManager socketTestManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -144,11 +143,25 @@ public class SettingActivity extends BaseActivity {
             return;
         }
         PreferenceUtils.putBoolean(context, PrefKey.SETTED, true);
-//        TcpSocketClient.getInstance().resetSocket();
-        SocketTestManager.intance().initConfiguration(host, Integer.valueOf(port));
-        SocketTestManager.intance().test(socketActionAdapter());
+
+        if (socketTestManager == null) {
+            socketTestManager = new SocketTestManager();
+        } else {
+            socketTestManager.onDestory();
+        }
+        showProgressDialog("正在测试服务器地址是否可连接...");
+
+        socketTestManager.initConfiguration(host, Integer.valueOf(port));
+        socketTestManager.test(socketActionAdapter());
     }
 
+    @Override
+    protected void onDestroy() {
+        if (socketTestManager != null) {
+            socketTestManager.onDestory();
+        }
+        super.onDestroy();
+    }
 
     private SocketActionAdapter socketActionAdapter() {
         return new SocketActionAdapter() {
@@ -164,9 +177,10 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void onSocketConnectionSuccess(Context context, ConnectionInfo info, String action) {
                 super.onSocketConnectionSuccess(context, info, action);
+                dismissProgressDialog();
                 Log.e("socketManager", "onSocketConnectionSuccess 连接成功");
 //                showMessage("连接成功！");
-                SocketTestManager.intance().onDestory();
+                setResult(RESULT_OK);
                 finish();
             }
 
@@ -183,8 +197,8 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void onSocketConnectionFailed(Context context, ConnectionInfo info, String action, Exception e) {
                 super.onSocketConnectionFailed(context, info, action, e);
-                showMessage("socket连接失败！");
-                SocketTestManager.intance().onDestory();
+                dismissProgressDialog();
+                showMessage("服务器连接失败！");
                 Log.e("socketManager", "onSocketConnectionFailed 连接失败");
             }
         };

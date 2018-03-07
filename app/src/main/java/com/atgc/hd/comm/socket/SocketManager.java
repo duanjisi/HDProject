@@ -7,7 +7,9 @@ import android.util.Log;
 
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.IPPort;
+import com.atgc.hd.comm.config.DeviceParams;
 import com.atgc.hd.comm.net.request.PulseRequest;
+import com.atgc.hd.comm.net.request.RegisterRequest;
 import com.atgc.hd.comm.net.request.base.BaseRequest;
 import com.atgc.hd.comm.net.request.base.SendableBase;
 import com.atgc.hd.comm.net.request.base.SendablePulse;
@@ -27,6 +29,8 @@ import com.xuhao.android.libsocket.sdk.connection.IConnectionManager;
 import com.xuhao.android.libsocket.sdk.protocol.IHeaderProtocol;
 
 import java.nio.ByteOrder;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * <p>描述：
@@ -38,6 +42,8 @@ public class SocketManager {
     private static final int PORT = 20001;
 //    private static final int PORT = 39083;
 
+    private boolean isOkSocketinitialized;
+
     // 心跳包数据
     private SendablePulse mPulseData;
 
@@ -46,6 +52,12 @@ public class SocketManager {
     private static SocketManager socketManager = new SocketManager();
 
     private AnalysisManager analysisManager = new AnalysisManager();
+
+    private Timer timer = new Timer();
+
+    private TimerTask retryConnectTimerTask;
+
+    private int retryConnectTimes;
 
     private SocketManager() {
         mPulseData = new SendablePulse(new PulseRequest());
@@ -56,11 +68,14 @@ public class SocketManager {
     }
 
     public void onDestory() {
-        if (connectionManager == null) {
+        if (retryConnectTimerTask == null) {
+        } else {
+            retryConnectTimerTask.cancel();
+        }
 
+        if (connectionManager == null) {
         } else {
             connectionManager.disConnect();
-            connectionManager = null;
         }
     }
 
@@ -70,22 +85,19 @@ public class SocketManager {
      * @param application
      */
     public void initialize(Application application) {
-        OkSocket.initialize(application, true);
+        if (isOkSocketinitialized) {
+        } else {
+            OkSocket.initialize(application, true);
+            isOkSocketinitialized = true;
+        }
     }
 
     public void initConfiguration() {
-        if (connectionManager != null) {
-            onDestory();
-        }
-
-        //连接参数设置(IP,端口号),这也是一个连接的唯一标识,不同连接,该参数中的两个值至少有其一不一样
-//        ConnectionInfo info = new ConnectionInfo(HOST, PORT);
+//        String host = "192.168.0.242";
         String host = IPPort.getHOST();
         String port = IPPort.getPORT();
-        connect(host, port);
-    }
 
-    public void connect(String host, String port) {
+        //连接参数设置(IP,端口号),这也是一个连接的唯一标识,不同连接,该参数中的两个值至少有其一不一样
         ConnectionInfo info = new ConnectionInfo(host, Integer.valueOf(port));
 
         //调用OkSocket,开启这次连接的通道,拿到通道Manager
@@ -95,12 +107,51 @@ public class SocketManager {
         connectionManager.registerReceiver(socketActionAdapter());
 
         //根据已有的参配对象，建造一个新的参配对象并且付给通道管理器
-        OkSocketOptions defaultOption = connectionManager.getOption();
-        OkSocketOptions newOption = okSocketOptions(defaultOption);
+        OkSocketOptions newOption = okSocketOptions(connectionManager.getOption());
         connectionManager.option(newOption);
+    }
 
-        //调用管理器进行连接
+    public void switchConnect() {
+        String host = IPPort.getHOST();
+        String port = IPPort.getPORT();
+        switchConnect(host, port);
+    }
+
+    public void switchConnect(String host, String port) {
+        if (connectionManager == null) {
+            return;
+        }
+
+        onDestory();
+        retryConnectTimes = 0;
+        ConnectionInfo info = new ConnectionInfo(host, Integer.valueOf(port));
+        connectionManager.switchConnectionInfo(info);
         connectionManager.connect();
+    }
+
+    private void retryConnect() {
+        if (retryConnectTimes > 10) {
+            return;
+        }
+
+        if (retryConnectTimerTask != null) {
+            retryConnectTimerTask.cancel();
+            retryConnectTimerTask = null;
+        }
+
+        retryConnectTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (connectionManager == null) {
+                    return;
+                }
+                ConnectionInfo info = connectionManager.getConnectionInfo();
+                Logger.w("尝试重新连接-" + info.getIp() + ":" + info.getPort());
+                connectionManager.connect();
+            }
+        };
+        retryConnectTimes++;
+        timer.schedule(retryConnectTimerTask, retryConnectTimes * 5 * 1000);
     }
 
     private OkSocketOptions okSocketOptions(OkSocketOptions defaultOption) {
@@ -108,7 +159,12 @@ public class SocketManager {
         OkSocketOptions.Builder builder = new OkSocketOptions.Builder(defaultOption);
         // 设置接收到的数据包的包头
         builder.setHeaderProtocol(headerProtocol());
+
         // ========修改参数设置========
+        // 所有activity被销毁后，socket在后台的存活时间，-1为不销毁
+        builder.setBackgroundLiveMinute(-1);
+        // 读取数据包最大的字节数，单位MB
+        builder.setMaxReadDataMB(10);
         // 心跳包间隔数
         builder.setPulseFrequency(5 * 1000);
         // 设置发送单个数据包的大小（默认50）
@@ -149,6 +205,8 @@ public class SocketManager {
             @Override
             public void onSocketIOThreadStart(Context context, String action) {
                 super.onSocketIOThreadStart(context, action);
+                externalActionAdapter.onSocketIOThreadStart(context, action);
+                Logger.e("onSocketIOThreadShutdown IO线程启动 " + action);
             }
 
             /**
@@ -162,6 +220,9 @@ public class SocketManager {
             @Override
             public void onSocketIOThreadShutdown(Context context, String action, Exception e) {
                 super.onSocketIOThreadShutdown(context, action, e);
+                externalActionAdapter.onSocketIOThreadShutdown(context, action, e);
+                String msg = e == null ? "" : e.getMessage();
+                Logger.e("onSocketIOThreadShutdown IO线程关闭 " + action + "\n" + msg);
             }
 
             /**
@@ -176,6 +237,10 @@ public class SocketManager {
             @Override
             public void onSocketDisconnection(Context context, ConnectionInfo info, String action, Exception e) {
                 super.onSocketDisconnection(context, info, action, e);
+                externalActionAdapter.onSocketDisconnection(context, info, action, e);
+                String msg = e == null ? "" : e.getMessage();
+                Logger.e("onSocketDisconnection socket断开连接了\n" + msg);
+//                retryConnect();
             }
 
             /**
@@ -190,7 +255,8 @@ public class SocketManager {
             @Override
             public void onSocketConnectionSuccess(Context context, ConnectionInfo info, String action) {
                 super.onSocketConnectionSuccess(context, info, action);
-                Log.e("socketManager", "onSocketConnectionSuccess 连接成功");
+                externalActionAdapter.onSocketConnectionSuccess(context, info, action);
+                Logger.e("onSocketConnectionSuccess 连接成功");
             }
 
             /**
@@ -206,8 +272,8 @@ public class SocketManager {
             @Override
             public void onSocketConnectionFailed(Context context, ConnectionInfo info, String action, Exception e) {
                 super.onSocketConnectionFailed(context, info, action, e);
-                Log.e("socketManager", "onSocketConnectionFailed 连接失败");
-
+                externalActionAdapter.onSocketConnectionFailed(context, info, action, e);
+                Logger.e("onSocketConnectionFailed 连接失败");
             }
 
             /**
@@ -235,7 +301,7 @@ public class SocketManager {
             public void onSocketWriteResponse(Context context, ConnectionInfo info, String action, ISendable data) {
                 super.onSocketWriteResponse(context, info, action, data);
                 // action的值参考 IAction 类
-                Log.e("socketManager", "onSocketWriteResponse action：" + action);
+                Logger.e("onSocketWriteResponse action：" + action);
             }
 
             /**
@@ -251,9 +317,14 @@ public class SocketManager {
             public void onPulseSend(Context context, ConnectionInfo info, IPulseSendable data) {
                 super.onPulseSend(context, info, data);
                 connectionManager.getPulseManager().feed();
-                Log.e("socketManager", "onPulseSend 心跳包发送成功");
+                Log.e("onPulseSend", "【"+info.getIp() + "】 onPulseSend 心跳包发送成功");
             }
         };
+    }
+
+    private SocketActionAdapter externalActionAdapter = new SocketActionAdapter() {};
+    public void registerSockActionAdapter(SocketActionAdapter adapter) {
+        externalActionAdapter = adapter;
     }
 
     public void startPulse() {
@@ -268,8 +339,12 @@ public class SocketManager {
         }
     }
 
-    private void uploadGps() {
-
+    public boolean isSocketConnected() {
+        if (connectionManager == null) {
+            return false;
+        } else {
+            return connectionManager.isConnect();
+        }
     }
 
     /**
@@ -321,7 +396,6 @@ public class SocketManager {
 
         return object.serialNum;
     }
-
 
     private String doLaunch(String groupTag, BaseRequest object, Bundle bundle, boolean onResponseNoRequestTag) {
         if (connectionManager == null) {
@@ -386,4 +460,13 @@ public class SocketManager {
     public void unRegistertOnActionListener(String groupTag, String cmd) {
         analysisManager.unRegistertOnActionListener(cmd);
     }
+
+    public void clear() {
+        if (analysisManager == null) {
+        } else {
+            analysisManager.clear();
+        }
+    }
 }
+
+

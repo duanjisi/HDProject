@@ -9,26 +9,12 @@
 package com.atgc.hd.comm.socket;
 
 import android.app.Application;
-import android.content.Context;
-import android.util.Log;
 
-import com.atgc.hd.comm.Constants;
-import com.atgc.hd.comm.net.request.PulseRequest;
-import com.atgc.hd.comm.net.request.base.BaseRequest;
-import com.atgc.hd.comm.net.request.base.SendableBase;
-import com.atgc.hd.comm.net.request.base.SendablePulse;
 import com.atgc.hd.comm.net.response.base.HeaderResponse;
-import com.atgc.hd.comm.utils.FileUtil;
-import com.atgc.hd.comm.utils.StringUtils;
-import com.orhanobut.logger.Logger;
-import com.xuhao.android.libsocket.impl.PulseManager;
 import com.xuhao.android.libsocket.sdk.ConnectionInfo;
 import com.xuhao.android.libsocket.sdk.OkSocket;
 import com.xuhao.android.libsocket.sdk.OkSocketOptions;
 import com.xuhao.android.libsocket.sdk.SocketActionAdapter;
-import com.xuhao.android.libsocket.sdk.bean.IPulseSendable;
-import com.xuhao.android.libsocket.sdk.bean.ISendable;
-import com.xuhao.android.libsocket.sdk.bean.OriginalData;
 import com.xuhao.android.libsocket.sdk.connection.IConnectionManager;
 import com.xuhao.android.libsocket.sdk.protocol.IHeaderProtocol;
 
@@ -40,25 +26,13 @@ import java.nio.ByteOrder;
  */
 public class SocketTestManager {
 
-    // 心跳包数据
-    private SendablePulse mPulseData;
-
     private IConnectionManager connectionManager;
 
-    private static SocketTestManager socketManager = new SocketTestManager();
-
-    private AnalysisManager analysisManager = new AnalysisManager();
-
-    private SocketTestManager() {
-        mPulseData = new SendablePulse(new PulseRequest());
-    }
-
-    public static SocketTestManager intance() {
-        return socketManager;
-    }
-
     public void onDestory() {
-        connectionManager.disConnect();
+        if (connectionManager == null) {
+        } else {
+            connectionManager.disConnect();
+        }
     }
 
     /**
@@ -86,7 +60,7 @@ public class SocketTestManager {
     }
 
     public void test(SocketActionAdapter adapter) {
-//注册Socket行为监听器,SocketActionAdapter是回调的Simple类,其他回调方法请参阅类文档
+        //注册Socket行为监听器,SocketActionAdapter是回调的Simple类,其他回调方法请参阅类文档
         connectionManager.registerReceiver(adapter);
 
         //调用管理器进行连接

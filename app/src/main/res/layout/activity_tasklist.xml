@@ -59,4 +59,13 @@
         android:layout_marginBottom="@dimen/spacing_6x"
         android:src="@drawable/ic_refresh"
         tools:ignore="UnknownId" />
+
+    <Button
+        android:id="@+id/btn_checkpoint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/iv_refresh"
+        android:layout_alignRight="@+id/iv_emergency"
+        android:layout_marginBottom="@dimen/spacing_6x"
+        android:text="模拟打点"/>
 </RelativeLayout>

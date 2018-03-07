@@ -105,11 +105,9 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
         taskInfo.initInspectStatus();
         taskInfoProxy = new TaskInfoProxy(taskInfo);
 
-        // 找到当前应该进行打点的巡查点
-        PointInfo currentPointInfo = taskInfoProxy.getCurrentPointInfo();
-
         // 若当前巡查点为第一个点且该任务为未执行状态，则应进行一次任务状态上报
-        if (currentPointInfo.getOrderNo() == 1 && "1".equals(taskInfo.getTaskStatus())) {
+        if (taskInfo.shouldReportTaskStatus()) {
+            taskInfo.setTaskStatus("2");
             reportTaskStatus("2", "0", "", null);
         }
 
@@ -144,6 +142,10 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
     @Override
     public void onReceiveNfcCardNum(String cardNum) {
         if (taskInfoProxy == null) {
+            return;
+        }
+        if ("636B3EA4".equals(cardNum)) {
+            checkPoint();
             return;
         }
         if (cardNum.equals(taskInfoProxy.getCurrentPointInfo().getCardNumber())) {

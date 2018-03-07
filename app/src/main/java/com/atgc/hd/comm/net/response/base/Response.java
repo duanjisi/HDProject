@@ -12,7 +12,7 @@ import java.util.List;
 public class Response<T> {
     public String Command;
     public int Result;
-    public int ErrorCode;
+    public String ErrorCode;
     public String ErrorMessage;
     public JSONArray Data;
 

@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.EditText;
 
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
@@ -18,9 +17,13 @@ import com.atgc.hd.client.emergency.EmergencyListActivity;
 import com.atgc.hd.client.platform.PlatformInfoActivity;
 import com.atgc.hd.client.setting.SettingActivity;
 import com.atgc.hd.client.tasklist.adapter.ContentFragAdapter;
+import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.widget.PagerSlidingTabStrip;
 import com.atgc.hd.entity.EventMessage;
+import com.orhanobut.logger.Logger;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
@@ -47,6 +50,7 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasklist);
+        ButterKnife.bind(this);
 
         taskHandContract = new TaskHandModel(this);
 
@@ -109,10 +113,8 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
             @Override
             public void onClick(View v) {
                 // TODO 调用接口刷新巡更数据
-                TaskHandModel model = (TaskHandModel) taskHandContract;
-                model.demoNfcCardNum("636B3EA4");
-//                showProgressDialog();
-//                taskHandContract.initData();
+                showProgressDialog();
+                taskHandContract.initData();
             }
         });
 
@@ -123,6 +125,12 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
                 openActivity(EmergencyListActivity.class);
             }
         });
+    }
+
+    @OnClick(R.id.btn_checkpoint)
+    public void clickCheckPoint(View view) {
+        TaskHandModel model = (TaskHandModel) taskHandContract;
+        model.demoNfcCardNum("636B3EA4");
     }
 
     private void addFragmentInitListener() {
@@ -216,8 +224,9 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
             firstClick = System.currentTimeMillis();
             showToast("再按一次退出");
         } else {
+            SocketManager.intance().clear();
             super.onBackPressed();
-            System.exit(0);
+//            System.exit(0);
         }
 
     }
