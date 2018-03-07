@@ -65,12 +65,13 @@ public class TaskHandModel implements TaskHandContract {
 
         startUploadGps();
 
+        registerOnReceiveListener();
+
         EventBus.getDefault().register(this);
     }
 
     @Override
     public void initData() {
-        registerOnReceiveListener();
         requestTaskList();
     }
 
@@ -226,6 +227,9 @@ public class TaskHandModel implements TaskHandContract {
         // 有任务正在进行中
         else if (currentTaskIndex != -1) {
             startTask();
+        }
+        // 无任务进行中，也无未开始的任务
+        else if (undoTaskIndex == -1) {
         }
         // 无任务进行中，但有任务未开始
         else {
