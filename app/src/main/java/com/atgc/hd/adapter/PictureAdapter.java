@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.atgc.hd.R;
 import com.atgc.hd.comm.net.http.MyAsyncTask;
 import com.atgc.hd.comm.net.http.MyTask;
+import com.atgc.hd.comm.utils.FileUtil;
 import com.atgc.hd.comm.utils.PreferenceUtils;
 import com.atgc.hd.comm.utils.UIUtils;
 import com.atgc.hd.entity.UploadEntity;
@@ -90,12 +91,25 @@ public class PictureAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
+
         convertView.setLayoutParams(new GridView.LayoutParams(GridView.LayoutParams.MATCH_PARENT, GridView.LayoutParams.MATCH_PARENT));
         convertView.getLayoutParams().width = (int) mImageHeight;
         convertView.getLayoutParams().height = (int) mImageHeight;
         final UploadEntity entity = images.get(position);
         String localPath = entity.getLocalPath();
         if (!localPath.equals("lastItem")) {
+            String fileName = FileUtil.getFileName(localPath);
+            if (fileName.contains(".mp4") || fileName.contains(".MP4")) {
+                holder.ivPlay.setVisibility(View.VISIBLE);
+            }
+            Glide.with(context).load(localPath).
+                    placeholder(R.drawable.zf_default_message_image).
+                    crossFade().into(holder.ivPic);
+            holder.tvProgress.setVisibility(View.VISIBLE);
+            holder.ivBg.setVisibility(View.VISIBLE);
+            holder.ivClose.setVisibility(View.GONE);
+            holder.tvProgress.setText("开始上传");
+
             holder.tvProgress.setText("" + entity.getProgress());
             final boolean downloaded = entity.isDownloaded();
             if (!downloaded) {
@@ -108,15 +122,24 @@ public class PictureAdapter extends BaseAdapter {
                 }
             } else {
 //            holder.setText("删除");
+                holder.tvProgress.setVisibility(View.GONE);
+                holder.ivBg.setVisibility(View.GONE);
+                holder.ivClose.setVisibility(View.VISIBLE);
             }
-            convertView.setTag(R.id.grid, entity.id);//此处将位置信息作为标识传递
-            viewList.add(convertView);
         } else {
             holder.tvProgress.setVisibility(View.GONE);
             holder.ivBg.setVisibility(View.GONE);
             holder.ivClose.setVisibility(View.GONE);
-            holder.ivBg.setImageResource(R.drawable.compose_pic_add);
+            holder.ivPic.setImageResource(R.drawable.compose_pic_add);
         }
+        holder.ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                removeItem(entity);
+            }
+        });
+        convertView.setTag(R.id.grid, entity.id);//此处将位置信息作为标识传递
+        viewList.add(convertView);
         return convertView;
     }
 
@@ -143,6 +166,46 @@ public class PictureAdapter extends BaseAdapter {
             images.add(index, entity);
             notifyDataSetChanged();
         }
+    }
+
+    public String getVideoUrls() {
+        StringBuilder sb = new StringBuilder();
+        if (images != null && images.size() > 1) {
+            for (int i = 0; i < images.size() - 1; i++) {
+                String path = images.get(i).getUrl();
+                String fileName = FileUtil.getFileName(path);
+                if (fileName.contains(".mp4") || fileName.contains(".MP4")) {
+                    sb.append(path).append(",");
+                }
+            }
+        }
+        String url = "";
+        String str = sb.toString();
+        if (str.contains(",")) {
+            url = str.substring(0, str.length() - 1);
+        }
+        return url;
+    }
+
+    public String getImageUrls() {
+        StringBuilder sb = new StringBuilder();
+        if (images != null && images.size() > 1) {
+            for (int i = 0; i < images.size() - 1; i++) {
+                String path = images.get(i).getUrl();
+                String fileName = FileUtil.getFileName(path);
+                if (fileName.contains(".jpg") ||
+                        fileName.contains(".png") ||
+                        fileName.contains(".jpeg")) {
+                    sb.append(path).append(",");
+                }
+            }
+        }
+        String url = "";
+        String str = sb.toString();
+        if (str.contains(",")) {
+            url = str.substring(0, str.length() - 1);
+        }
+        return url;
     }
 
     private void removeItem(UploadEntity love) {

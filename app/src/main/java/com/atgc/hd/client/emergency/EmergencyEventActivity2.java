@@ -21,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -139,9 +140,16 @@ public class EmergencyEventActivity2 extends BaseActivity implements
                 break;
             case R.id.btn_submit:
 //                submit();
-                showActionSheet();
+//                showActionSheet();
+                testSubmit();
                 break;
         }
+    }
+
+    private void testSubmit() {
+        String imageurls = pictureAdapter.getImageUrls();
+        String videourls = pictureAdapter.getVideoUrls();
+        Log.i("info", "=======imageurls:" + imageurls + "\n" + "videourls:" + videourls);
     }
 
     @Subscribe
@@ -451,7 +459,8 @@ public class EmergencyEventActivity2 extends BaseActivity implements
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_CLIP_IMAGE) {
             String path = ClipImageActivity.ClipOptions.createFromBundle(data).getOutputPath();
             if (path != null) {
-                uploadImageFile(path);
+//                uploadImageFile(path);
+                upLoadFile(path);
             }
             return;
         } else if (requestCode == RECORD_VIDEO && resultCode == RESULT_OK) {
@@ -475,14 +484,16 @@ public class EmergencyEventActivity2 extends BaseActivity implements
                 // 文件写完之后删除/sdcard/dcim/CAMERA/XXX.MP4
                 FileUtil.deleteDefaultFile(context, data.getData());
                 String videoPath = tmpFile.getAbsolutePath();
-                uploadVideoFile(videoPath);
+//                uploadVideoFile(videoPath);
+                upLoadFile(videoPath);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else if (requestCode == LOCAL_VIDEO && resultCode == RESULT_OK) {
             if (data != null) {
                 String videoPath = data.getStringExtra("filePath");
-                uploadVideoFile(videoPath);
+//                uploadVideoFile(videoPath);
+                upLoadFile(videoPath);
             }
         } else if (requestCode == 100 && resultCode == RESULT_OK) {
             finish();
@@ -519,6 +530,14 @@ public class EmergencyEventActivity2 extends BaseActivity implements
     private int objId = 0;
 
     private void uploadImageFile(final String path) {
+        objId++;
+        UploadEntity entity = new UploadEntity();
+        entity.setLocalPath(path);
+        entity.id = objId;
+        pictureAdapter.addItem2(entity);
+    }
+
+    private void upLoadFile(final String path) {
         objId++;
         UploadEntity entity = new UploadEntity();
         entity.setLocalPath(path);

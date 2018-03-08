@@ -42,6 +42,6 @@ public class DeviceParams {
 //            deviceId = Utils.getMacAddressFromIp(mContext);
 //        }
 //        return deviceId;
-        return "10012017f6d0101be5ed";
+        return "10012017020000000000";
     }
 }

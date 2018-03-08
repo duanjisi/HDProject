@@ -59,41 +59,29 @@ public class MyAsyncTask extends AsyncTask<UploadEntity, Integer, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        /* 匹配视图对象 */
-        for (int i = 0; i < viewList.size(); i++) {
-            if (viewList.get(i).getTag(R.id.grid) == viewId) {
-                //检查所有视图ID，如果ID匹配则取出该对象
-                convertView = viewList.get(i);
-                break;
-            }
-        }
-        if (convertView != null) {
-            //将视图对象中缓存的ViewHolder对象取出，并使用该对象对控件进行更新
-            PictureAdapter.ViewHolder viewHolder = (PictureAdapter.ViewHolder) convertView.getTag();
-            String fileName = FileUtil.getFileName(path);
-            if (fileName.contains(".mp4") || fileName.contains(".MP4")) {
-                viewHolder.ivPlay.setVisibility(View.VISIBLE);
-            }
-            Glide.with(context).load(path).
-                    placeholder(R.drawable.zf_default_message_image).
-                    crossFade().into(viewHolder.ivPic);
-            viewHolder.tvProgress.setVisibility(View.VISIBLE);
-            viewHolder.ivBg.setVisibility(View.VISIBLE);
-            viewHolder.ivClose.setVisibility(View.GONE);
-            viewHolder.tvProgress.setText("开始上传");
-//            if (!loaded) {
-//                if (!isLoading) {
-//                    tvProgress.setVisibility(View.VISIBLE);
-//                    ivBg.setVisibility(View.VISIBLE);
-//                    ivClose.setVisibility(View.GONE);
-//                    tvProgress.setText("开始上传");
-//                }
-//            } else {
-//                tvProgress.setVisibility(View.GONE);
-//                ivBg.setVisibility(View.GONE);
-//                ivClose.setVisibility(View.GONE);
+//        /* 匹配视图对象 */
+//        for (int i = 0; i < viewList.size(); i++) {
+//            if (viewList.get(i).getTag(R.id.grid) == viewId) {
+//                //检查所有视图ID，如果ID匹配则取出该对象
+//                convertView = viewList.get(i);
+//                break;
 //            }
-        }
+//        }
+//        if (convertView != null) {
+//            //将视图对象中缓存的ViewHolder对象取出，并使用该对象对控件进行更新
+//            PictureAdapter.ViewHolder viewHolder = (PictureAdapter.ViewHolder) convertView.getTag();
+//            String fileName = FileUtil.getFileName(path);
+//            if (fileName.contains(".mp4") || fileName.contains(".MP4")) {
+//                viewHolder.ivPlay.setVisibility(View.VISIBLE);
+//            }
+//            Glide.with(context).load(path).
+//                    placeholder(R.drawable.zf_default_message_image).
+//                    crossFade().into(viewHolder.ivPic);
+//            viewHolder.tvProgress.setVisibility(View.VISIBLE);
+//            viewHolder.ivBg.setVisibility(View.VISIBLE);
+//            viewHolder.ivClose.setVisibility(View.GONE);
+//            viewHolder.tvProgress.setText("开始上传");
+//        }
     }
 
     @Override
@@ -105,7 +93,6 @@ public class MyAsyncTask extends AsyncTask<UploadEntity, Integer, String> {
         String param = StringUtils.getJson(myObject.getLocalPath());
         final long total = param.getBytes().length;
         String size = FileUtil.getFormatSize(total);
-
         try {
             URL realUrl = new URL(Constants.UP_LOAD_IMAGE);
             // 打开和URL之间的连接
@@ -173,8 +160,7 @@ public class MyAsyncTask extends AsyncTask<UploadEntity, Integer, String> {
         if (convertView != null) {
             //将视图对象中缓存的ViewHolder对象取出，并使用该对象对控件进行更新
             PictureAdapter.ViewHolder viewHolder = (PictureAdapter.ViewHolder) convertView.getTag();
-//            viewHolder.progressBar.setProgress(values[0]);
-            viewHolder.tvProgress.setText("" + values[0]);
+            viewHolder.tvProgress.setText("" + values[0] + "%");
         }
         myObject.progress = values[0];
     }
@@ -188,7 +174,6 @@ public class MyAsyncTask extends AsyncTask<UploadEntity, Integer, String> {
                 myObject.progress = 100;
                 myObject.setUrl(Constants.IMAGE_HEADER + object.getString("id"));
                 myObject.setDownloaded(true);
-
                 for (int i = 0; i < viewList.size(); i++) {
                     if (viewList.get(i).getTag(R.id.grid) == viewId) {
                         //检查所有视图ID，如果ID匹配则取出该对象
@@ -196,7 +181,6 @@ public class MyAsyncTask extends AsyncTask<UploadEntity, Integer, String> {
                         break;
                     }
                 }
-
                 if (convertView != null) {
                     //将视图对象中缓存的ViewHolder对象取出，并使用该对象对控件进行更新
                     PictureAdapter.ViewHolder viewHolder = (PictureAdapter.ViewHolder) convertView.getTag();
