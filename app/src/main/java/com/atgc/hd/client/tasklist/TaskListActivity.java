@@ -109,10 +109,10 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
             @Override
             public void onClick(View v) {
                 // TODO 调用接口刷新巡更数据
-                TaskHandModel model = (TaskHandModel) taskHandContract;
-                model.demoNfcCardNum("636B3EA4");
-//                showProgressDialog();
-//                taskHandContract.initData();
+//                TaskHandModel model = (TaskHandModel) taskHandContract;
+//                model.demoNfcCardNum("636B3EA4");
+                showProgressDialog();
+                taskHandContract.initData();
             }
         });
 

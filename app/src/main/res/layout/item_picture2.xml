@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             roundiv:round_borderRadius="6dp"
             roundiv:round_type="1" />
-
+        <!--android:src="@drawable/bg_frame_bule"-->
         <com.atgc.hd.widget.RoundImageView
             android:id="@+id/iv_bg"
             android:layout_width="match_parent"

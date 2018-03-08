@@ -94,10 +94,10 @@ public class DeviceBootService extends Service {
                         bindDatas(patInfo);
                     }
                 });
-        SocketManager.intance().preAnalysisResponseNoRequestTag(
-                REQUEST_GROUP_TAG,
-                DeviceCmd.PAT_SEND_MESSAGE,
-                null);
+//        SocketManager.intance().preAnalysisResponseNoRequestTag(
+//                REQUEST_GROUP_TAG,
+//                DeviceCmd.PAT_SEND_MESSAGE,
+//                null);
     }
 
     private void bindDatas(PatInfo platform) {
