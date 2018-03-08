@@ -148,12 +148,15 @@ public class TaskListResponse extends BaseResponse<TaskListResponse.TaskInfo> im
             this.inspectStatus = inspectStatus;
         }
 
-        public void initInspectStatus() {
+        public boolean initInspectStatus() {
             // 结果类型 0：未巡查 1：正常（已巡查） 2：超时未巡查 3：超时已巡查
             int countUnCheck = 0;
             int countChecked = 0;
             int countUnCheckException = 0;
             int countCheckedException = 0;
+            if (PointArray == null) {
+                return false;
+            }
             for (PointInfo pointInfo : PointArray) {
                 String resultType = pointInfo.getResultType();
                 if ("0".equals(resultType)) {
@@ -179,6 +182,8 @@ public class TaskListResponse extends BaseResponse<TaskListResponse.TaskInfo> im
             } else {
                 inspectStatus = "2";
             }
+
+            return true;
         }
 
         public void initTaskPeriod() {
@@ -196,34 +201,8 @@ public class TaskListResponse extends BaseResponse<TaskListResponse.TaskInfo> im
             this.taskStatus = taskStatus;
         }
 
-        /**
-         * 根据传入的时间判断当前任务的状态
-         *
-         * @param currentDate 当前时间 yyyy-MM-dd HH:mm:ss
-         * @return
-         */
-        public String initTaskStatus(Date currentDate) {
-            if ("1".equals(inspectStatus) || "2".equals(inspectStatus)) {
-                taskStatus = STATUS_DONE;
-                return taskStatus;
-            }
-
-            Date startDate = DateUtil.dateParse(startTime, DateUtil.DATE_TIME_PATTERN);
-            Date endDate = DateUtil.dateParse(endTime, DateUtil.DATE_TIME_PATTERN);
-
-            // 任务未开始
-            if (currentDate.before(startDate)) {
-                taskStatus = STATUS_UNDO;
-            }
-            // 任务进行中
-            else if (currentDate.after(startDate) && currentDate.before(endDate)) {
-                taskStatus = STATUS_DOING;
-            }
-            // 任务已过最后时间
-            else {
-                taskStatus = STATUS_DONE;
-            }
-            return taskStatus;
+        public boolean shouldReportTaskStatus() {
+            return "1".equals(taskStatus);
         }
 
         @Override

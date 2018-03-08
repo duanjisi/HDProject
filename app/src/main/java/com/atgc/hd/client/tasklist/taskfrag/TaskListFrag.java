@@ -94,7 +94,12 @@ public class TaskListFrag extends BaseFragment implements TaskListContract.IView
                 data.setGroupExpand(false);
                 viewHolder.getView(R.id.iv_background).setSelected(false);
                 viewHolder.getView(R.id.iv_arrow).setSelected(false);
-                int childCount = data.getTaskInfo().getPointArray().size();
+                int childCount;
+                if (data == null || data.getTaskInfo() == null || data.getTaskInfo().getPointArray() == null) {
+                    childCount = 0;
+                } else {
+                    childCount = data.getTaskInfo().getPointArray().size();
+                }
                 taskListAdapter.removeWithAnimation(position + 1, childCount);
             }
             // 已是关闭状态，则展开

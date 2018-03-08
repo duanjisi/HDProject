@@ -19,4 +19,8 @@ public class EventMessage {
         this.eventTag = eventTag;
         this.object = object;
     }
+
+    public boolean checkTag(String tag) {
+        return eventTag.equals(tag);
+    }
 }

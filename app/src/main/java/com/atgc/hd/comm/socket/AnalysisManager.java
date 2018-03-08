@@ -27,7 +27,11 @@ public class AnalysisManager {
         String header = DigitalUtils.byteArrayToHexString(data.getHeadBytes());
         String body = new String(data.getBodyBytes(), Charset.forName("utf-8"));
 
-        Logger.e("响应报文头：\n" + header + "\n响应报文体：\n" + body);
+        Response response = JSON.parseObject(body, Response.class);
+        if ("COM_HEARTBEAT".equals(response.Command)) {
+        } else {
+            Logger.e("响应报文头：\n" + header + "\n响应报文体：\n" + body);
+        }
 
         boolean verifyOK = checkCrc(data);
         if (verifyOK) {
@@ -53,11 +57,7 @@ public class AnalysisManager {
             return;
         }
 
-        Bundle bundle = null;
-        if (response.dataArray != null && !response.dataArray.isEmpty()) {
-            BaseResponse baseResponse = (BaseResponse) response.dataArray.get(0);
-            bundle = mapRequestBundle.get(baseResponse.serialNum);
-        }
+        Bundle bundle = getRequestBundle(response);
 
         // 设备注册口需做特殊处理，网关不支持返回requestTag
         if (DeviceCmd.REGISTER.equals(response.Command)) {
@@ -66,6 +66,7 @@ public class AnalysisManager {
             } else {
                 actionListener.onResponseFaile(response.Command, "", "" + response.ErrorCode, response.ErrorMessage, bundle);
             }
+            return;
         }
 
         if (response.Data == null) {
@@ -140,6 +141,20 @@ public class AnalysisManager {
                         bundle);
             }
         }
+    }
+
+    private Bundle getRequestBundle(Response response) {
+        Bundle bundle = null;
+        if (response.dataArray != null && !response.dataArray.isEmpty()) {
+            Object object = response.dataArray.get(0);
+            if (object instanceof BaseResponse) {
+                BaseResponse baseResponse = (BaseResponse) object;
+                bundle = mapRequestBundle.get(baseResponse.serialNum);
+            } else {
+                bundle = mapRequestBundle.get(response.Command);
+            }
+        }
+        return bundle;
     }
 
     private OnActionListener getOnActionListener(Response response) {
@@ -271,6 +286,15 @@ public class AnalysisManager {
         } else {
             mapListeners.remove(cmd);
         }
+    }
+
+    public void clear() {
+        mapRequestBundle.clear();
+        mapResponseClass.clear();
+
+        mapGroupListener.clear();
+        mapPoolListener.clear();
+        mapPoolListenersNoRequestTag.clear();
     }
 
     private boolean checkCrc(OriginalData data) {

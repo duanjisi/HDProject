@@ -65,12 +65,13 @@ public class TaskHandModel implements TaskHandContract {
 
         startUploadGps();
 
+        registerOnReceiveListener();
+
         EventBus.getDefault().register(this);
     }
 
     @Override
     public void initData() {
-        registerOnReceiveListener();
         requestTaskList();
     }
 
@@ -227,6 +228,9 @@ public class TaskHandModel implements TaskHandContract {
         else if (currentTaskIndex != -1) {
             startTask();
         }
+        // 无任务进行中，也无未开始的任务
+        else if (undoTaskIndex == -1) {
+        }
         // 无任务进行中，但有任务未开始
         else {
             // 需将索引减1，否则会跳过一个任务
@@ -285,7 +289,6 @@ public class TaskHandModel implements TaskHandContract {
     private void startTask() {
         if (-1 < currentTaskIndex && currentTaskIndex < arrayTaskInfos.size()) {
             TaskInfo currentTaskInfo = arrayTaskInfos.get(currentTaskIndex);
-            currentTaskInfo.setTaskStatus("2");
             onCurrentTaskListener.onReceiveCurrentTask(currentTaskInfo);
 
             onAllTaskListener.onReceiveAllTask(arrayTaskInfos);
@@ -350,30 +353,22 @@ public class TaskHandModel implements TaskHandContract {
     private String srcLongitude = "113.62";
     private String srcLatitude = "23.30";
     private TaskInfo currentTaskInfo;
-    private boolean isOK = true;
+    private boolean isOK = false;
 
-    String[] lngs = {"113.270965060937",
-            "113.271335615991",
-            "113.27089768729",
-            "113.269516527541",
-            "113.267731125914",
-            "113.255267001347",
-            "113.259983156588",
-            "113.264429817245",
-            "113.252437308202",
-            "113.251089835276"};
+    String[] lngs = {"113.622274",
+            "113.622979",
+            "113.622598",
+            "113.622387",
+            "113.62328",
+            "113.62607"};
 
 
-    String[] lats = {"23.1558540183462",
-            "23.1540266009255",
-            "23.1516726027691",
-            "23.1485441991151",
-            "23.1455705992316",
-            "23.1447962134344",
-            "23.1440527988601",
-            "23.1438049930857",
-            "23.1478627549692",
-            "23.1504026655377"};
+    String[] lats = {"23.305673",
+            "23.305926",
+            "23.306254",
+            "23.305656",
+            "23.305636",
+            "23.30737"};
 
 
     private void startUploadGps() {
@@ -439,3 +434,5 @@ public class TaskHandModel implements TaskHandContract {
         return sb.toString();
     }
 }
+
+

@@ -114,6 +114,9 @@ public class TaskListEntity {
             if (!entities.isEmpty()) {
                 return entities;
             }
+            if (taskInfo == null || taskInfo.getPointArray() == null) {
+                return entities;
+            }
             for (int i = 0, count = taskInfo.getPointArray().size(); i < count; i++) {
                 PointInfo info = taskInfo.getPointArray().get(i);
                 TaskListEntity entity = new TaskListEntity(info);

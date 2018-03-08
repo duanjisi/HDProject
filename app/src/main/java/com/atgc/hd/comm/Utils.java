@@ -39,25 +39,6 @@ import java.util.List;
 
 public class Utils {
 
-    //    @SuppressLint("LongLogTag")
-//    public static String getLocalIpAddress() {
-//        try {
-//            for (Enumeration<NetworkInterface> en = NetworkInterface
-//                    .getNetworkInterfaces(); en.hasMoreElements(); ) {
-//                NetworkInterface intf = en.nextElement();
-//                for (Enumeration<InetAddress> enumIpAddr = intf
-//                        .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
-//                    InetAddress inetAddress = enumIpAddr.nextElement();
-//                    if (!inetAddress.isLoopbackAddress()) {
-//                        return inetAddress.getHostAddress().toString();
-//                    }
-//                }
-//            }
-//        } catch (SocketException ex) {
-//            Log.e("WifiPreference IpAddress", ex.toString());
-//        }
-//        return null;
-//    }
     public static boolean hasGingerbread() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD;
     }
@@ -224,10 +205,9 @@ public class Utils {
 
 
     /**
-     * 29.     * 获取移动设备本地IP
-     * 30.     *
-     * 31.     * @return
-     * 32.
+     * 获取移动设备本地IP
+     *
+     * @return
      */
     public static InetAddress getLocalInetAddress() {
         InetAddress ip = null;
@@ -620,24 +600,30 @@ public class Utils {
     }
 
 
-    /*
-     * 判断服务是否启动,context上下文对象 ，className服务的name
+    /**
+     * 判断服务是否已启动
+     *
+     * @param mContext
+     * @param className 服务的名称
+     * @return
      */
     public static boolean isServiceRunning(Context mContext, String className) {
-        boolean isRunning = false;
-        ActivityManager activityManager = (ActivityManager) mContext
-                .getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningServiceInfo> serviceList = activityManager
-                .getRunningServices(30);
-        if (!(serviceList.size() > 0)) {
+        ActivityManager activityManager;
+        activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+
+        List<ActivityManager.RunningServiceInfo> serviceList;
+        serviceList = activityManager.getRunningServices(Integer.MAX_VALUE);
+
+        if (serviceList.size() == 0) {
             return false;
         }
+
         for (int i = 0; i < serviceList.size(); i++) {
-            if (serviceList.get(i).service.getClassName().equals(className) == true) {
-                isRunning = true;
-                break;
+            if (serviceList.get(i).service.getClassName().equals(className)) {
+                return true;
             }
         }
-        return isRunning;
+
+        return false;
     }
 }
