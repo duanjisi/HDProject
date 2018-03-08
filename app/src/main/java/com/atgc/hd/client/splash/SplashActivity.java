@@ -15,10 +15,7 @@ import com.atgc.hd.client.setting.SettingActivity;
 import com.atgc.hd.client.tasklist.TaskListActivity;
 import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.Utils;
-import com.atgc.hd.comm.net.response.base.Response;
 import com.atgc.hd.comm.service.DeviceBootService;
-import com.atgc.hd.comm.socket.OnActionAdapter;
-import com.atgc.hd.comm.socket.OnActionListener;
 import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.entity.EventMessage;
 import com.orhanobut.logger.Logger;
@@ -85,8 +82,8 @@ public class SplashActivity extends BaseActivity {
 
     @Subscribe
     public void readyToNextAty(EventMessage message) {
-        Logger.e("准备啦。。。");
         if ("ready_to_next_aty".equals(message.eventTag)) {
+            Logger.e("准备啦。。。");
             openActivity(TaskListActivity.class);
             SplashActivity.this.finish();
         }
@@ -120,6 +117,7 @@ public class SplashActivity extends BaseActivity {
             }
         }, 2 * 1000);
     }
+
     private void sendEventMessage(String eventTag, Object object) {
         EventMessage msg = new EventMessage(eventTag, object);
         EventBus.getDefault().post(msg);

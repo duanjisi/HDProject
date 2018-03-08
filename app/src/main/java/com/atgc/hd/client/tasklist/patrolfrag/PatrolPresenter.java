@@ -233,7 +233,6 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
                 reportTaskStatus("3", "0", "", null);
 
                 // TaskHandModel.onTaskFinish()接收
-                Log.e("finish_tag", "218行结束任务");
                 sendEventMessage("on_task_finish");
             }
             // 否则弹出提示框填写异常原因，再上报任务状态
@@ -387,7 +386,7 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
 
         private void dealReportTaskStatusSuccess(String serialNum, Bundle bundle) {
             String taskStatus = bundle.getString("taskStatus");
-            String carryStatus = bundle.getString("taskStatus");
+            String carryStatus = bundle.getString("carryStatus");
             PatrolContract.OnReportTaskListener listener
                     = (PatrolContract.OnReportTaskListener) bundle.getSerializable("listener");
 
