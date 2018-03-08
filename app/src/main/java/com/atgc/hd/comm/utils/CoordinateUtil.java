@@ -65,7 +65,7 @@ public class CoordinateUtil {
      * @param lon 火星经度
      * @param lat 火星纬度
      */
-    public static Coordinate gcj02ToWbs84(double lon, double lat) {
+    public static Coordinate gcj02ToWgs84(double lon, double lat) {
         Coordinate gps = transform(lon, lat);
         double lontitude = lon * 2 - gps.getLongitude();
         double latitude = lat * 2 - gps.getLatitude();
@@ -118,7 +118,7 @@ public class CoordinateUtil {
      */
     public static Coordinate bd09ToGps84(double bd_lon, double bd_lat) {
         Coordinate gcj02 = bd09ToGcj02(bd_lon, bd_lat);
-        Coordinate map84 = gcj02ToWbs84(gcj02.getLongitude(), gcj02.getLatitude());
+        Coordinate map84 = gcj02ToWgs84(gcj02.getLongitude(), gcj02.getLatitude());
         return map84;
 
     }

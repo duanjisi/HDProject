@@ -30,6 +30,13 @@ public class Coordinate {
         this.mLongitude = longitude;
     }
 
+    public String getLatitudeStr() {
+        return String.valueOf(mLatitude);
+    }
+    public String getLongitudeStr() {
+        return String.valueOf(mLongitude);
+    }
+
     @Override
     public String toString() {
         return mLongitude + ", " + mLatitude;

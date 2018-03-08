@@ -9,7 +9,6 @@ import com.atgc.hd.client.tasklist.taskfrag.adapter.TaskListEntity;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.clock.InnerClock;
 import com.atgc.hd.comm.config.DeviceParams;
-import com.atgc.hd.comm.local.Coordinate;
 import com.atgc.hd.comm.local.LocationService;
 import com.atgc.hd.comm.local.LocationService.ILocationListener;
 import com.atgc.hd.comm.net.request.ReportPointStatusRequest;
@@ -96,6 +95,9 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
      */
     @Override
     public void onReceiveCurrentTask(TaskListResponse.TaskInfo taskInfo) {
+        // 发送到DeviceBootService类，GPS坐标上传需要taskid，userid
+        sendEventMessage("current_task_info", taskInfo);
+
         // 暂无任务
         if (taskInfo == null) {
             iView.refreshTaskList(null);
@@ -121,22 +123,22 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
         startPointTimeOutCountDown();
 
         // TODO 开始进行GPS定位监听
-//        locationListener = getLocationListener(currentPointInfo);
-//        LocationService.intance().registerLocationListener(locationListener);
+        locationListener = getLocationListener();
+        LocationService.intance().registerLocationListener(locationListener);
     }
 
     @Override
     public void onReceiveExceptionTask(SparseArray<TaskListResponse.TaskInfo> exceptionTasks) {
-//        for (int i = 0; i < exceptionTasks.size(); i++) {
-//            TaskListResponse.TaskInfo exceptionTask = exceptionTasks.get(i);
-//            reportTaskStatus(
-//                    exceptionTask.getUserId(),
-//                    exceptionTask.getTaskID(),
-//                    "4",
-//                    "1",
-//                    "其他",
-//                    null);
-//        }
+        for (int i = 0; i < exceptionTasks.size(); i++) {
+            TaskListResponse.TaskInfo exceptionTask = exceptionTasks.get(i);
+            reportTaskStatus(
+                    exceptionTask.getUserId(),
+                    exceptionTask.getTaskID(),
+                    "4",
+                    "1",
+                    "其他",
+                    null);
+        }
     }
 
     @Override
@@ -161,7 +163,7 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
         return taskInfoProxy.getTaskInfo();
     }
 
-    private ILocationListener getLocationListener(final PointInfo currentPointInfo) {
+    private ILocationListener getLocationListener() {
         ILocationListener listener = new ILocationListener() {
             Object lock = new Object();
 
@@ -173,18 +175,20 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
             }
 
             private void actionReceive(BDLocation bdLocation) {
-                Coordinate currentLocation = CoordinateUtil.gcj02ToWbs84(bdLocation.getLongitude(), bdLocation.getLatitude());
+                PointInfo pointInfo = taskInfoProxy.getCurrentPointInfo();
+
                 double distance = CoordinateUtil.getDistance(
-                        currentPointInfo.getLatitude(),
-                        currentPointInfo.getLongitude(),
-                        currentLocation.getLatitude(),
-                        currentLocation.getLongitude()
+                        pointInfo.getLatitudeGCJ(),
+                        pointInfo.getLongitudeGCJ(),
+                        bdLocation.getLatitude(),
+                        bdLocation.getLongitude()
                 );
 
-//            Logger.e(currentPointInfo.getLatitude() + "\n" +
-//                    currentPointInfo.getLongitude() + "\n" +
-//                    currentLocation.getLatitude() + "\n" +
-//                    currentLocation.getLongitude());
+                Logger.w(pointInfo.getLatitude() + "\n" +
+                        pointInfo.getLongitude() + "\n" +
+                        bdLocation.getLatitude() + "\n" +
+                        bdLocation.getLongitude() + "\n距离" +
+                        distance + "米");
 
                 if (distance > POINT_RANGE) {
                     return;

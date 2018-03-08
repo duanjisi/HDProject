@@ -67,7 +67,7 @@
         <activity android:name=".client.emergency.UploadStateActivity"></activity>
         <activity android:name=".client.platform.PlatformInfoActivity"></activity>
         <activity android:name=".client.player.VideoPlayerActivity"></activity>
-        <activity android:name=".client.setting.SettingActivity"></activity>
+        <activity android:name=".client.setting.NetSettingActivity"></activity>
 
         <activity
             android:name=".comm.utils.PhotoAlbumUtil.MultiImageSelectorActivity"

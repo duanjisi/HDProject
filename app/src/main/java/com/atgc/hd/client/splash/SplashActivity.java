@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
-import com.atgc.hd.client.setting.SettingActivity;
+import com.atgc.hd.client.setting.NetSettingActivity;
 import com.atgc.hd.client.tasklist.TaskListActivity;
 import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.Utils;
@@ -77,7 +77,7 @@ public class SplashActivity extends BaseActivity {
     @OnClick(R.id.button)
     public void openNetSetting() {
         SocketManager.intance().onDestory();
-        openActvityForResult(SettingActivity.class, 23);
+        openActvityForResult(NetSettingActivity.class, 23);
     }
 
     @Subscribe

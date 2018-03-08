@@ -25,16 +25,21 @@ import com.atgc.hd.client.platform.PlatformInfoActivity;
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.config.DeviceParams;
+import com.atgc.hd.comm.local.Coordinate;
 import com.atgc.hd.comm.local.LocationService;
+import com.atgc.hd.comm.net.request.GPSRequest;
 import com.atgc.hd.comm.net.request.RegisterRequest;
+import com.atgc.hd.comm.net.response.TaskListResponse;
 import com.atgc.hd.comm.net.response.base.Response;
 import com.atgc.hd.comm.socket.OnActionAdapter;
 import com.atgc.hd.comm.socket.SocketManager;
+import com.atgc.hd.comm.utils.CoordinateUtil;
 import com.atgc.hd.comm.utils.StringUtils;
 import com.atgc.hd.db.dao.PlatformInfoDao;
 import com.atgc.hd.entity.ActionEntity;
 import com.atgc.hd.entity.EventMessage;
 import com.atgc.hd.entity.PatInfo;
+import com.baidu.location.BDLocation;
 import com.orhanobut.logger.Logger;
 import com.xuhao.android.libsocket.sdk.ConnectionInfo;
 import com.xuhao.android.libsocket.sdk.SocketActionAdapter;
@@ -48,7 +53,7 @@ import de.greenrobot.event.Subscribe;
  * <p>描述：设备引导服务
  * <p>作者：duanjisi 2018年 01月 16日
  */
-public class DeviceBootService extends Service {
+public class DeviceBootService extends Service implements LocationService.ILocationListener {
     private static final String REQUEST_GROUP_TAG = StringUtils.getRandomString(20);
 
     private static final int notifyID = 1002;
@@ -73,7 +78,8 @@ public class DeviceBootService extends Service {
         Logger.e("开机广播服务");
         locationService = LocationService.intance();
         locationService.initService(this);
-//        locationService.start();
+        locationService.registerLocationListener(this);
+        locationService.start();
 
         registerOnReceiveListener();
 
@@ -94,10 +100,12 @@ public class DeviceBootService extends Service {
             public void onSocketConnectionSuccess(Context context, ConnectionInfo info, String action) {
                 registerDevice();
             }
+
             @Override
             public void onSocketConnectionFailed(Context context, ConnectionInfo info, String action, Exception e) {
                 isDeviceRegister = false;
             }
+
             @Override
             public void onSocketDisconnection(Context context, ConnectionInfo info, String action, Exception e) {
                 isDeviceRegister = false;
@@ -139,7 +147,7 @@ public class DeviceBootService extends Service {
     }
 
     public void checkDeviceRegister() {
-        Logger.w("是否已注册："+isDeviceRegister);
+        Logger.w("是否已注册：" + isDeviceRegister);
         if (isDeviceRegister) {
             sendEventMessage("ready_to_next_aty", null);
         } else {
@@ -163,19 +171,48 @@ public class DeviceBootService extends Service {
                 DeviceCmd.PAT_SEND_MESSAGE,
                 PatInfo.class,
                 responseActionListener);
-
         SocketManager.intance().preAnalysisResponseNoRequestTag(
                 REQUEST_GROUP_TAG,
                 DeviceCmd.PAT_SEND_MESSAGE,
                 null);
     }
 
+    // 设备注册
     private void registerDevice() {
         RegisterRequest request = new RegisterRequest();
 
         request.deviceID = DeviceParams.getInstance().getDeviceId();
 
         SocketManager.intance().launch(REQUEST_GROUP_TAG, request, null, true);
+    }
+
+    private String taskid = "";
+    private String userid = "";
+
+    @Subscribe
+    public void currentTaskInfo(EventMessage eventMessage) {
+        if (eventMessage.checkTag("current_task_info")) {
+            if (eventMessage.object == null) {
+                taskid = "";
+                userid = "";
+            } else {
+                TaskListResponse.TaskInfo taskInfo = (TaskListResponse.TaskInfo) eventMessage.object;
+                taskid = taskInfo.getTaskID();
+                userid = taskInfo.getUserId();
+            }
+        }
+    }
+
+    // 设备上传
+    private void uploadGps(String longitude, String latitude) {
+        GPSRequest gpsRequest = new GPSRequest();
+        gpsRequest.setDeviceID(DeviceParams.getInstance().getDeviceId());
+        gpsRequest.setTaskId(taskid);
+        gpsRequest.setUserID(userid);
+        gpsRequest.setLongitude(longitude);
+        gpsRequest.setLatitude(latitude);
+
+        SocketManager.intance().launch(REQUEST_GROUP_TAG, gpsRequest, null);
     }
 
     private void bindDatas(PatInfo platform) {
@@ -186,11 +223,6 @@ public class DeviceBootService extends Service {
     }
 
     private void sendNotification(Context appContext, String notice) {
-        String packageName = appContext.getApplicationInfo().packageName;
-        NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        PackageManager packageManager = appContext.getPackageManager();
-        String appname = (String) packageManager.getApplicationLabel(appContext.getApplicationInfo());
-
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(appContext, CHANNEL_ID);
 
         mBuilder.setSmallIcon(appContext.getApplicationInfo().icon);
@@ -206,6 +238,8 @@ public class DeviceBootService extends Service {
 
         Notification notification = mBuilder.build();
         notification.defaults = Notification.DEFAULT_SOUND;
+
+        NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(notifyID, notification);
 
         EventBus.getDefault().post(new ActionEntity(Constants.Action.PLATFORM_INFO));
@@ -214,6 +248,8 @@ public class DeviceBootService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        locationService.stop();
+        SocketManager.intance().unRegistertOnActionListener(DeviceCmd.REGISTER);
         SocketManager.intance().unRegistertOnActionListener(DeviceCmd.PAT_SEND_MESSAGE);
         EventBus.getDefault().unregister(this);
     }
@@ -221,5 +257,14 @@ public class DeviceBootService extends Service {
     private void sendEventMessage(String eventTag, Object object) {
         EventMessage msg = new EventMessage(eventTag, object);
         EventBus.getDefault().post(msg);
+    }
+
+    // 经纬度回调
+    @Override
+    public void onReceiveLocation(BDLocation bdLocation) {
+        Coordinate coordinate
+                = CoordinateUtil.gcj02ToWgs84(bdLocation.getLongitude(), bdLocation.getLatitude());
+
+        uploadGps(coordinate.getLongitudeStr(), coordinate.getLatitudeStr());
     }
 }

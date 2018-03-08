@@ -186,7 +186,6 @@ public class TaskHandModel implements TaskHandContract {
             TaskInfo taskInfo = taskInfos.get(i);
             taskInfo.initTaskPeriod();
             taskInfo.initInspectStatus();
-//            taskInfo.initTaskStatus(currentTime);
 
             arrayTaskInfos.append(i, taskInfo);
 
@@ -353,7 +352,7 @@ public class TaskHandModel implements TaskHandContract {
     private String srcLongitude = "113.62";
     private String srcLatitude = "23.30";
     private TaskInfo currentTaskInfo;
-    private boolean isOK = false;
+    private boolean isOK = true;
 
     String[] lngs = {"113.622274",
             "113.622979",

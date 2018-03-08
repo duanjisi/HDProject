@@ -3,7 +3,9 @@ package com.atgc.hd.comm.net.response;
 import android.support.annotation.NonNull;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.atgc.hd.comm.local.Coordinate;
 import com.atgc.hd.comm.net.response.base.BaseResponse;
+import com.atgc.hd.comm.utils.CoordinateUtil;
 import com.atgc.hd.comm.utils.DateUtil;
 import com.atgc.hd.comm.utils.StringUtils;
 
@@ -239,6 +241,11 @@ public class TaskListResponse extends BaseResponse<TaskListResponse.TaskInfo> im
         private String formatPointTime;
         private String formatPlanTime;
 
+        // 经度(gcj坐标系)
+        private double longitudeGCJ;
+        // 纬度(gcj坐标系)
+        private double latitudeGCJ;
+
         public String getTaskPointId() {
             return taskPointId;
         }
@@ -349,6 +356,20 @@ public class TaskListResponse extends BaseResponse<TaskListResponse.TaskInfo> im
 
         public void setPlanTime(String planTime) {
             this.planTime = planTime;
+        }
+
+        public double getLongitudeGCJ() {
+            return longitudeGCJ;
+        }
+
+        public double getLatitudeGCJ() {
+            return latitudeGCJ;
+        }
+
+        public void initCoordinate() {
+            Coordinate coordinate = CoordinateUtil.wgs84ToGcj02(getLongitude(), getLatitude());
+            longitudeGCJ = coordinate.getLongitude();
+            latitudeGCJ = coordinate.getLatitude();
         }
 
         @Override
