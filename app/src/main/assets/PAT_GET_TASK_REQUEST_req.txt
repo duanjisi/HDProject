@@ -180,8 +180,8 @@
                         }
                     ],
                     "deviceID": "10012017020000000000",
-                    "startTime": "2018-03-28 15:00:00",
-                    "endTime": "2018-03-28 15:40:10",
+                    "startTime": "2018-03-09 15:00:00",
+                    "endTime": "2018-03-09 19:57:10",
                     "taskID": "任务d的taskid",
                     "taskStatus":"1",
                     "taskName": "任务D"
@@ -190,40 +190,3 @@
         }
     ]
 }
-
-03-05 16:25:46.940 19294-19294/com.atgc.hd W/System.err: com.xuhao.android.libsocket.impl.exceptions.PurifyException: environmental disconnect
-03-05 16:25:46.940 19294-19294/com.atgc.hd W/System.err:     at com.xuhao.android.libsocket.impl.EnvironmentalManager$1.handleMessage(EnvironmentalManager.java:50)
-03-05 16:25:46.940 19294-19294/com.atgc.hd W/System.err:     at android.os.Handler.dispatchMessage(Handler.java:102)
-03-05 16:25:46.940 19294-19294/com.atgc.hd W/System.err:     at android.os.Looper.loop(Looper.java:135)
-03-05 16:25:46.940 19294-19294/com.atgc.hd W/System.err:     at android.app.ActivityThread.main(ActivityThread.java:5254)
-03-05 16:25:46.940 19294-19294/com.atgc.hd W/System.err:     at java.lang.reflect.Method.invoke(Native Method)
-03-05 16:25:46.940 19294-19294/com.atgc.hd W/System.err:     at java.lang.reflect.Method.invoke(Method.java:372)
-03-05 16:25:46.940 19294-19294/com.atgc.hd W/System.err:     at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
-03-05 16:25:46.940 19294-19294/com.atgc.hd W/System.err:     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
-
-03-05 12:11:35.535 16155-16155/com.atgc.hd W/System.err: com.xuhao.android.libsocket.impl.exceptions.PurifyException: environmental disconnect
-03-05 12:11:35.535 16155-16155/com.atgc.hd W/System.err:     at com.xuhao.android.libsocket.impl.EnvironmentalManager$1.handleMessage(EnvironmentalManager.java:50)
-03-05 12:11:35.535 16155-16155/com.atgc.hd W/System.err:     at android.os.Handler.dispatchMessage(Handler.java:102)
-03-05 12:11:35.535 16155-16155/com.atgc.hd W/System.err:     at android.os.Looper.loop(Looper.java:135)
-03-05 12:11:35.535 16155-16155/com.atgc.hd W/System.err:     at android.app.ActivityThread.main(ActivityThread.java:5254)
-03-05 12:11:35.535 16155-16155/com.atgc.hd W/System.err:     at java.lang.reflect.Method.invoke(Native Method)
-03-05 12:11:35.535 16155-16155/com.atgc.hd W/System.err:     at java.lang.reflect.Method.invoke(Method.java:372)
-03-05 12:11:35.535 16155-16155/com.atgc.hd W/System.err:     at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
-03-05 12:11:35.535 16155-16155/com.atgc.hd W/System.err:     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err: com.xuhao.android.libsocket.impl.exceptions.ReadException: java.net.SocketException: Socket closed
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err:     at com.xuhao.android.libsocket.impl.blockio.io.ReaderImpl.read(ReaderImpl.java:102)
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err:     at com.xuhao.android.libsocket.impl.blockio.threads.DuplexReadThread.runInLoopThread(DuplexReadThread.java:35)
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err:     at com.xuhao.android.libsocket.impl.LoopThread.run(LoopThread.java:50)
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err:     at java.lang.Thread.run(Thread.java:818)
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err: Caused by: java.net.SocketException: Socket closed
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err:     at libcore.io.Posix.recvfromBytes(Native Method)
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err:     at libcore.io.Posix.recvfrom(Posix.java:185)
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err:     at libcore.io.BlockGuardOs.recvfrom(BlockGuardOs.java:250)
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err:     at libcore.io.IoBridge.recvfrom(IoBridge.java:553)
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err:     at java.net.PlainSocketImpl.read(PlainSocketImpl.java:485)
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err:     at java.net.PlainSocketImpl.access$000(PlainSocketImpl.java:37)
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err:     at java.net.PlainSocketImpl$PlainSocketInputStream.read(PlainSocketImpl.java:237)
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err:     at libcore.io.Streams.readSingleByte(Streams.java:41)
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err:     at java.net.PlainSocketImpl$PlainSocketInputStream.read(PlainSocketImpl.java:233)
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err:     at com.xuhao.android.libsocket.impl.blockio.io.ReaderImpl.read(ReaderImpl.java:50)
-03-05 12:11:35.535 16155-16182/com.atgc.hd W/System.err: 	... 3 more

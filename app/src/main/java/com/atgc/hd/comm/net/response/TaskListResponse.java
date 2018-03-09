@@ -20,18 +20,6 @@ import java.util.List;
 public class TaskListResponse extends BaseResponse<TaskListResponse.TaskInfo> implements Serializable {
 
     public static class TaskInfo implements Serializable, Comparable<TaskInfo> {
-        /**
-         * 表示任务未执行
-         */
-        public static final String STATUS_UNDO = "STATUS_UNDO";
-        /**
-         * 表示任务进行中
-         */
-        public static final String STATUS_DOING = "STATUS_DOING";
-        /**
-         * 表示任务已过了完成时间
-         */
-        public static final String STATUS_DONE = "STATUS_DONE";
 
         // 设备编号
         private String deviceID;
@@ -368,6 +356,9 @@ public class TaskListResponse extends BaseResponse<TaskListResponse.TaskInfo> im
 
         public void initCoordinate() {
             Coordinate coordinate = CoordinateUtil.wgs84ToGcj02(getLongitude(), getLatitude());
+            if (coordinate == null) {
+                return;
+            }
             longitudeGCJ = coordinate.getLongitude();
             latitudeGCJ = coordinate.getLatitude();
         }

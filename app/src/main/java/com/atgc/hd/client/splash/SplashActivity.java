@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -13,6 +14,7 @@ import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.client.setting.NetSettingActivity;
 import com.atgc.hd.client.tasklist.TaskListActivity;
+import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.Utils;
 import com.atgc.hd.comm.service.DeviceBootService;
@@ -40,6 +42,12 @@ public class SplashActivity extends BaseActivity {
     @BindView(R.id.textView)
     public TextView tvTips;
 
+    @BindView(R.id.textView3)
+    public TextView tvLog;
+
+    @BindView(R.id.scrollView)
+    public ScrollView scrollView;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +60,7 @@ public class SplashActivity extends BaseActivity {
         mLottieLove.playAnimation();
 
         barHelper.displayActionBar(false);
+//        Constants.isDemo = true;
         if (Utils.isServiceRunning(context, DeviceBootService.class.getName())) {
             sendEventMessageDelay("check_socket_connect");
         } else {
@@ -62,6 +71,14 @@ public class SplashActivity extends BaseActivity {
         tvTips.setText("请稍后，正在初始化...");
         tvTips.append("\n" + IPPort.getHOST());
         tvTips.append("\n" + IPPort.getPORT());
+
+        // 设置默认滚动到底部
+        scrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
 
         EventBus.getDefault().register(this);
     }
@@ -84,8 +101,25 @@ public class SplashActivity extends BaseActivity {
     public void readyToNextAty(EventMessage message) {
         if ("ready_to_next_aty".equals(message.eventTag)) {
             Logger.e("准备啦。。。");
-            openActivity(TaskListActivity.class);
-            SplashActivity.this.finish();
+            tvLog.append("\n 3 秒后跳转...");
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    openActivity(TaskListActivity.class);
+                    SplashActivity.this.finish();
+                }
+            }, 3 * 1000);
+        }
+    }
+
+    @Subscribe
+    public void socketlog(EventMessage message) {
+        if (message.checkTag("socket_log")) {
+            String log = (String) message.object;
+            tvLog.append("\n" + log);
+            ScrollView scrollView = null;
+
         }
     }
 

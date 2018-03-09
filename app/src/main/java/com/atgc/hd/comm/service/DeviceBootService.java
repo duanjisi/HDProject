@@ -14,7 +14,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -59,7 +58,6 @@ public class DeviceBootService extends Service implements LocationService.ILocat
     private static final int notifyID = 1002;
     private static final String CHANNEL_ID = "paltform_msg_CHANNEL_ID";
     private LocationService locationService;
-    private boolean isDeviceRegister = false;
 
     @Nullable
     @Override
@@ -73,7 +71,12 @@ public class DeviceBootService extends Service implements LocationService.ILocat
         SocketManager.intance().initialize(getApplication());
         SocketManager.intance().initConfiguration();
         SocketManager.intance().registerSockActionAdapter(getSocketAction());
-        SocketManager.intance().switchConnect();
+        if (Constants.isDemo) {
+            EventMessage msg = new EventMessage("check_socket_connect", null);
+            checkConnect(msg);
+        } else {
+            SocketManager.intance().switchConnect();
+        }
 
         Logger.e("开机广播服务");
         locationService = LocationService.intance();
@@ -100,16 +103,6 @@ public class DeviceBootService extends Service implements LocationService.ILocat
             public void onSocketConnectionSuccess(Context context, ConnectionInfo info, String action) {
                 registerDevice();
             }
-
-            @Override
-            public void onSocketConnectionFailed(Context context, ConnectionInfo info, String action, Exception e) {
-                isDeviceRegister = false;
-            }
-
-            @Override
-            public void onSocketDisconnection(Context context, ConnectionInfo info, String action, Exception e) {
-                isDeviceRegister = false;
-            }
         };
     }
 
@@ -118,7 +111,6 @@ public class DeviceBootService extends Service implements LocationService.ILocat
         public void onResponseSuccess(String cmd, String serialNum, Response response, Bundle bundle) {
             // 设备注册成功
             if (DeviceCmd.REGISTER.equals(cmd)) {
-                isDeviceRegister = true;
                 SocketManager.intance().startPulse();
                 sendEventMessage("ready_to_next_aty", null);
             }
@@ -139,19 +131,11 @@ public class DeviceBootService extends Service implements LocationService.ILocat
 
         Logger.w("检查socket是否已连接：" + SocketManager.intance().isSocketConnected());
 
-        if (SocketManager.intance().isSocketConnected()) {
-            checkDeviceRegister();
+        if (SocketManager.intance().isSocketConnected() || Constants.isDemo) {
+            registerOnReceiveListener();
+            registerDevice();
         } else {
             SocketManager.intance().switchConnect();
-        }
-    }
-
-    public void checkDeviceRegister() {
-        Logger.w("是否已注册：" + isDeviceRegister);
-        if (isDeviceRegister) {
-            sendEventMessage("ready_to_next_aty", null);
-        } else {
-            registerDevice();
         }
     }
 
@@ -205,6 +189,9 @@ public class DeviceBootService extends Service implements LocationService.ILocat
 
     // 设备上传
     private void uploadGps(String longitude, String latitude) {
+        if (Constants.isDemo) {
+            return;
+        }
         GPSRequest gpsRequest = new GPSRequest();
         gpsRequest.setDeviceID(DeviceParams.getInstance().getDeviceId());
         gpsRequest.setTaskId(taskid);
