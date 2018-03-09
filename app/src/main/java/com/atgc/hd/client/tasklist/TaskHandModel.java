@@ -248,6 +248,11 @@ public class TaskHandModel implements TaskHandContract {
     private void moveToNextTask() {
         currentTaskIndex++;
 
+        // 所有任务执行完毕则不再处理
+        if (currentTaskIndex >= arrayTaskInfos.size()) {
+            return;
+        }
+
         TaskInfo currentTaskInfo = arrayTaskInfos.get(currentTaskIndex);
         Date taskPlanTime = DateUtil.dateParse(currentTaskInfo.getStartTime());
         Date date = currentTime();
