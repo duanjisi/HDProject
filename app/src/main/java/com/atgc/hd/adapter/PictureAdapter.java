@@ -60,7 +60,7 @@ public class PictureAdapter extends BaseAdapter {
     public PictureAdapter(Context context) {
         this.context = context;
         this.viewList = new ArrayList<>();
-        mImageHeight = (UIUtils.getScreenWidth(context) - UIUtils.dip2px(context, 60)) / 4;
+        mImageHeight = (UIUtils.getScreenWidth(context) - UIUtils.dip2px(context, 80)) / 3;
         if (images == null) {
             images = new ArrayList<>();
         }
@@ -101,7 +101,10 @@ public class PictureAdapter extends BaseAdapter {
             String fileName = FileUtil.getFileName(localPath);
             if (fileName.contains(".mp4") || fileName.contains(".MP4")) {
                 holder.ivPlay.setVisibility(View.VISIBLE);
+            } else {
+                holder.ivPlay.setVisibility(View.GONE);
             }
+            holder.ivPic.setVisibility(View.VISIBLE);
             Glide.with(context).load(localPath).
                     placeholder(R.drawable.zf_default_message_image).
                     crossFade().into(holder.ivPic);
@@ -128,9 +131,11 @@ public class PictureAdapter extends BaseAdapter {
             }
         } else {
             holder.tvProgress.setVisibility(View.GONE);
-            holder.ivBg.setVisibility(View.GONE);
+            holder.ivBg.setVisibility(View.VISIBLE);
             holder.ivClose.setVisibility(View.GONE);
-            holder.ivPic.setImageResource(R.drawable.compose_pic_add);
+            holder.ivPic.setVisibility(View.GONE);
+//            holder.ivPic.setImageResource(R.drawable.compose_pic_add);
+            holder.ivBg.setImageResource(R.drawable.compose_pic_add);
         }
         holder.ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,6 +156,20 @@ public class PictureAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void addItem3(UploadEntity entity) {
+        int totals = images.size() - 1;
+        int count = 9 - totals;
+        if (count > 0) {
+            addItem(entity, totals);
+            if (images.size() - 1 == 9) {
+                images.remove(9);
+            }
+            notifyDataSetChanged();
+        } else {
+            Toast.makeText(context, "最多只能添加9张图片", Toast.LENGTH_LONG).show();
+        }
+    }
+
     public void addItem2(UploadEntity entity) {
         int totals = images.size() - 1;
         if (!images.contains(entity)) {
@@ -168,10 +187,73 @@ public class PictureAdapter extends BaseAdapter {
         }
     }
 
+    public void addDatas2(ArrayList<UploadEntity> items) {
+        int totals = images.size() - 1;
+        int count = 9 - totals;
+        if (count > 0) {
+            images.addAll(totals, getBefore(items, count));
+            if (images.size() - 1 == 9) {
+                images.remove(9);
+            }
+            notifyDataSetChanged();
+        } else {
+            Toast.makeText(context, "最多只能添加9张图片", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void addDatas(ArrayList<UploadEntity> items) {
+        if (images != null) {
+            images.addAll(items);
+        }
+        notifyDataSetChanged();
+//        images.addAll(totals, getBefore(items, count));
+//        notifyDataSetChanged();
+//        int totals = images.size() - 1;
+//        int count = 9 - totals;
+//        if (count > 0) {
+//            images.addAll(totals, getBefore(items, count));
+//            notifyDataSetChanged();
+//        } else {
+//            Toast.makeText(context, "最多只能添加9张图片", Toast.LENGTH_LONG).show();
+//        }
+    }
+
+    private ArrayList<UploadEntity> getBefore(ArrayList<UploadEntity> items, int count) {
+        ArrayList<UploadEntity> list = new ArrayList<>();
+        if (count < items.size() || count == items.size()) {
+            for (int i = 0; i < count; i++) {
+                list.add(items.get(i));
+            }
+        } else {
+            for (int i = 0; i < items.size(); i++) {
+                list.add(items.get(i));
+            }
+        }
+        return list;
+    }
+
+    public String getUrls() {
+        StringBuilder sb = new StringBuilder();
+        if (images != null && images.size() > 1) {
+            for (int i = 0; i < images.size(); i++) {
+                String path = images.get(i).getUrl();
+                if (!TextUtils.isEmpty(path)) {
+                    sb.append(path).append(",");
+                }
+            }
+        }
+        String url = "";
+        String str = sb.toString();
+        if (str.contains(",")) {
+            url = str.substring(0, str.length() - 1);
+        }
+        return url;
+    }
+
     public String getVideoUrls() {
         StringBuilder sb = new StringBuilder();
         if (images != null && images.size() > 1) {
-            for (int i = 0; i < images.size() - 1; i++) {
+            for (int i = 0; i < images.size(); i++) {
                 String path = images.get(i).getUrl();
                 String fileName = FileUtil.getFileName(path);
                 if (fileName.contains(".mp4") || fileName.contains(".MP4")) {
@@ -189,8 +271,9 @@ public class PictureAdapter extends BaseAdapter {
 
     public String getImageUrls() {
         StringBuilder sb = new StringBuilder();
-        if (images != null && images.size() > 1) {
-            for (int i = 0; i < images.size() - 1; i++) {
+        int size = images.size();
+        if (images != null && size > 1) {
+            for (int i = 0; i < images.size(); i++) {
                 String path = images.get(i).getUrl();
                 String fileName = FileUtil.getFileName(path);
                 if (fileName.contains(".jpg") ||
@@ -216,18 +299,30 @@ public class PictureAdapter extends BaseAdapter {
                 stringIterator.remove();
             }
         }
-        UploadEntity emo = new UploadEntity();
-        emo.setLocalPath("lastItem");
-        if (!isContain(emo)) {
+
+        if (!isContain()) {
+            UploadEntity emo = new UploadEntity();
+            emo.setLocalPath("lastItem");
             images.add(emo);
         }
         notifyDataSetChanged();
     }
 
-    private boolean isContain(UploadEntity love) {
+    private boolean isContain() {
         boolean flag = false;
         for (UploadEntity e : images) {
-            if (e.getLocalPath().equals(love.getLocalPath())) {
+            if (e.getLocalPath().equals("lastItem")) {
+                flag = true;
+            }
+        }
+        return flag;
+    }
+
+    public boolean hasVideo() {
+        boolean flag = false;
+        for (UploadEntity e : images) {
+            String fileName = FileUtil.getFileName(e.getLocalPath());
+            if (fileName.contains(".mp4") || fileName.contains(".MP4")) {
                 flag = true;
             }
         }

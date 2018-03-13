@@ -4,12 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-
 import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.IPPort;
-import com.atgc.hd.comm.config.DeviceParams;
 import com.atgc.hd.comm.net.request.PulseRequest;
-import com.atgc.hd.comm.net.request.RegisterRequest;
 import com.atgc.hd.comm.net.request.base.BaseRequest;
 import com.atgc.hd.comm.net.request.base.SendableBase;
 import com.atgc.hd.comm.net.request.base.SendablePulse;
@@ -28,7 +25,6 @@ import com.xuhao.android.libsocket.sdk.bean.ISendable;
 import com.xuhao.android.libsocket.sdk.bean.OriginalData;
 import com.xuhao.android.libsocket.sdk.connection.IConnectionManager;
 import com.xuhao.android.libsocket.sdk.protocol.IHeaderProtocol;
-
 import java.nio.ByteOrder;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -44,22 +40,14 @@ public class SocketManager {
     private static final String HOST = "192.168.0.242";
     private static final int PORT = 20001;
 //    private static final int PORT = 39083;
-
     private boolean isOkSocketinitialized;
-
     // 心跳包数据
     private SendablePulse mPulseData;
-
     private IConnectionManager connectionManager;
-
     private static SocketManager socketManager = new SocketManager();
-
     private AnalysisManager analysisManager = new AnalysisManager();
-
     private Timer timer = new Timer();
-
     private TimerTask retryConnectTimerTask;
-
     private int retryConnectTimes;
 
     private SocketManager() {
@@ -72,11 +60,12 @@ public class SocketManager {
 
     public void onDestory() {
         if (retryConnectTimerTask == null) {
+
         } else {
             retryConnectTimerTask.cancel();
         }
-
         if (connectionManager == null) {
+
         } else {
             connectionManager.disConnect();
         }

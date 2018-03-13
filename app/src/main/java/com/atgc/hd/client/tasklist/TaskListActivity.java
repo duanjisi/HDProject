@@ -33,7 +33,6 @@ import de.greenrobot.event.Subscribe;
 public class TaskListActivity extends BaseActivity implements TaskHandContract.IView {
     private NfcAdapter mNfcAdapter;
     private PendingIntent mPendingIntent;
-
     private ContentFragAdapter fragAdapter;
     private PagerSlidingTabStrip pagerTitle;
     private ViewPager contentViewPager;
@@ -136,7 +135,6 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
         FragmentManager manager = getSupportFragmentManager();
         manager.registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
             int numberFragmentViewCreated = 0;
-
             @Override
             public void onFragmentViewCreated(FragmentManager fm, android.support.v4.app.Fragment f, View v, Bundle savedInstanceState) {
                 super.onFragmentViewCreated(fm, f, v, savedInstanceState);
@@ -169,7 +167,6 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
     @Override
     protected void onStart() {
         super.onStart();
-
         // 此处adapter需要重新获取，否则无法获取message
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         // 当截获NFC消息，就会通过PendingIntent调用窗口
