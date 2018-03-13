@@ -47,7 +47,8 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/spacing_4x"
         android:layout_marginBottom="120dp"
-        android:src="@drawable/ic_emergency" />
+        android:src="@drawable/ic_emergency"
+        android:visibility="invisible"/>
 
     <ImageView
         android:id="@+id/iv_refresh"
@@ -68,4 +69,5 @@
         android:layout_alignRight="@+id/iv_emergency"
         android:layout_marginBottom="@dimen/spacing_6x"
         android:text="模拟打点"/>
+
 </RelativeLayout>

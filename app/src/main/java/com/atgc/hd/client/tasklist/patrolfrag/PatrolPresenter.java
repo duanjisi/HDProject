@@ -1,7 +1,6 @@
 package com.atgc.hd.client.tasklist.patrolfrag;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.atgc.hd.client.tasklist.TaskHandContract;
@@ -97,6 +96,7 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
     public void onReceiveCurrentTask(TaskListResponse.TaskInfo taskInfo) {
         // 发送到DeviceBootService类，GPS坐标上传需要taskid，userid
         sendEventMessage("current_task_info", taskInfo);
+        sendEventMessage("display_emergency", taskInfo != null);
 
         // 暂无任务
         if (taskInfo == null) {
@@ -187,11 +187,11 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
                         bdLocation.getLongitude()
                 );
 
-                Logger.w(pointInfo.getLatitude() + "\n" +
-                        pointInfo.getLongitude() + "\n" +
-                        bdLocation.getLatitude() + "\n" +
-                        bdLocation.getLongitude() + "\n距离" +
-                        distance + "米");
+//                Logger.w(pointInfo.getLatitude() + "\n" +
+//                        pointInfo.getLongitude() + "\n" +
+//                        bdLocation.getLatitude() + "\n" +
+//                        bdLocation.getLongitude() + "\n距离" +
+//                        distance + "米");
 
                 if (distance > POINT_RANGE) {
                     return;

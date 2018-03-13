@@ -97,4 +97,9 @@
         <item name="android:windowEnterAnimation">@anim/actionsheet_in</item>
         <item name="android:windowExitAnimation">@anim/actionsheet_out</item>
     </style>
+
+    <style name="AnimationPreview">
+        <item name="android:windowEnterAnimation">@anim/translate_right_int</item>
+        <item name="android:windowExitAnimation">@anim/translate_right_out</item>
+    </style>
 </resources>

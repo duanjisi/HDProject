@@ -1,11 +1,17 @@
 package com.atgc.hd.client.widgethelper;
 
 import android.content.Context;
+import android.support.annotation.DrawableRes;
 import android.view.View;
 import android.widget.TextView;
 
 import com.atgc.hd.R;
 import com.atgc.hd.comm.widget.VectorCompatTextView;
+import com.atgc.hd.comm.widget.popupwindow.ExtendPopupWindow;
+import com.atgc.hd.comm.widget.popupwindow.PopupItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>描述： 自定义的toolbar帮助类
@@ -21,6 +27,8 @@ public class BarHelper {
     private VectorCompatTextView tvActionRight;
     private TextView tvTitle;
 
+    private List<MenuEntity> rightActions;
+
     public BarHelper(Context context, View barView) {
         this.context = context;
         this.barView = barView;
@@ -32,6 +40,8 @@ public class BarHelper {
         tvActionLeft = findById(R.id.tv_left);
         tvActionRight = findById(R.id.tv_right);
         tvTitle = findById(R.id.tv_title);
+
+        rightActions = new ArrayList<>();
     }
 
     /**
@@ -56,27 +66,71 @@ public class BarHelper {
         return this;
     }
 
-    /**
-     * 设置左边按钮文字
-     *
-     * @param character
-     * @return
-     */
-    public BarHelper setActionLeftText(Character character) {
-        tvActionLeft.setText(character);
+    public BarHelper addLeftAction(MenuEntity entity) {
+        tvActionLeft.setText(entity.menuTitle);
+        tvActionLeft.setTextColor(entity.actionTextColor);
+        tvActionLeft.setCompoundDrawablesWithIntrinsicBounds(entity.actionIconResourceId, 0, 0, 0);
+        tvActionLeft.setOnClickListener(entity.actionListener);
         return this;
     }
 
     /**
-     * 设置左边按钮文字颜色
+     * 可调用多次添加多个action
      *
-     * @param color
+     * @param entity
      * @return
      */
-    public BarHelper setActionLeftTextColor(int color) {
-        tvActionLeft.setTextColor(color);
+    public BarHelper addRightAction(MenuEntity entity) {
+        rightActions.add(entity);
+
+        if (rightActions.size() > 1) {
+            tvActionRight.setText("");
+            tvActionRight.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_more, 0, 0, 0);
+            tvActionRight.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showRightActions(v);
+                }
+            });
+        } else {
+            tvActionRight.setText(entity.menuTitle);
+            tvActionRight.setTextColor(entity.actionTextColor);
+            tvActionRight.setCompoundDrawablesWithIntrinsicBounds(entity.actionIconResourceId, 0, 0, 0);
+            tvActionRight.setOnClickListener(entity.actionListener);
+        }
+
         return this;
     }
+
+    private ExtendPopupWindow menuPopupWindown;
+    private void showRightActions(View view) {
+        if (menuPopupWindown == null) {
+            menuPopupWindown = new ExtendPopupWindow(context, getMoreMenuItems(), acitonItemListener);
+        }
+
+        menuPopupWindown.notifyData();
+        menuPopupWindown.show(view);
+    }
+
+    private List<PopupItem> getMoreMenuItems() {
+        List<PopupItem> itemList = new ArrayList<>();
+        for (int i = 0; i < rightActions.size(); i++) {
+            MenuEntity entity = rightActions.get(i);
+            itemList.add(new PopupItem(i, entity.menuTitle));
+        }
+        return itemList;
+    }
+
+    private ExtendPopupWindow.MenuItemClickListener acitonItemListener = new ExtendPopupWindow.MenuItemClickListener() {
+        @Override
+        public void onItemClick(int position, PopupItem item) {
+            MenuEntity menuEntity = rightActions.get(position);
+            if (menuEntity.actionListener == null) {
+            } else {
+                menuEntity.actionListener.onClick(null);
+            }
+        }
+    };
 
     /**
      * 设置右边按钮文字
@@ -107,11 +161,7 @@ public class BarHelper {
      * @return
      */
     public BarHelper setActionLeftDrawable(int drawableResourceId) {
-        if (drawableResourceId == -1) {
-            tvActionLeft.setCompoundDrawablesWithIntrinsicBounds(drawableResourceId, 0, 0, 0);
-        } else {
-            tvActionLeft.setCompoundDrawablesWithIntrinsicBounds(drawableResourceId, 0, 0, 0);
-        }
+        tvActionLeft.setCompoundDrawablesWithIntrinsicBounds(drawableResourceId, 0, 0, 0);
         return this;
     }
 
@@ -122,11 +172,7 @@ public class BarHelper {
      * @return
      */
     public BarHelper setActionRightDrawable(int drawableResourceId) {
-        if (drawableResourceId == -1) {
-            tvActionRight.setCompoundDrawablesWithIntrinsicBounds(drawableResourceId, 0, 0, 0);
-        } else {
-            tvActionRight.setCompoundDrawablesWithIntrinsicBounds(drawableResourceId, 0, 0, 0);
-        }
+        tvActionRight.setCompoundDrawablesWithIntrinsicBounds(drawableResourceId, 0, 0, 0);
         return this;
     }
 
@@ -161,6 +207,7 @@ public class BarHelper {
 
     /**
      * 左边按钮的显示/隐藏
+     *
      * @param display
      */
     public void displayActionLeft(boolean display) {
@@ -173,6 +220,7 @@ public class BarHelper {
 
     /**
      * 右边按钮的显示/隐藏
+     *
      * @param display
      */
     public void displayActionRight(boolean display) {
@@ -185,6 +233,7 @@ public class BarHelper {
 
     /**
      * actionbar的显示/隐藏
+     *
      * @param display
      */
     public void displayActionBar(boolean display) {
@@ -197,5 +246,54 @@ public class BarHelper {
 
     private <T extends View> T findById(int id) {
         return (T) barView.findViewById(id);
+    }
+
+    public static class MenuEntity {
+        private String menuTitle;
+        private int actionTextColor;
+        private int actionIconResourceId;
+        private View.OnClickListener actionListener;
+
+        /**
+         * 设置按钮文字
+         *
+         * @param menuTitle
+         * @return
+         */
+        public MenuEntity setMenuTitle(String menuTitle) {
+            this.menuTitle = menuTitle;
+            return this;
+        }
+
+        /**
+         * 设置按钮文字颜色
+         *
+         * @param actionTextColor
+         * @return
+         */
+        public MenuEntity setActionTextColor(int actionTextColor) {
+            this.actionTextColor = actionTextColor;
+            return this;
+        }
+
+        /**
+         * 设置按钮图标
+         *
+         * @param actionIconResourceId
+         * @return
+         */
+        public MenuEntity setActionDrawable(@DrawableRes int actionIconResourceId) {
+            this.actionIconResourceId = actionIconResourceId;
+            return this;
+        }
+
+        /**
+         * @param actionListener
+         * @return
+         */
+        public MenuEntity setActionRightListener(View.OnClickListener actionListener) {
+            this.actionListener = actionListener;
+            return this;
+        }
     }
 }

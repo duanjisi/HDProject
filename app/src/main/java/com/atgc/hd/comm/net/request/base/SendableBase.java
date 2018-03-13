@@ -53,11 +53,9 @@ public class SendableBase implements ISendable {
 
         String headerHexStr = DigitalUtils.toHexString(headerBytes);
         Logger.e("请求报文头：\n" + headerHexStr + "\n请求报文体：\n" + bodyData);
-        if ("PAT_UPLOAD_GPS".equals(Command)) {
-        } else {
-            EventMessage msg = new EventMessage("socket_log", "--请求：" + bodyData);
-            EventBus.getDefault().post(msg);
-        }
+
+        EventMessage msg = new EventMessage("socket_log", Command + "##请求##" + bodyData);
+        EventBus.getDefault().post(msg);
         return restule;
     }
 }

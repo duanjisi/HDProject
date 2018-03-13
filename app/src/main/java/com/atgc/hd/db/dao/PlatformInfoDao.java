@@ -15,9 +15,7 @@ import android.database.Cursor;
 import com.atgc.hd.HDApplication;
 import com.atgc.hd.db.DBHelper;
 import com.atgc.hd.db.PlatformInfoColumn;
-import com.atgc.hd.db.PlatformInfoColumn;
 import com.atgc.hd.db.helper.ColumnHelper;
-import com.atgc.hd.entity.EventEntity;
 import com.atgc.hd.entity.PatInfo;
 
 import java.util.ArrayList;
@@ -58,8 +56,6 @@ public class PlatformInfoDao extends ColumnHelper<PatInfo> {
         Cursor c = DBHelper.getInstance(mContext).rawQuery(
                 getSelectSql(PlatformInfoColumn.TABLE_NAME, new String[]{PlatformInfoColumn.MESSAGE_ID}), args);
         if (exist(c)) {
-//            c.moveToFirst();
-//            this.delete(entity.getUser_name());
             this.update(entity);
         } else {
             DBHelper.getInstance(mContext).insert(PlatformInfoColumn.TABLE_NAME, getValues(entity));
@@ -74,27 +70,50 @@ public class PlatformInfoDao extends ColumnHelper<PatInfo> {
 
     @Override
     public List<PatInfo> query() {
-        Cursor c = DBHelper.getInstance(mContext).rawQuery(
-                "SELECT * FROM " + PlatformInfoColumn.TABLE_NAME, null);
+        String sql = "SELECT * FROM " + PlatformInfoColumn.TABLE_NAME + " WHERE " + PlatformInfoColumn.TYPE + " != \"3\"";
+        return query(sql);
+    }
+
+    /**
+     * 查找派遣信息
+     *
+     * @return
+     */
+    public List<PatInfo> queryDispatchInfo() {
+        String sql = "SELECT * FROM " + PlatformInfoColumn.TABLE_NAME + " WHERE " + PlatformInfoColumn.TYPE + " = \"3\"";
+        return query(sql);
+    }
+
+    private List<PatInfo> query(String sql) {
+        DBHelper db = DBHelper.getInstance(mContext);
+//        Cursor cursor = db.query(PlatformInfoColumn.TABLE_NAME,
+//                null,
+//                PlatformInfoColumn.TYPE + " = ?",
+//                new String[]{"3"});
+
+        Cursor cursor = db.rawQuery(sql, null);
+
         List<PatInfo> bos = new ArrayList<PatInfo>();
-        if (exist(c)) {
-            c.moveToLast();
+        if (exist(cursor)) {
+            cursor.moveToLast();
             do {
-                bos.add(getBean(c));
-            } while (c.moveToPrevious());
+                bos.add(getBean(cursor));
+            } while (cursor.moveToPrevious());
         }
-        c.close();
+        cursor.close();
         return bos;
     }
 
     @Override
     public void delete(int id) {
-
+        DBHelper.getInstance(mContext).delete(PlatformInfoColumn.TABLE_NAME, id);
     }
 
     @Override
-    public void delete(String str) {
-
+    public void delete(String messageId) {
+        String sql = PlatformInfoColumn.MESSAGE_ID + " = ?";
+        DBHelper db = DBHelper.getInstance(mContext);
+        db.delete(PlatformInfoColumn.TABLE_NAME, sql, new String[]{messageId});
     }
 
     @Override
@@ -110,6 +129,8 @@ public class PlatformInfoDao extends ColumnHelper<PatInfo> {
         values.put(PlatformInfoColumn.MESSAGE_ID, bean.getMessageID());
         values.put(PlatformInfoColumn.SEND_TIME, bean.getSendTime());
         values.put(PlatformInfoColumn.TYPE, bean.getType());
+        values.put(PlatformInfoColumn.EVENT_ADDR, bean.getEventAddr());
+        values.put(PlatformInfoColumn.PIC_URL, bean.getPicUrl());
         return values;
     }
 
@@ -121,6 +142,8 @@ public class PlatformInfoDao extends ColumnHelper<PatInfo> {
         entity.setMessageID(getString(c, PlatformInfoColumn.MESSAGE_ID));
         entity.setSendTime(getString(c, PlatformInfoColumn.SEND_TIME));
         entity.setType(getString(c, PlatformInfoColumn.TYPE));
+        entity.setEventAddr(getString(c, PlatformInfoColumn.EVENT_ADDR));
+        entity.setPicUrl(getString(c, PlatformInfoColumn.PIC_URL));
         return entity;
     }
 

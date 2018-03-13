@@ -20,6 +20,10 @@ public class DeviceCmd {
     public static final String PAT_POINT_RESULT = "PAT_POINT_RESULT";
     // 上报巡查任务状态
     public static final String PAT_TASK_STATUS = "PAT_TASK_STATUS";
+    // 设备通用反馈上报
+    public static final String PAT_DEV_EXE_FEEDBACK = "PAT_DEV_EXE_FEEDBACK";
+    // 派遣人员完成任务
+    public static final String PAT_UPLOAD_SENDPERSON_FINISH = "PAT_UPLOAD_SENDPERSON_FINISH";
 
     //==============网关下发命令字===============
     // 网关下发巡更任务

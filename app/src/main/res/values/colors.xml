@@ -56,4 +56,7 @@
     <color name="transparent_green">#6f27cc55</color>
     <color name="transparent_gray">#6fcecece</color>
     <color name="transparent_red">#6ff94848</color>
+
+    <color name="light_gray">#f6f6f6</color>
+    <color name="light_green">#bfe6d1</color>
 </resources>

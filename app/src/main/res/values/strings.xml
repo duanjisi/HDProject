@@ -8,6 +8,7 @@
     <string name="platform">平台消息</string>
     <string name="upload_success">上报成功</string>
     <string name="platform_msg">平台消息</string>
+    <string name="dispatch_msg">派遣消息</string>
     <string name="emergence_event">应急事件</string>
     <string name="event_details">事件详情</string>
     <string name="local_videos">本地视频</string>

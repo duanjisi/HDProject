@@ -114,12 +114,15 @@ public class SplashActivity extends BaseActivity {
     }
 
     @Subscribe
-    public void socketlog(EventMessage message) {
+    public void socketlog(final EventMessage message) {
         if (message.checkTag("socket_log")) {
-            String log = (String) message.object;
-            tvLog.append("\n" + log);
-            ScrollView scrollView = null;
-
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    String log = (String) message.object;
+                    tvLog.append("\n" + log);
+                }
+            });
         }
     }
 

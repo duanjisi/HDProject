@@ -67,6 +67,7 @@
         <activity android:name=".client.emergency.LocalVideoFilesActivity"></activity>
         <activity android:name=".client.emergency.UploadStateActivity"></activity>
         <activity android:name=".client.platform.PlatformInfoActivity"></activity>
+        <activity android:name=".client.platform.DispatchMemberInfoActivity"></activity>
         <activity android:name=".client.player.VideoPlayerActivity"></activity>
         <activity android:name=".client.setting.NetSettingActivity"></activity>
 
@@ -77,6 +78,8 @@
         <activity
             android:name=".client.tasklist.TaskListActivity"
             android:launchMode="singleTask" />
+        <activity android:name=".client.tasklist.NetLogActivity"/>
+        <activity android:name=".client.tasklist.SimulationGPSActivity"/>
         <activity android:name=".client.demo.DemoRequestActivity" />
 
         <service android:name=".comm.service.DeviceBootService"></service>

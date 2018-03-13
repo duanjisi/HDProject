@@ -14,12 +14,16 @@ package com.atgc.hd.entity;
  */
 
 public class PatInfo {
-    private String deviceID = "";
-    private String messageContent = "";
     private String messageID = "";
+    private String messageContent = "";
+    private String deviceID = "";
     private String type = "";
+    private String eventAddr = "";
+    private String picUrl = "";
     private String sendTime = "";
 
+    // 当type==3时，标识是否已上报
+    private boolean isReported = false;
 
     public String getDeviceID() {
         return deviceID;
@@ -59,5 +63,29 @@ public class PatInfo {
 
     public void setSendTime(String sendTime) {
         this.sendTime = sendTime;
+    }
+
+    public String getEventAddr() {
+        return eventAddr;
+    }
+
+    public void setEventAddr(String eventAddr) {
+        this.eventAddr = eventAddr;
+    }
+
+    public String getPicUrl() {
+        return picUrl;
+    }
+
+    public void setPicUrl(String picUrl) {
+        this.picUrl = picUrl;
+    }
+
+    public boolean isReported() {
+        return isReported;
+    }
+
+    public void setReported(boolean reported) {
+        isReported = reported;
     }
 }

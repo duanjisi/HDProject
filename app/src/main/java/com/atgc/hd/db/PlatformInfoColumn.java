@@ -19,10 +19,12 @@ import java.util.Map;
 public class PlatformInfoColumn extends DatabaseColumn {
     public static final String TABLE_NAME = "platformTable";
 
-    public static final String DEVICE_ID = "deviceID";
-    public static final String MESSAGE_CONTENT = "messageContent";
     public static final String MESSAGE_ID = "messageID";
+    public static final String MESSAGE_CONTENT = "messageContent";
+    public static final String DEVICE_ID = "deviceID";
     public static final String TYPE = "type";
+    public static final String EVENT_ADDR = "eventAddr";
+    public static final String PIC_URL = "picUrl";
     public static final String SEND_TIME = "sendTime";
     private static final Map<String, String> mColumnMap = new HashMap<String, String>();
 
@@ -33,6 +35,8 @@ public class PlatformInfoColumn extends DatabaseColumn {
         mColumnMap.put(MESSAGE_ID, "text");
         mColumnMap.put(TYPE, "text");
         mColumnMap.put(SEND_TIME, "text");
+        mColumnMap.put(EVENT_ADDR, "text");
+        mColumnMap.put(PIC_URL, "text");
     }
 
     @Override

@@ -35,5 +35,6 @@ public class Constants {
         public static final String CONNECT_FALIED = "com.atgc.hd.CONNECT_FALIED";
         public static final String EXIT_ACTIVITY = "com.atgc.hd.EXIT_ACTIVITY";
         public static final String PLATFORM_INFO = "com.atgc.hd.PLATFORM_INFO";
+        public static final String DISPATCH_INFO = "com.atgc.hd.DISPATCH_INFO";
     }
 }

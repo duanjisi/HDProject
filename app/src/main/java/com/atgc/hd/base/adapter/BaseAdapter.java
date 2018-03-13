@@ -1,7 +1,6 @@
 package com.atgc.hd.base.adapter;
 
 import android.content.Context;
-import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,8 +14,6 @@ import com.atgc.hd.base.adapter.interfaces.OnLoadMoreListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Author: Othershe
@@ -329,6 +326,15 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             mDatas.addAll(datas);
         }
         notifyDataSetChanged();
+    }
+
+    public void addWithAnimation(int startIndex, T entity) {
+        getAllData().add(startIndex, entity);
+        notifyItemInserted(startIndex);
+
+        if (startIndex < getAllData().size() - 1) {
+            notifyItemRangeChanged(startIndex, getAllData().size() - startIndex);
+        }
     }
 
     public void addWithAnimation(int startIndex, List<T> src) {

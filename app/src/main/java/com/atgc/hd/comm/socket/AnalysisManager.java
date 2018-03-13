@@ -39,10 +39,9 @@ public class AnalysisManager {
                 || "PAT_UPLOAD_GPS".equals(response.Command)) {
         } else {
             Logger.e("响应报文头：\n" + header + "\n响应报文体：\n" + body);
-
-            EventMessage msg = new EventMessage("socket_log", "--响应：" + body);
-            EventBus.getDefault().post(msg);
         }
+        EventMessage msg = new EventMessage("socket_log", response.Command + "##响应##" + body);
+        EventBus.getDefault().post(msg);
 
         boolean verifyOK = checkCrc(data);
         if (verifyOK) {

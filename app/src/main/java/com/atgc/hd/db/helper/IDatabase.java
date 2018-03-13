@@ -11,17 +11,17 @@ package com.atgc.hd.db.helper;
 import java.util.List;
 
 public interface IDatabase<T> {
-    public void save(List<T> list);
+    void save(List<T> list);
 
-    public void save(T entity);
+    void save(T entity);
 
-    public T query(int id);
+    T query(int id);
 
-    public List<T> query();
+    List<T> query();
 
-    public void delete(int id);
+    void delete(int id);
 
-    public void delete(String str);
+    void delete(String str);
 
-    public void update(T entity);
+    void update(T entity);
 }

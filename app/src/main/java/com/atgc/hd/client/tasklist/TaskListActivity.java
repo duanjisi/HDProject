@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -14,9 +15,11 @@ import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.base.BaseFragment;
 import com.atgc.hd.client.emergency.EmergencyListActivity;
+import com.atgc.hd.client.platform.DispatchMemberInfoActivity;
 import com.atgc.hd.client.platform.PlatformInfoActivity;
 import com.atgc.hd.client.setting.NetSettingActivity;
 import com.atgc.hd.client.tasklist.adapter.ContentFragAdapter;
+import com.atgc.hd.client.widgethelper.BarHelper;
 import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.widget.PagerSlidingTabStrip;
 import com.atgc.hd.entity.EventMessage;
@@ -90,7 +93,7 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
 
     private void init() {
         barHelper.setActionLeftDrawable(R.drawable.ic_setting);
-        barHelper.setActionRightDrawable(R.drawable.ic_bell);
+        barHelper.setActionRightDrawable(R.drawable.ic_more);
         barHelper.setActionLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,13 +102,49 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
             }
         });
 
-        barHelper.setActionRightListener(new View.OnClickListener() {
+        BarHelper.MenuEntity menuEntity1 = new BarHelper.MenuEntity();
+        menuEntity1.setMenuTitle("平台消息");
+        menuEntity1.setActionTextColor(R.color.white);
+        menuEntity1.setActionDrawable(R.drawable.ic_bell);
+        menuEntity1.setActionRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO 跳转到系统消息页面
                 openActivity(PlatformInfoActivity.class);
             }
         });
+        barHelper.addRightAction(menuEntity1);
+
+        BarHelper.MenuEntity menuEntity2 = new BarHelper.MenuEntity();
+        menuEntity2.setMenuTitle("派遣消息");
+        menuEntity2.setActionTextColor(R.color.white);
+        menuEntity2.setActionDrawable(R.drawable.ic_bell);
+        menuEntity2.setActionRightListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openActivity(DispatchMemberInfoActivity.class);
+            }
+        });
+        barHelper.addRightAction(menuEntity2);
+
+        BarHelper.MenuEntity menuEntity3 = new BarHelper.MenuEntity();
+        menuEntity3.setMenuTitle("日志");
+        menuEntity3.setActionRightListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openActivity(NetLogActivity.class);
+            }
+        });
+        barHelper.addRightAction(menuEntity3);
+
+        BarHelper.MenuEntity menuEntity4 = new BarHelper.MenuEntity();
+        menuEntity4.setMenuTitle("坐标模拟");
+        menuEntity4.setActionRightListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openActivity(SimulationGPSActivity.class);
+            }
+        });
+        barHelper.addRightAction(menuEntity4);
 
         findViewById(R.id.iv_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,6 +174,7 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
         FragmentManager manager = getSupportFragmentManager();
         manager.registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
             int numberFragmentViewCreated = 0;
+
             @Override
             public void onFragmentViewCreated(FragmentManager fm, android.support.v4.app.Fragment f, View v, Bundle savedInstanceState) {
                 super.onFragmentViewCreated(fm, f, v, savedInstanceState);
@@ -205,9 +245,18 @@ public class TaskListActivity extends BaseActivity implements TaskHandContract.I
 
     @Subscribe
     public void switchTaskPage(EventMessage message) {
-        if ("switch_task_page".equals(message.eventTag)) {
+        if (message.checkTag("switch_task_page")) {
             Integer pageIndex = (Integer) message.object;
             contentViewPager.setCurrentItem(pageIndex.intValue());
+        }
+    }
+
+    @Subscribe
+    public void displayEmergency(EventMessage message) {
+        if (message.checkTag("display_emergency")) {
+            boolean isDisplay = (Boolean) message.object;
+            int visibility = isDisplay ? View.VISIBLE : View.INVISIBLE;
+            findViewById(R.id.iv_emergency).setVisibility(visibility);
         }
     }
 
