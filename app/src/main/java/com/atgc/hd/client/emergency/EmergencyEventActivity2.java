@@ -38,6 +38,7 @@ import com.atgc.hd.comm.config.DeviceParams;
 import com.atgc.hd.comm.net.request.UploadEventRequest;
 import com.atgc.hd.comm.net.response.base.BaseResponse;
 import com.atgc.hd.comm.socket.OnActionAdapter;
+import com.atgc.hd.comm.socket.OnActionListener;
 import com.atgc.hd.comm.socket.SocketManager;
 import com.atgc.hd.comm.utils.DateUtil;
 import com.atgc.hd.comm.utils.FileUtil;
@@ -139,9 +140,9 @@ public class EmergencyEventActivity2 extends BaseActivity implements
 //                showActionSheet();
                 break;
             case R.id.btn_submit:
-//                submit();
+                submit();
 //                showActionSheet();
-                testSubmit();
+//                testSubmit();
                 break;
         }
     }
@@ -150,6 +151,34 @@ public class EmergencyEventActivity2 extends BaseActivity implements
         String imageurls = pictureAdapter.getImageUrls();
         String videourls = pictureAdapter.getVideoUrls();
         Log.i("info", "=======imageurls:" + imageurls + "\n" + "videourls:" + videourls);
+    }
+
+    private OnActionListener listener = new OnActionAdapter() {
+        @Override
+        public void onSendSucess(String cmd, String serialNum, Bundle bundle) {
+            dismissProgressDialog();
+            if (!serialNum.equals(serialNumTaskRequest)) {
+                return;
+            }
+            if (eventEntity != null) {
+                EventDao.getInstance().save(eventEntity);
+                openActvityForResult(UploadStateActivity.class, 100);
+            }
+        }
+
+        @Override
+        public void onSendFail(String cmd, String serialNum, String errorCode, String errorMsg, Bundle bundle) {
+            super.onSendFail(cmd, serialNum, errorCode, errorMsg, bundle);
+            dismissProgressDialog();
+        }
+    };
+
+    private void registerOnReceiveListener() {
+        SocketManager.intance().registertOnActionListener(
+                requestGroupTag,
+                DeviceCmd.UP_LOAD_EMERGENCY,
+                BaseResponse.class,
+                listener);
     }
 
     @Subscribe
@@ -200,36 +229,52 @@ public class EmergencyEventActivity2 extends BaseActivity implements
     public void onClick(int which) {
         switch (which) {
             case 1:
-                if (imageCount < 3) {
-                    cameraType = OPEN_ALBUM;
-                    getPermission();
-                } else {
-                    showToast("最多传三张图片");
-                }
+//                if (imageCount < 3) {
+//                    cameraType = OPEN_ALBUM;
+//                    getPermission();
+//                } else {
+//                    showToast("最多传三张图片");
+//                }
+                cameraType = OPEN_ALBUM;
+                getPermission();
                 break;
             case 2:
-                if (imageCount < 3) {
-                    cameraType = OPEN_CAMERA;
-                    getPermission();
-                } else {
-                    showToast("最多传三张图片");
-                }
+//                if (imageCount < 3) {
+//                    cameraType = OPEN_CAMERA;
+//                    getPermission();
+//                } else {
+//                    showToast("最多传三张图片");
+//                }
+                cameraType = OPEN_CAMERA;
+                getPermission();
                 break;
             case 3:
-                if (videoCount < 1) {
+                if (!pictureAdapter.hasVideo()) {
                     cameraType = LOCAL_VIDEO;
                     openActvityForResult(LocalVideoFilesActivity.class, LOCAL_VIDEO);
                 } else {
                     showToast("最多传一个视频");
                 }
+//                if (videoCount < 1) {
+//                    cameraType = LOCAL_VIDEO;
+//                    openActvityForResult(LocalVideoFilesActivity.class, LOCAL_VIDEO);
+//                } else {
+//                    showToast("最多传一个视频");
+//                }
                 break;
             case 4:
-                if (videoCount < 1) {
+                if (!pictureAdapter.hasVideo()) {
                     cameraType = RECORD_VIDEO;
                     getPermission();
                 } else {
                     showToast("最多传一个视频");
                 }
+//                if (videoCount < 1) {
+//                    cameraType = RECORD_VIDEO;
+//                    getPermission();
+//                } else {
+//                    showToast("最多传一个视频");
+//                }
                 break;
         }
     }
@@ -238,9 +283,12 @@ public class EmergencyEventActivity2 extends BaseActivity implements
     private String serialNumTaskRequest;
 
     private void submit() {
-        final String urls = getUrls(URLS_IMAGES);
-        final String videos = getUrls(URLS_VIDEOS);
-        final String urls_all = getUrls(URLS_ALL);
+//        final String urls = getUrls(URLS_IMAGES);
+//        final String videos = getUrls(URLS_VIDEOS);
+        final String urls = pictureAdapter.getImageUrls();
+        final String videos = pictureAdapter.getVideoUrls();
+        final String urls_all = pictureAdapter.getUrls();
+
         final String description = getText(tvWrite);
         final String place = getText(tvPlace);
 
@@ -265,22 +313,11 @@ public class EmergencyEventActivity2 extends BaseActivity implements
         }
 
         final String time = DateUtil.currentTime();
-//        HashMap<String, String> map = new HashMap<>();
-//        map.put("deviceID", "10012017020000000000");
-//        map.put("longitude", "108.6");
-//        map.put("latitude", "110");
-//        map.put("uploadTime", time);
-//        map.put("description", description);
-//        map.put("picUrl", urls);
-//        map.put("videoUrl", videos);
-//        map.put("place", place);
-//        map.put("eventType", "");
-        String url = getUrls(URLS_ALL);
         eventEntity = new EventEntity();
         eventEntity.setTime(time);
         eventEntity.setDescription(description);
         eventEntity.setPlace(place);
-        eventEntity.setUrls(url);
+        eventEntity.setUrls(urls_all);
 
         UploadEventRequest request = new UploadEventRequest();
         request.deviceID = DeviceParams.getInstance().getDeviceId();
@@ -294,50 +331,8 @@ public class EmergencyEventActivity2 extends BaseActivity implements
         request.eventType = "";
         request.serialNum = StringUtils.getRandomString(20);
         serialNumTaskRequest = SocketManager.intance().launch(requestGroupTag, request, null);
-//        showProgressDialog();
-//        request.send(new BaseDataRequest.RequestCallback<String>() {
-//            @Override
-//            public void onSuccess(String json) {
-//                String url = getUrls(URLS_ALL);
-//                EventEntity entity = new EventEntity();
-//                entity.setTime(time);
-//                entity.setDescription(description);
-//                entity.setPlace(place);
-//                entity.setUrls(url);
-//                EventDao.getInstance().save(entity);
-//                openActvityForResult(UploadStateActivity.class, 100);
-//            }
-//
-//            @Override
-//            public void onFailure(String msg) {
-//                showToast(msg);
-//            }
-//        });
     }
 
-    private void registerOnReceiveListener() {
-        SocketManager.intance().registertOnActionListener(requestGroupTag,
-                DeviceCmd.UP_LOAD_EMERGENCY,
-                BaseResponse.class,
-                new OnActionAdapter() {
-                    @Override
-                    public void onSendSucess(String cmd, String serialNum, Bundle bundle) {
-                        dismissProgressDialog();
-                        if (!serialNum.equals(serialNumTaskRequest)) {
-                            return;
-                        }
-                        if (eventEntity != null) {
-                            EventDao.getInstance().save(eventEntity);
-                            openActvityForResult(UploadStateActivity.class, 100);
-                        }
-                    }
-
-                    @Override
-                    public void onResponseFaile(String cmd, String serialNum, String errorCode, String errorMsg, Bundle bundle) {
-                        dismissProgressDialog();
-                    }
-                });
-    }
 
     private void getPermission() {
         permissionListener = new PermissionListener() {
@@ -375,10 +370,10 @@ public class EmergencyEventActivity2 extends BaseActivity implements
                         startActivityForResult(intent, OPEN_CAMERA);
                     }
                 } else if (cameraType == OPEN_ALBUM) {
-//                    int count=3-imageCount;
+                    int size = 10 - pictureAdapter.getCount();
                     MultiImageSelector.create(context).
                             showCamera(false).
-                            count(1)
+                            count(size)
                             .multi() // 多选模式, 默认模式;
                             .start(EmergencyEventActivity2.this, OPEN_ALBUM);
                 } else if (cameraType == RECORD_VIDEO) {
@@ -447,13 +442,14 @@ public class EmergencyEventActivity2 extends BaseActivity implements
             } else {
                 ArrayList<String> selectPicList = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
                 if (selectPicList != null && selectPicList.size() > 0) {
-                    String path = selectPicList.get(0);
-                    if (!TextUtils.isEmpty(path)) {
-                        ClipImageActivity.prepare()
-                                .aspectX(2).aspectY(2)//裁剪框横向及纵向上的比例
-                                .inputPath(path).outputPath(mOutputPath)//要裁剪的图片地址及裁剪后保存的地址
-                                .startForResult(this, REQUEST_CLIP_IMAGE);
-                    }
+                    upLoadFiles(selectPicList);
+//                    String path = selectPicList.get(0);
+//                    if (!TextUtils.isEmpty(path)) {
+//                        ClipImageActivity.prepare()
+//                                .aspectX(2).aspectY(2)//裁剪框横向及纵向上的比例
+//                                .inputPath(path).outputPath(mOutputPath)//要裁剪的图片地址及裁剪后保存的地址
+//                                .startForResult(this, REQUEST_CLIP_IMAGE);
+//                    }
                 }
             }
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_CLIP_IMAGE) {
@@ -537,12 +533,25 @@ public class EmergencyEventActivity2 extends BaseActivity implements
         pictureAdapter.addItem2(entity);
     }
 
+    private void upLoadFiles(ArrayList<String> paths) {
+        ArrayList<UploadEntity> entities = new ArrayList<>();
+        for (int i = 0; i < paths.size(); i++) {
+            String path = paths.get(i);
+            objId++;
+            UploadEntity entity = new UploadEntity();
+            entity.setLocalPath(path);
+            entity.id = objId;
+            entities.add(entity);
+        }
+        pictureAdapter.addDatas2(entities);
+    }
+
     private void upLoadFile(final String path) {
         objId++;
         UploadEntity entity = new UploadEntity();
         entity.setLocalPath(path);
         entity.id = objId;
-        pictureAdapter.addItem2(entity);
+        pictureAdapter.addItem3(entity);
     }
 
     private void uploadVideoFile(final String path) {
@@ -571,15 +580,15 @@ public class EmergencyEventActivity2 extends BaseActivity implements
 
 //    private StringBuilder sb = new StringBuilder();
 
-    private String getUrls(int type) {
-        StringBuilder sb = new StringBuilder();
-        String url = "";
-        String str = sb.toString();
-        if (str.contains(",")) {
-            url = str.substring(0, str.length() - 1);
-        }
-        return url;
-    }
+//    private String getUrls(int type) {
+//        StringBuilder sb = new StringBuilder();
+//        String url = "";
+//        String str = sb.toString();
+//        if (str.contains(",")) {
+//            url = str.substring(0, str.length() - 1);
+//        }
+//        return url;
+//    }
 
 
     private boolean isImage(String url) {

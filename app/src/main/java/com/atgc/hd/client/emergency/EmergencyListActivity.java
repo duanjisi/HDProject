@@ -54,7 +54,7 @@ public class EmergencyListActivity extends BaseActivity {
         barHelper.setActionRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openActivity(EmergencyEventActivity.class);
+                openActivity(EmergencyEventActivity2.class);
             }
         });
         adapter = new EventAdapter(context, new ItemClickListener());
@@ -93,7 +93,7 @@ public class EmergencyListActivity extends BaseActivity {
             if (event != null) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("obj", event);
-                openActivity(EmergencyDetailsActivity.class, bundle);
+                openActivity(EmergencyDetailsActivity2.class, bundle);
             }
         }
     }
