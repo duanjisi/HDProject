@@ -3,7 +3,9 @@ package com.atgc.hd.comm.net.response;
 import android.support.annotation.NonNull;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.atgc.hd.comm.local.Coordinate;
 import com.atgc.hd.comm.net.response.base.BaseResponse;
+import com.atgc.hd.comm.utils.CoordinateUtil;
 import com.atgc.hd.comm.utils.DateUtil;
 import com.atgc.hd.comm.utils.StringUtils;
 
@@ -18,18 +20,6 @@ import java.util.List;
 public class TaskListResponse extends BaseResponse<TaskListResponse.TaskInfo> implements Serializable {
 
     public static class TaskInfo implements Serializable, Comparable<TaskInfo> {
-        /**
-         * 表示任务未执行
-         */
-        public static final String STATUS_UNDO = "STATUS_UNDO";
-        /**
-         * 表示任务进行中
-         */
-        public static final String STATUS_DOING = "STATUS_DOING";
-        /**
-         * 表示任务已过了完成时间
-         */
-        public static final String STATUS_DONE = "STATUS_DONE";
 
         // 设备编号
         private String deviceID;
@@ -239,6 +229,11 @@ public class TaskListResponse extends BaseResponse<TaskListResponse.TaskInfo> im
         private String formatPointTime;
         private String formatPlanTime;
 
+        // 经度(gcj坐标系)
+        private double longitudeGCJ;
+        // 纬度(gcj坐标系)
+        private double latitudeGCJ;
+
         public String getTaskPointId() {
             return taskPointId;
         }
@@ -349,6 +344,23 @@ public class TaskListResponse extends BaseResponse<TaskListResponse.TaskInfo> im
 
         public void setPlanTime(String planTime) {
             this.planTime = planTime;
+        }
+
+        public double getLongitudeGCJ() {
+            return longitudeGCJ;
+        }
+
+        public double getLatitudeGCJ() {
+            return latitudeGCJ;
+        }
+
+        public void initCoordinate() {
+            Coordinate coordinate = CoordinateUtil.wgs84ToGcj02(getLongitude(), getLatitude());
+            if (coordinate == null) {
+                return;
+            }
+            longitudeGCJ = coordinate.getLongitude();
+            latitudeGCJ = coordinate.getLatitude();
         }
 
         @Override

@@ -1,0 +1,1 @@
+{"Command":"COM_DEV_REGISTER","Result":0}

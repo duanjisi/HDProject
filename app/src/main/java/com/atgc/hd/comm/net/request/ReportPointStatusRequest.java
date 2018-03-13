@@ -1,5 +1,6 @@
 package com.atgc.hd.comm.net.request;
 
+import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.net.request.base.BaseRequest;
 import com.atgc.hd.comm.net.response.base.BaseResponse;
@@ -22,6 +23,11 @@ public class ReportPointStatusRequest extends BaseRequest {
     // 结果类型 1.已巡查 2：超时未巡查 3.超时已巡查
     private String historyPointStatus;
 
+    public ReportPointStatusRequest() {
+        if (Constants.isDemo) {
+            serialNum = "5sde86s1f6sdfae32d";
+        }
+    }
 
     public String getDeviceID() {
         return deviceID;

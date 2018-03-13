@@ -1,5 +1,6 @@
 package com.atgc.hd.comm.net.request;
 
+import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.net.request.base.BaseRequest;
 import com.atgc.hd.comm.net.response.base.BaseResponse;
@@ -21,6 +22,12 @@ public class ReportTaskStatusRequest extends BaseRequest {
     private String carryStatus;
     // 异常原因
     private String abnormalReason;
+
+    public ReportTaskStatusRequest() {
+        if (Constants.isDemo) {
+            serialNum = "s5d9w2da61fa6d5e8sdsa";
+        }
+    }
 
     public String getDeviceID() {
         return deviceID;

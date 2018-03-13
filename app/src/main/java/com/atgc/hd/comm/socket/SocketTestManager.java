@@ -44,26 +44,31 @@ public class SocketTestManager {
         OkSocket.initialize(application, true);
     }
 
-    public void initConfiguration(String HOST, int PORT) {
-
+    public void initConfiguration(SocketActionAdapter adapter) {
         //连接参数设置(IP,端口号),这也是一个连接的唯一标识,不同连接,该参数中的两个值至少有其一不一样
-        ConnectionInfo info = new ConnectionInfo(HOST, PORT);
+        ConnectionInfo info = new ConnectionInfo("192.168.0.1", 10000);
 
         //调用OkSocket,开启这次连接的通道,拿到通道Manager
         connectionManager = OkSocket.open(info);
+
+        //注册Socket行为监听器,SocketActionAdapter是回调的Simple类,其他回调方法请参阅类文档
+        connectionManager.registerReceiver(adapter);
 
         //根据已有的参配对象，建造一个新的参配对象并且付给通道管理器
         OkSocketOptions defaultOption = connectionManager.getOption();
         OkSocketOptions newOption = okSocketOptions(defaultOption);
         connectionManager.option(newOption);
-
     }
 
-    public void test(SocketActionAdapter adapter) {
-        //注册Socket行为监听器,SocketActionAdapter是回调的Simple类,其他回调方法请参阅类文档
-        connectionManager.registerReceiver(adapter);
+    public void test(String host, String port) {
+        if (connectionManager == null) {
+            return;
+        }
 
-        //调用管理器进行连接
+        onDestory();
+        ConnectionInfo info = new ConnectionInfo(host, Integer.valueOf(port));
+        connectionManager.switchConnectionInfo(info);
+
         connectionManager.connect();
     }
 
@@ -79,7 +84,7 @@ public class SocketTestManager {
         builder.setSinglePackageBytes(500);
 
         // 设置自定义的重连管理器
-        builder.setReconnectionManager(new ReconnectManager());
+        builder.setReconnectionManager(new ReconnectManager().setMaxConnectionFailedTimes(1));
 
         return builder.build();
     }

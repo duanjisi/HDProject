@@ -24,7 +24,7 @@ public class ReconnectManager extends AbsReconnectionManager {
     /**
      * 最大连接失败次数,不包括断开异常
      */
-    private static final int MAX_CONNECTION_FAILED_TIMES = 12;
+    private int maxConnectionFailedTimes = 12;
     /**
      * 延时连接时间
      */
@@ -35,7 +35,7 @@ public class ReconnectManager extends AbsReconnectionManager {
     private int mConnectionFailedTimes = 0;
 
     /**
-     * true：一直进行重连 false：连接{@link #MAX_CONNECTION_FAILED_TIMES} 次失败则不再连接
+     * true：一直进行重连 false：连接{@link #maxConnectionFailedTimes} 次失败则不再连接
      */
     private boolean isKeepReconnect = false;
 
@@ -81,7 +81,7 @@ public class ReconnectManager extends AbsReconnectionManager {
             }
 
             mConnectionFailedTimes++;
-            if (mConnectionFailedTimes > MAX_CONNECTION_FAILED_TIMES) {
+            if (mConnectionFailedTimes > maxConnectionFailedTimes) {
                 reset();
                 //连接失败达到阈值,需要切换备用线路.(依照现有DEFAULT值和指数增长逻辑,会在4分多钟时切换备用线路)
                 ConnectionInfo originInfo = mConnectionManager.getConnectionInfo();
@@ -132,6 +132,11 @@ public class ReconnectManager extends AbsReconnectionManager {
     private void reconnectDelay() {
         mHandler.removeCallbacksAndMessages(null);
         mHandler.sendEmptyMessageDelayed(0, mReconnectTimeDelay);
-        SL.e((mReconnectTimeDelay / 1000) + "秒后开始尝试第" + mConnectionFailedTimes + "次重新连接...第" + MAX_CONNECTION_FAILED_TIMES + "次后不再重连...");
+        SL.e((mReconnectTimeDelay / 1000) + "秒后开始尝试第" + mConnectionFailedTimes + "次重新连接...第" + maxConnectionFailedTimes + "次后不再重连...");
+    }
+
+    public ReconnectManager setMaxConnectionFailedTimes(int maxConnectionFailedTimes) {
+        this.maxConnectionFailedTimes = maxConnectionFailedTimes;
+        return this;
     }
 }

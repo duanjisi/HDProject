@@ -1,13 +1,16 @@
 package com.atgc.hd.comm.net.request.base;
 
 import com.alibaba.fastjson.JSON;
-import com.atgc.hd.comm.utils.DigitalUtils;
 import com.atgc.hd.comm.utils.CRCUtil;
+import com.atgc.hd.comm.utils.DigitalUtils;
+import com.atgc.hd.entity.EventMessage;
 import com.orhanobut.logger.Logger;
 import com.xuhao.android.libsocket.sdk.bean.ISendable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * <p>描述：
@@ -50,6 +53,11 @@ public class SendableBase implements ISendable {
 
         String headerHexStr = DigitalUtils.toHexString(headerBytes);
         Logger.e("请求报文头：\n" + headerHexStr + "\n请求报文体：\n" + bodyData);
+        if ("PAT_UPLOAD_GPS".equals(Command)) {
+        } else {
+            EventMessage msg = new EventMessage("socket_log", "--请求：" + bodyData);
+            EventBus.getDefault().post(msg);
+        }
         return restule;
     }
 }

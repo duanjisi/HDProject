@@ -1,115 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/spacing_8x"
+    android:paddingRight="@dimen/spacing_8x"
+    >
 
-    <LinearLayout
-        android:id="@+id/ll_top"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <TextView
+        android:id="@+id/tv_service_ip_title"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginTop="50dp"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:textSize="@dimen/text_size_xlarge"
+        android:textColor="@color/meta_text_primary"
+        android:text="服务器IP地址:" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="Ip地址:" />
-            <!--android:background="@drawable/bg_round_edit"-->
-            <com.atgc.hd.widget.SuperEditText
-                android:id="@+id/et_ip"
-                android:layout_width="200dp"
-                android:layout_height="38dp"
-                android:layout_marginLeft="11dp"
-                android:hint="请输入Ip地址" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="端口:" />
-
-            <EditText
-                android:id="@+id/et_Port"
-                android:layout_width="200dp"
-                android:layout_height="38dp"
-                android:layout_marginLeft="11dp"
-                android:background="@null"
-                android:hint="请输入端口号" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll00"
+    <com.atgc.hd.widget.SuperEditText
+        android:id="@+id/et_ip"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_top"
-        android:layout_marginTop="50dp"
-        android:orientation="vertical">
+        android:layout_height="40dp"
+        android:layout_toRightOf="@+id/tv_service_ip_title"
+        android:layout_alignTop="@+id/tv_service_ip_title"
+        android:layout_marginLeft="11dp"
+        android:gravity="center_vertical"
+        android:hint="请输入IP地址" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="38dp"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal">
+    <TextView
+        android:id="@+id/tv_service_port_title"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:gravity="center_vertical|right"
+        android:layout_alignRight="@+id/tv_service_ip_title"
+        android:layout_alignLeft="@+id/tv_service_ip_title"
+        android:layout_below="@+id/tv_service_ip_title"
+        android:textSize="@dimen/text_size_xlarge"
+        android:textColor="@color/meta_text_primary"
+        android:text="端口:" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="图片Ip地址:" />
-            <!--android:background="@drawable/bg_round_edit"-->
-            <com.atgc.hd.widget.SuperEditText
-                android:id="@+id/et_image_ip"
-                android:layout_width="200dp"
-                android:layout_height="38dp"
-                android:layout_marginLeft="11dp"
-                android:hint="请输入Ip地址" />
-        </LinearLayout>
+    <EditText
+        android:id="@+id/et_Port"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="11dp"
+        android:layout_toRightOf="@+id/tv_service_port_title"
+        android:layout_alignTop="@+id/tv_service_port_title"
+        android:background="@null"
+        android:hint="请输入端口号" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="图片端口:" />
+    <TextView
+        android:id="@+id/tv_image_ip_title"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_below="@+id/tv_service_port_title"
+        android:layout_marginTop="@dimen/spacing_10x"
+        android:gravity="center_vertical|right"
+        android:layout_alignRight="@+id/tv_service_ip_title"
+        android:layout_alignLeft="@+id/tv_service_ip_title"
+        android:textSize="@dimen/text_size_xlarge"
+        android:textColor="@color/meta_text_primary"
+        android:text="图片IP地址:" />
 
-            <EditText
-                android:id="@+id/et_image_Port"
-                android:layout_width="200dp"
-                android:layout_height="38dp"
-                android:layout_marginLeft="11dp"
-                android:background="@null"
-                android:hint="请输入端口号" />
-        </LinearLayout>
-    </LinearLayout>
+    <com.atgc.hd.widget.SuperEditText
+        android:id="@+id/et_image_ip"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="11dp"
+        android:layout_toRightOf="@+id/tv_image_ip_title"
+        android:layout_alignTop="@+id/tv_image_ip_title"
+        android:gravity="center_vertical"
+        android:hint="请输入IP地址" />
+
+
+    <TextView
+        android:id="@+id/tv_image_port_title"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_below="@+id/tv_image_ip_title"
+        android:gravity="center_vertical|right"
+        android:layout_alignRight="@+id/tv_service_ip_title"
+        android:layout_alignLeft="@+id/tv_service_ip_title"
+        android:textSize="@dimen/text_size_xlarge"
+        android:textColor="@color/meta_text_primary"
+        android:text="图片端口:" />
+
+    <EditText
+        android:id="@+id/et_image_Port"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_toRightOf="@+id/tv_image_port_title"
+        android:layout_alignTop="@+id/tv_image_port_title"
+        android:layout_marginLeft="11dp"
+        android:background="@null"
+        android:hint="请输入端口号" />
 
     <Button
         android:id="@+id/btn_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ll00"
+        android:layout_below="@+id/tv_image_port_title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="80dp"
-        android:text="下一步" />
+        android:text="测试" />
 </RelativeLayout>

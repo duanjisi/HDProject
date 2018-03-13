@@ -36,10 +36,13 @@ public class TaskInfoProxy {
         for (int i = 0; i < getPointInfos().size(); i++) {
             TaskListResponse.PointInfo pointInfo = taskInfo.getPointArray().get(i);
 
+            pointInfo.initCoordinate();
+
             // 找到第1个未打点/超时未巡查的点
             if ("0".equals(pointInfo.getResultType()) || "2".equals(pointInfo.getResultType())) {
-                currentPointIndex = i;
-                break;
+                if (currentPointIndex == -1) {
+                    currentPointIndex = i;
+                }
             }
         }
 

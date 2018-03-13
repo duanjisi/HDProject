@@ -13,6 +13,7 @@ import com.atgc.hd.comm.net.request.base.SendablePulse;
 import com.atgc.hd.comm.net.response.base.HeaderResponse;
 import com.atgc.hd.comm.utils.FileUtil;
 import com.atgc.hd.comm.utils.StringUtils;
+import com.atgc.hd.entity.EventMessage;
 import com.orhanobut.logger.Logger;
 import com.xuhao.android.libsocket.impl.PulseManager;
 import com.xuhao.android.libsocket.sdk.ConnectionInfo;
@@ -27,6 +28,8 @@ import com.xuhao.android.libsocket.sdk.protocol.IHeaderProtocol;
 import java.nio.ByteOrder;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * <p>描述：
@@ -290,7 +293,7 @@ public class SocketManager {
             public void onSocketWriteResponse(Context context, ConnectionInfo info, String action, ISendable data) {
                 super.onSocketWriteResponse(context, info, action, data);
                 // action的值参考 IAction 类
-                Logger.e("onSocketWriteResponse action：" + action);
+//                Logger.e("onSocketWriteResponse action：" + action);
             }
 
             /**
@@ -317,6 +320,9 @@ public class SocketManager {
     }
 
     public void startPulse() {
+        if (Constants.isDemo) {
+            return;
+        }
         if (connectionManager != null) {
             PulseManager pulseManager = connectionManager.getPulseManager();
 
@@ -376,6 +382,8 @@ public class SocketManager {
 
         String cmd = object.getRequestCommand();
         String demoResop = FileUtil.getAssets(cmd + "_req.txt");
+        EventMessage message = new EventMessage("socket_log", "demo_resp"+demoResop);
+        EventBus.getDefault().post(message);
         if (StringUtils.isEmpty(demoResop)) {
             Logger.d("未读取配置文件：" + cmd + "_req.txt 或 配置文件内容为空");
         } else {

@@ -9,7 +9,6 @@ import com.atgc.hd.client.tasklist.taskfrag.adapter.TaskListEntity;
 import com.atgc.hd.comm.DeviceCmd;
 import com.atgc.hd.comm.clock.InnerClock;
 import com.atgc.hd.comm.config.DeviceParams;
-import com.atgc.hd.comm.local.Coordinate;
 import com.atgc.hd.comm.local.LocationService;
 import com.atgc.hd.comm.local.LocationService.ILocationListener;
 import com.atgc.hd.comm.net.request.ReportPointStatusRequest;
@@ -96,6 +95,9 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
      */
     @Override
     public void onReceiveCurrentTask(TaskListResponse.TaskInfo taskInfo) {
+        // 发送到DeviceBootService类，GPS坐标上传需要taskid，userid
+        sendEventMessage("current_task_info", taskInfo);
+
         // 暂无任务
         if (taskInfo == null) {
             iView.refreshTaskList(null);
@@ -121,22 +123,25 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
         startPointTimeOutCountDown();
 
         // TODO 开始进行GPS定位监听
-//        locationListener = getLocationListener(currentPointInfo);
-//        LocationService.intance().registerLocationListener(locationListener);
+        locationListener = getLocationListener();
+        LocationService.intance().registerLocationListener(locationListener);
     }
 
     @Override
     public void onReceiveExceptionTask(SparseArray<TaskListResponse.TaskInfo> exceptionTasks) {
-//        for (int i = 0; i < exceptionTasks.size(); i++) {
-//            TaskListResponse.TaskInfo exceptionTask = exceptionTasks.get(i);
-//            reportTaskStatus(
-//                    exceptionTask.getUserId(),
-//                    exceptionTask.getTaskID(),
-//                    "4",
-//                    "1",
-//                    "其他",
-//                    null);
-//        }
+        for (int i = 0; i < exceptionTasks.size(); i++) {
+            TaskListResponse.TaskInfo exceptionTask = exceptionTasks.get(i);
+            Bundle bundle = new Bundle();
+            bundle.putString("userId", exceptionTask.getUserId());
+            bundle.putString("taskId", exceptionTask.getTaskID());
+            bundle.putString("taskStatus", "4");
+            bundle.putString("carryStatus", "1");
+            bundle.putString("reason", "其他");
+            bundle.putSerializable("listener", null);
+            bundle.putBoolean("exceptionTask", true);
+
+            reportTaskStatus(bundle);
+        }
     }
 
     @Override
@@ -161,7 +166,7 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
         return taskInfoProxy.getTaskInfo();
     }
 
-    private ILocationListener getLocationListener(final PointInfo currentPointInfo) {
+    private ILocationListener getLocationListener() {
         ILocationListener listener = new ILocationListener() {
             Object lock = new Object();
 
@@ -173,18 +178,20 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
             }
 
             private void actionReceive(BDLocation bdLocation) {
-                Coordinate currentLocation = CoordinateUtil.gcj02ToWbs84(bdLocation.getLongitude(), bdLocation.getLatitude());
+                PointInfo pointInfo = taskInfoProxy.getCurrentPointInfo();
+
                 double distance = CoordinateUtil.getDistance(
-                        currentPointInfo.getLatitude(),
-                        currentPointInfo.getLongitude(),
-                        currentLocation.getLatitude(),
-                        currentLocation.getLongitude()
+                        pointInfo.getLatitudeGCJ(),
+                        pointInfo.getLongitudeGCJ(),
+                        bdLocation.getLatitude(),
+                        bdLocation.getLongitude()
                 );
 
-//            Logger.e(currentPointInfo.getLatitude() + "\n" +
-//                    currentPointInfo.getLongitude() + "\n" +
-//                    currentLocation.getLatitude() + "\n" +
-//                    currentLocation.getLongitude());
+                Logger.w(pointInfo.getLatitude() + "\n" +
+                        pointInfo.getLongitude() + "\n" +
+                        bdLocation.getLatitude() + "\n" +
+                        bdLocation.getLongitude() + "\n距离" +
+                        distance + "米");
 
                 if (distance > POINT_RANGE) {
                     return;
@@ -231,8 +238,8 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
             // 若巡查任务正常结束且没有异常点，则直接上报任务状态
             if ("3".equals(taskStatus) && "0".equals(carryStatus)) {
                 reportTaskStatus("3", "0", "", null);
-
                 // TaskHandModel.onTaskFinish()接收
+                taskInfoProxy.getTaskInfo().setTaskStatus("3");
                 sendEventMessage("on_task_finish");
             }
             // 否则弹出提示框填写异常原因，再上报任务状态
@@ -332,35 +339,26 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
                                  final String reason,
                                  final PatrolContract.OnReportTaskListener listener) {
         Logger.w("上报任务（initTaskStatus:" + taskStatus + " carryStatus:" + carryStatus + "）");
-        reportTaskStatus(
-                taskInfoProxy.getTaskInfo().getUserId(),
-                taskInfoProxy.getTaskInfo().getTaskID(),
-                taskStatus,
-                carryStatus,
-                reason,
-                listener
-        );
+        Bundle bundle = new Bundle();
+        bundle.putString("userId", taskInfoProxy.getTaskInfo().getUserId());
+        bundle.putString("taskId", taskInfoProxy.getTaskInfo().getTaskID());
+        bundle.putString("taskStatus", taskStatus);
+        bundle.putString("carryStatus", carryStatus);
+        bundle.putString("reason", reason);
+        bundle.putSerializable("listener", listener);
+
+        reportTaskStatus(bundle);
     }
 
-    public String reportTaskStatus(final String userId,
-                                   final String taskId,
-                                   final String taskStatus,
-                                   final String carryStatus,
-                                   final String reason,
-                                   final PatrolContract.OnReportTaskListener listener) {
+    public String reportTaskStatus(Bundle bundle) {
         ReportTaskStatusRequest request = new ReportTaskStatusRequest();
 
         request.setDeviceID(DeviceParams.getInstance().getDeviceId());
-        request.setUserId(userId);
-        request.setTaskID(taskId);
-        request.setTaskStatus(taskStatus);
-        request.setCarryStatus(carryStatus);
-        request.setAbnormalReason(reason);
-
-        Bundle bundle = new Bundle();
-        bundle.putString("taskStatus", taskStatus);
-        bundle.putString("carryStatus", carryStatus);
-        bundle.putSerializable("listener", listener);
+        request.setUserId(bundle.getString("userId"));
+        request.setTaskID(bundle.getString("taskId"));
+        request.setTaskStatus(bundle.getString("taskStatus"));
+        request.setCarryStatus(bundle.getString("carryStatus"));
+        request.setAbnormalReason(bundle.getString("reason"));
 
         return SocketManager.intance().launch(GROUP_TAG, request, bundle);
     }
@@ -395,22 +393,22 @@ public class PatrolPresenter implements PatrolContract.IPresenterView, PatrolCon
                 listener.onReportSuccess();
             }
 
-            // taskInfoProxy == null，说明是上报异常任务状态的，不需继续执行下面的逻辑
-            if (taskInfoProxy == null) {
+            // 说明是上报异常任务状态的，不需继续执行下面的逻辑
+            if (bundle.getBoolean("exceptionTask")) {
                 return;
             }
 
             // 3:时间范围内结束任务
             if ("3".equals(taskStatus) && "1".equals(carryStatus)) {
                 // 通知TaskHandModel结束当前任务，TaskHandModel.onTaskFinish()接收
-                Log.e("finish_tag", "373行结束任务");
+                taskInfoProxy.getTaskInfo().setTaskStatus("3");
                 sendEventMessage("on_task_finish");
             }
 
             // 4：强制结束任务
             if ("4".equals(taskStatus)) {
                 // 通知TaskHandModel结束当前任务，TaskHandModel.onTaskFinish()接收
-                Log.e("finish_tag", "379行结束任务");
+                taskInfoProxy.getTaskInfo().setTaskStatus("4");
                 sendEventMessage("on_task_finish");
             }
         }

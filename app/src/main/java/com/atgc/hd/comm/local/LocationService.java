@@ -134,7 +134,7 @@ public class LocationService {
             //可选，默认gcj02，设置返回的定位结果坐标系，如果配合百度地图使用，建议设置为bd09ll;
             mOption.setCoorType("gcj02");
             //可选，默认0，即仅定位一次，设置发起连续定位请求的间隔需要大于等于1000ms才是有效的
-            mOption.setScanSpan(3000);
+            mOption.setScanSpan(5 * 1000);
             //可选，设置是否需要地址信息，默认不需要
             mOption.setIsNeedAddress(true);
             //可选，设置是否需要地址描述
@@ -240,7 +240,7 @@ public class LocationService {
 
         double longitude = Double.valueOf(target.getLongitude());
         double latitude = Double.valueOf(target.getLatitude());
-        Coordinate coordinate = CoordinateUtil.gcj02ToWbs84(longitude, latitude);
+        Coordinate coordinate = CoordinateUtil.gcj02ToWgs84(longitude, latitude);
         target.setLongitude(coordinate.getLongitude());
         target.setLatitude(coordinate.getLatitude());
 

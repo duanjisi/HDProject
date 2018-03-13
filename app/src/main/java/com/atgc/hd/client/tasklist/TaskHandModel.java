@@ -186,21 +186,20 @@ public class TaskHandModel implements TaskHandContract {
             TaskInfo taskInfo = taskInfos.get(i);
             taskInfo.initTaskPeriod();
             taskInfo.initInspectStatus();
-//            taskInfo.initTaskStatus(currentTime);
 
             arrayTaskInfos.append(i, taskInfo);
 
             String taskStatus = taskInfo.getTaskStatus();
             // 任务未执行
             if ("1".equals(taskStatus)) {
-                if (undoTaskIndex == -1) {
-                    undoTaskIndex = i;
-                }
-
                 if (taskInfo.taskEndTime().before(currentTime)) {
                     exceptionTaskInfos.append(exceptionTaskInfos.size(), taskInfo);
                     taskInfo.setTaskStatus("4");
                     undoTaskIndex = -1;
+                } else if (taskInfo.taskStartTime().before(currentTime)) {
+                    currentTaskIndex = i;
+                } else if (undoTaskIndex == -1) {
+                    undoTaskIndex = i;
                 }
             }
             // 任务正在执行
@@ -314,7 +313,6 @@ public class TaskHandModel implements TaskHandContract {
         // 巡更任务时间已到，上交巡更任务状态数据
         TaskInfo newTaskInfo = onCurrentTaskListener.stopTask();
         newTaskInfo.initInspectStatus();
-        newTaskInfo.setTaskStatus(TaskInfo.STATUS_DONE);
 
         arrayTaskInfos.setValueAt(currentTaskIndex, newTaskInfo);
 
@@ -353,7 +351,7 @@ public class TaskHandModel implements TaskHandContract {
     private String srcLongitude = "113.62";
     private String srcLatitude = "23.30";
     private TaskInfo currentTaskInfo;
-    private boolean isOK = false;
+    private boolean isOK = true;
 
     String[] lngs = {"113.622274",
             "113.622979",

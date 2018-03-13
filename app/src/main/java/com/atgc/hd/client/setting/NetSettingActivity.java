@@ -37,16 +37,20 @@ import butterknife.OnClick;
  * <p>描述：设置IP,端口
  * <p>作者：duanjisi 2018年 01月 25日
  */
-public class SettingActivity extends BaseActivity {
+public class NetSettingActivity extends BaseActivity {
 
     @BindView(R.id.et_ip)
     SuperEditText etIp;
+
     @BindView(R.id.et_Port)
     EditText etPort;
+
     @BindView(R.id.et_image_ip)
     SuperEditText etImageIp;
+
     @BindView(R.id.et_image_Port)
     EditText etImagePort;
+
     @BindView(R.id.btn_next)
     Button btnNext;
 
@@ -57,10 +61,11 @@ public class SettingActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         ButterKnife.bind(this);
+
         barHelper.setTitleColor(getResources().getColor(R.color.white));
+
         bindDatas();
     }
-
 
     private void bindDatas() {
         String ip = PreferenceUtils.getString(context, PrefKey.HOST, "");
@@ -96,9 +101,6 @@ public class SettingActivity extends BaseActivity {
         String host = etIp.getText().toString();
         String port = getText(etPort);
 
-        String host_image = etImageIp.getText().toString();
-        String port_image = etImagePort.getText().toString();
-
         if (!TextUtils.isEmpty(host)) {
             if (isHostMatcher(host)) {
                 PreferenceUtils.putString(context, PrefKey.HOST, host);
@@ -117,10 +119,11 @@ public class SettingActivity extends BaseActivity {
             return;
         }
 
-        if (!TextUtils.isEmpty(host_image)) {
-            PreferenceUtils.putString(context, PrefKey.HOST_IMAGE, host_image);
-            if (isHostMatcher(host_image)) {
-                PreferenceUtils.putString(context, PrefKey.HOST_IMAGE, host_image);
+        String hostImage = etImageIp.getText().toString();
+        String portImage = getText(etImagePort);
+        if (!TextUtils.isEmpty(hostImage)) {
+            if (isHostMatcher(hostImage)) {
+                PreferenceUtils.putString(context, PrefKey.HOST_IMAGE, hostImage);
             } else {
                 showToast("图片IP地址不合法");
                 return;
@@ -130,14 +133,8 @@ public class SettingActivity extends BaseActivity {
             return;
         }
 
-        if (!TextUtils.isEmpty(port_image)) {
-            PreferenceUtils.putString(context, PrefKey.PORT_IMAGE, port_image);
-//            if (isPortMatcher(port_image)) {
-//                PreferenceUtils.putInt(context, PrefKey.PORT_IMAGE, Integer.parseInt(port_image));
-//            } else {
-//                showToast("图片端口号不合法");
-//                return;
-//            }
+        if (!TextUtils.isEmpty(portImage)) {
+            PreferenceUtils.putString(context, PrefKey.PORT_IMAGE, portImage);
         } else {
             showToast("图片端口为空");
             return;
@@ -146,13 +143,15 @@ public class SettingActivity extends BaseActivity {
 
         if (socketTestManager == null) {
             socketTestManager = new SocketTestManager();
+            socketTestManager.initConfiguration(socketActionAdapter());
         } else {
-            socketTestManager.onDestory();
         }
+
+        hideKeyboard();
+
         showProgressDialog("正在测试服务器地址是否可连接...");
 
-        socketTestManager.initConfiguration(host, Integer.valueOf(port));
-        socketTestManager.test(socketActionAdapter());
+        socketTestManager.test(host, port);
     }
 
     @Override
@@ -178,8 +177,6 @@ public class SettingActivity extends BaseActivity {
             public void onSocketConnectionSuccess(Context context, ConnectionInfo info, String action) {
                 super.onSocketConnectionSuccess(context, info, action);
                 dismissProgressDialog();
-                Log.e("socketManager", "onSocketConnectionSuccess 连接成功");
-//                showMessage("连接成功！");
                 setResult(RESULT_OK);
                 finish();
             }
@@ -199,7 +196,6 @@ public class SettingActivity extends BaseActivity {
                 super.onSocketConnectionFailed(context, info, action, e);
                 dismissProgressDialog();
                 showMessage("服务器连接失败！");
-                Log.e("socketManager", "onSocketConnectionFailed 连接失败");
             }
         };
     }

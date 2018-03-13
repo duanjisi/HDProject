@@ -156,7 +156,6 @@ public class DigitalUtils {
 
         String json = JSON.toJSONString(object);
 
-        Log.e("DigitalUtils", "发送的Data数据：" + json);
         byte[] strData = json.getBytes();
         int dataLength = strData.length;
         int crcCode = CRCUtil.crc16CCITTFalse(strData, dataLength);

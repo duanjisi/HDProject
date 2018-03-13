@@ -9,6 +9,7 @@ import com.atgc.hd.comm.net.response.base.Response;
 import com.atgc.hd.comm.utils.CRCUtil;
 import com.atgc.hd.comm.utils.DigitalUtils;
 import com.atgc.hd.comm.utils.StringUtils;
+import com.atgc.hd.entity.EventMessage;
 import com.orhanobut.logger.Logger;
 import com.xuhao.android.libsocket.sdk.bean.OriginalData;
 
@@ -17,20 +18,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.greenrobot.event.EventBus;
+
 /**
  * <p>描述：报文分析
  * <p>作者：liangguokui 2018/2/10
  */
 public class AnalysisManager {
 
+    public AnalysisManager() {
+//        EventBus.getDefault().register(this);
+    }
+
     public void onReceiveResponse(OriginalData data) {
         String header = DigitalUtils.byteArrayToHexString(data.getHeadBytes());
         String body = new String(data.getBodyBytes(), Charset.forName("utf-8"));
 
         Response response = JSON.parseObject(body, Response.class);
-        if ("COM_HEARTBEAT".equals(response.Command)) {
+        if ("COM_HEARTBEAT".equals(response.Command)
+                || "PAT_UPLOAD_GPS".equals(response.Command)) {
         } else {
             Logger.e("响应报文头：\n" + header + "\n响应报文体：\n" + body);
+
+            EventMessage msg = new EventMessage("socket_log", "--响应：" + body);
+            EventBus.getDefault().post(msg);
         }
 
         boolean verifyOK = checkCrc(data);
@@ -269,7 +280,7 @@ public class AnalysisManager {
             mapListener = new HashMap<>();
             mapGroupListener.put(groupTag, mapListener);
         } else if (mapListener.containsKey(cmd)) {
-            throw new IllegalArgumentException("暂不支持同一【groupTag：" + groupTag + "】注册多次【cmd：" + cmd + "】");
+//            throw new IllegalArgumentException("暂不支持同一【groupTag：" + groupTag + "】注册多次【cmd：" + cmd + "】");
         }
 
         mapListener.put(cmd, listener);
