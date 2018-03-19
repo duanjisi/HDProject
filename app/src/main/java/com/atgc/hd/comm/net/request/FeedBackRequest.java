@@ -10,11 +10,11 @@ import com.atgc.hd.comm.net.response.base.BaseResponse;
  * <p>作者：liangguokui 2018/3/12
  */
 public class FeedBackRequest extends BaseRequest {
-    public String messageID;
+    public String messageId;
     public String type;
     public String serverResult;
     public String errMsg;
-    public String deviceID = DeviceParams.getInstance().getDeviceId();
+    public String deviceIds = DeviceParams.getInstance().getDeviceId();
 
     @Override
     public String getRequestCommand() {
