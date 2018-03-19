@@ -1,6 +1,7 @@
 package com.atgc.hd.comm.net.request;
 
 import com.atgc.hd.comm.DeviceCmd;
+import com.atgc.hd.comm.config.DeviceParams;
 import com.atgc.hd.comm.net.request.base.BaseRequest;
 import com.atgc.hd.comm.net.response.base.BaseResponse;
 
@@ -13,6 +14,7 @@ public class FeedBackRequest extends BaseRequest {
     public String type;
     public String serverResult;
     public String errMsg;
+    public String deviceID = DeviceParams.getInstance().getDeviceId();
 
     @Override
     public String getRequestCommand() {
