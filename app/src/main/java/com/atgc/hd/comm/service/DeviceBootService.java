@@ -319,7 +319,7 @@ public class DeviceBootService extends Service implements LocationService.ILocat
         }
 
         FeedBackRequest request = new FeedBackRequest();
-        request.messageID = messageId;
+        request.messageId = messageId;
         request.type = type;
         request.serverResult = "0";
         request.errMsg = "";

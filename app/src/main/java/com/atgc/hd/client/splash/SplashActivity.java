@@ -14,7 +14,6 @@ import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.client.setting.NetSettingActivity;
 import com.atgc.hd.client.tasklist.TaskListActivity;
-import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.Utils;
 import com.atgc.hd.comm.service.DeviceBootService;
@@ -99,6 +98,7 @@ public class SplashActivity extends BaseActivity {
 
     @Subscribe
     public void readyToNextAty(EventMessage message) {
+
         if ("ready_to_next_aty".equals(message.eventTag)) {
             Logger.e("准备啦。。。");
             tvLog.append("\n 3 秒后跳转...");

@@ -11,12 +11,12 @@ import com.atgc.hd.comm.utils.DateUtil;
  * <p>作者：liangguokui 2018/3/13
  */
 public class DispatchFinishRequest extends BaseRequest {
-    public String messageID;
-    public String deviceID;
+    public String messageId;
+    public String deviceId;
     public String uploadTime;
 
     public DispatchFinishRequest() {
-        deviceID = DeviceParams.getInstance().getDeviceId();
+        deviceId = DeviceParams.getInstance().getDeviceId();
         uploadTime = DateUtil.currentTime();
     }
 

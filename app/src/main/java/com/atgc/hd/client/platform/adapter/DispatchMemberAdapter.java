@@ -89,7 +89,7 @@ public class DispatchMemberAdapter extends BaseSingleAdapter<PatInfo> {
                         patInfo.setReported(true);
 
                         DispatchFinishRequest request = new DispatchFinishRequest();
-                        request.messageID = patInfo.getMessageID();
+                        request.messageId = patInfo.getMessageID();
 
                         SocketManager.intance().launch(REQUEST_GROUP_TAG, request, null);
 

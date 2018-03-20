@@ -5,7 +5,7 @@
     android:paddingBottom="@dimen/spacing_3x"
     android:layout_marginLeft="@dimen/spacing_4x"
     android:layout_marginRight="@dimen/spacing_4x"
-    android:layout_marginTop="@dimen/spacing_4x"
+    android:layout_marginTop="@dimen/spacing_8x"
     android:background="@drawable/shape_white_round"
     >
 

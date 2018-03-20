@@ -14,16 +14,16 @@ public class FeedBackRequest extends BaseRequest {
     public String type;
     public String serverResult;
     public String errMsg;
-    public String deviceIds = DeviceParams.getInstance().getDeviceId();
+    public String deviceId = DeviceParams.getInstance().getDeviceId();
 
     @Override
     public String getRequestCommand() {
-        return DeviceCmd.PAT_DEV_EXE_FEEDBACK;
+        return DeviceCmd.PAT_SEND_MESSAGE;
     }
 
     @Override
     public String getResponseCommand() {
-        return DeviceCmd.PAT_DEV_EXE_FEEDBACK;
+        return DeviceCmd.PAT_SEND_MESSAGE;
     }
 
     @Override

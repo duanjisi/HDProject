@@ -46,14 +46,6 @@ public class NetLogActivity extends BaseActivity {
         setContentView(R.layout.activity_net_log);
         ButterKnife.bind(this);
 
-        // 设置默认滚动到底部
-        scrollView.post(new Runnable() {
-            @Override
-            public void run() {
-                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-            }
-        });
-
         EventBus.getDefault().register(this);
     }
 
