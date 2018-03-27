@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -14,6 +13,7 @@ import com.atgc.hd.R;
 import com.atgc.hd.base.BaseActivity;
 import com.atgc.hd.client.setting.NetSettingActivity;
 import com.atgc.hd.client.tasklist.TaskListActivity;
+import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.IPPort;
 import com.atgc.hd.comm.Utils;
 import com.atgc.hd.comm.service.DeviceBootService;
@@ -35,8 +35,11 @@ import de.greenrobot.event.Subscribe;
  * <p>作者：liangguokui 2018/1/22
  */
 public class SplashActivity extends BaseActivity {
-    @BindView(R.id.btn_retry)
+    @BindView(R.id.btn_register)
     public Button btnRetry;
+
+    @BindView(R.id.btn_entrypt)
+    public Button btnEntrypt;
 
     @BindView(R.id.textView)
     public TextView tvTips;
@@ -59,38 +62,36 @@ public class SplashActivity extends BaseActivity {
         mLottieLove.playAnimation();
 
         barHelper.displayActionBar(false);
-//        Constants.isDemo = true;
+
+        String btnText = Constants.isEntry ? "加密模式：ON" : "加密模式OFF";
+        btnEntrypt.setText(btnText);
+
+        tvTips.setText("\n" + IPPort.getHOST());
+        tvTips.append("\n" + IPPort.getPORT());
+
+        EventBus.getDefault().register(this);
+    }
+
+    @OnClick(R.id.btn_register)
+    public void retryRegister() {
+        //        Constants.isDemo = true;
+        tvTips.setText("请稍后，正在初始化注册中...");
         if (Utils.isServiceRunning(context, DeviceBootService.class.getName())) {
             sendEventMessageDelay("check_socket_connect");
         } else {
             Intent i = new Intent(context, DeviceBootService.class);
             context.startService(i);
         }
-
-        tvTips.setText("请稍后，正在初始化...");
-        tvTips.append("\n" + IPPort.getHOST());
-        tvTips.append("\n" + IPPort.getPORT());
-
-        // 设置默认滚动到底部
-        scrollView.post(new Runnable() {
-            @Override
-            public void run() {
-                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-            }
-        });
-
-        EventBus.getDefault().register(this);
     }
 
-    @OnClick(R.id.btn_retry)
-    public void retryRegister() {
-        btnRetry.setVisibility(View.INVISIBLE);
-        tvTips.setText("请稍后，正在初始化...");
-        tvTips.append("\n" + IPPort.getHOST());
-        tvTips.append("\n" + IPPort.getPORT());
+    @OnClick(R.id.btn_entrypt)
+    public void clickEntrypt() {
+        Constants.isEntry = !Constants.isEntry;
+        String btnText = Constants.isEntry ? "加密模式：ON" : "加密模式OFF";
+        btnEntrypt.setText(btnText);
     }
 
-    @OnClick(R.id.button)
+    @OnClick(R.id.btn_net_setting)
     public void openNetSetting() {
         SocketManager.intance().onDestory();
         openActvityForResult(NetSettingActivity.class, 23);
