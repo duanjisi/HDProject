@@ -3,9 +3,12 @@ package com.atgc.hd.comm.socket;
 import android.os.Bundle;
 
 import com.alibaba.fastjson.JSON;
+import com.atgc.hd.comm.Constants;
 import com.atgc.hd.comm.DeviceCmd;
+import com.atgc.hd.comm.config.DeviceParams;
 import com.atgc.hd.comm.net.response.base.BaseResponse;
 import com.atgc.hd.comm.net.response.base.Response;
+import com.atgc.hd.comm.utils.AESUtils;
 import com.atgc.hd.comm.utils.CRCUtil;
 import com.atgc.hd.comm.utils.DigitalUtils;
 import com.atgc.hd.comm.utils.StringUtils;
@@ -31,8 +34,14 @@ public class AnalysisManager {
     }
 
     public void onReceiveResponse(OriginalData data) {
-        String header = DigitalUtils.byteArrayToHexString(data.getHeadBytes());
-        String body = new String(data.getBodyBytes(), Charset.forName("utf-8"));
+        String header = DigitalUtils.toHexString(data.getHeadBytes());
+        byte[] bodyBytes = data.getBodyBytes();
+        String body;
+        if (Constants.isEntry) {
+            body = AESUtils.decrypt(bodyBytes, DeviceParams.getInstance().getAESkey());
+        } else {
+            body = new String(data.getBodyBytes(), Charset.forName("utf-8"));
+        }
 
         Response response = JSON.parseObject(body, Response.class);
         if ("COM_HEARTBEAT".equals(response.Command)

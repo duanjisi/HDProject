@@ -8,8 +8,6 @@
 
 package com.atgc.hd.comm;
 
-import com.atgc.hd.comm.utils.PreferenceUtils;
-
 /**
  * <p>描述：常量类
  * <p>作者：duanjisi 2018年 01月 16日
@@ -24,6 +22,11 @@ public class Constants {
      * demo模式，表示数据会从/src/assets文件夹读取
      */
     public static boolean isDemo = false;
+
+    /**
+     * 是否加解密报文
+     */
+    public static boolean isEntry = true;
 
     /**
      * 行为

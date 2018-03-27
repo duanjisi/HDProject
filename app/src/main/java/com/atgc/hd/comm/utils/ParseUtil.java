@@ -73,13 +73,14 @@ public class ParseUtil {
     public static int parseNumber(ByteBuf buffer, int length) {
         byte[] bytes = new byte[length];
         buffer.readBytes(bytes);
-        String result;
+        int result;
         try {
-            result = binary(bytes, 10);
+            String temp = binary(bytes, 10);
+            result = Integer.valueOf(temp);
         } catch (Exception e) {
             return -1;
         }
-        return Integer.valueOf(result);
+        return result;
     }
 
     /**

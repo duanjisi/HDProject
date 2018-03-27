@@ -11,8 +11,8 @@ public class HeaderRequest {
     private String version = "HDXM";
     private String srcID = DeviceParams.getInstance().getDeviceId();
     private String destID = "00000000000000000000";
-    private String request = "0";
-    private String packNo = "5684";
+    private int request = 0;
+    private int packNo = 5684;
     private int contentLength;
     private byte[] hold = new byte[2];
     private byte[] crc = new byte[2];
@@ -22,8 +22,8 @@ public class HeaderRequest {
         header.setVersion("HDXM");
         header.setSrcID(DeviceParams.getInstance().getDeviceId());
         header.setDestID("00000000000000000000");
-        header.setRequest("0");
-        header.setPackNo("5684");
+        header.setRequest(0);
+        header.setPackNo(5684);
         header.setHold(new byte[2]);
         header.setCrc(new byte[2]);
         return header;
@@ -53,19 +53,19 @@ public class HeaderRequest {
         this.destID = destID;
     }
 
-    public String getRequest() {
+    public int getRequest() {
         return request;
     }
 
-    public void setRequest(String request) {
+    public void setRequest(int request) {
         this.request = request;
     }
 
-    public String getPackNo() {
+    public int getPackNo() {
         return packNo;
     }
 
-    public void setPackNo(String packNo) {
+    public void setPackNo(int packNo) {
         this.packNo = packNo;
     }
 
@@ -99,8 +99,8 @@ public class HeaderRequest {
         copy(version.getBytes(), headerByte, 0);
         copy(srcID.getBytes(), headerByte, 4);
         copy(destID.getBytes(), headerByte, 24);
-        copy(request.getBytes(), headerByte, 44);
-        copy(packNo.getBytes(), headerByte, 45);
+        copy(DigitalUtils.intToByteArrays(request), headerByte, 44);
+        copy(DigitalUtils.intToByteArrays(packNo), headerByte, 45);
         copy(DigitalUtils.intToByteArrays(contentLength), headerByte, 49);
         copy(hold, headerByte, 53);
         copy(crc, headerByte, 55);
@@ -111,4 +111,18 @@ public class HeaderRequest {
     private void copy(byte[] src, byte[] dest, int startIndex) {
         System.arraycopy(src, 0, dest, startIndex, src.length);
     }
+
+    /**
+     48 44 58 4d
+     31 30 30 31 32 30 31 37 30 32 30 30 30 30 30 30 30 30 30 30
+     30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30
+     30
+     35 36 38 34
+     00 00 02 7d
+     00 00
+     43 40
+     ef bf bd 29 ef bf bd ef bf bd 17 19 ef bf bd 6e 11 34 ef bf bd ef bf bd ef bf bd 6d ef bf bd ef bf bd 1d 50 66 76 2a 77 ef bf bd 7d 28 ef bf bd 4a 76 ef bf bd ef bf bd 14 ef bf bd 73 ef bf bd 5b 23 ef bf bd 12 ef
+
+
+     */
 }

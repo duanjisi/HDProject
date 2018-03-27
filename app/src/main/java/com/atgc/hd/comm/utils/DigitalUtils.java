@@ -61,43 +61,6 @@ public class DigitalUtils {
         return byteArray;
     }
 
-
-    /**
-     * byte[]数组转换为16进制的字符串
-     *
-     * @param bytes 要转换的字节数组
-     * @return 转换后的结果
-     */
-    private static String bytesToHexString(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < bytes.length; i++) {
-            String hex = Integer.toHexString(0xFF & bytes[i]);
-            if (hex.length() == 1) {
-                sb.append('0');
-            }
-            sb.append(hex);
-        }
-        return sb.toString();
-    }
-
-    /**
-     * byte[]数组转换为16进制的字符串
-     *
-     * @param data 要转换的字节数组
-     * @return 转换后的结果
-     */
-    public static final String byteArrayToHexString(byte[] data) {
-        StringBuilder sb = new StringBuilder(data.length * 2);
-        for (byte b : data) {
-            int v = b & 0xff;
-            if (v < 16) {
-                sb.append('0');
-            }
-            sb.append(Integer.toHexString(v));
-        }
-        return sb.toString().toUpperCase(Locale.getDefault());
-    }
-
     /**
      * 字节数组转成16进制表示格式的字符串
      *
@@ -118,7 +81,6 @@ public class DigitalUtils {
     }
 
     private static String getJson(String cmd, Map<String, String> map) {
-//        JSONObject Data = JSONObject.fromObject(map);
         JSONObject object = new JSONObject();
         try {
             object.put("Command", cmd);
@@ -238,4 +200,5 @@ public class DigitalUtils {
         b[1] = (byte) (n & 0xFF);
         return b;
     }
+
 }

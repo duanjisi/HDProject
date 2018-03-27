@@ -30,6 +30,8 @@ import com.atgc.hd.comm.local.LocationService;
 import com.atgc.hd.comm.net.request.FeedBackRequest;
 import com.atgc.hd.comm.net.request.GPSRequest;
 import com.atgc.hd.comm.net.request.RegisterRequest;
+import com.atgc.hd.comm.net.response.RegisterResponse;
+import com.atgc.hd.comm.net.response.RegisterResponse.RegisterInfo;
 import com.atgc.hd.comm.net.response.TaskListResponse;
 import com.atgc.hd.comm.net.response.base.Response;
 import com.atgc.hd.comm.socket.OnActionAdapter;
@@ -121,6 +123,12 @@ public class DeviceBootService extends Service implements LocationService.ILocat
         public void onResponseSuccess(String cmd, String serialNum, Response response, Bundle bundle) {
             // 设备注册成功
             if (DeviceCmd.REGISTER.equals(cmd)) {
+                if (Constants.isEntry) {
+                    List<RegisterInfo> infos = response.dataArray;
+                    RegisterInfo info = infos.get(0);
+                    DeviceParams.getInstance().setAESkey(info.aeskey);
+                }
+
                 SocketManager.intance().startPulse();
                 sendEventMessage("ready_to_next_aty", null);
             }
@@ -157,7 +165,7 @@ public class DeviceBootService extends Service implements LocationService.ILocat
         SocketManager.intance().registertOnActionListener(
                 REQUEST_GROUP_TAG,
                 DeviceCmd.REGISTER,
-                null,
+                RegisterResponse.class,
                 responseActionListener);
 
         SocketManager.intance().registertOnActionListener(
@@ -165,6 +173,7 @@ public class DeviceBootService extends Service implements LocationService.ILocat
                 DeviceCmd.PAT_SEND_MESSAGE,
                 PatInfo.class,
                 responseActionListener);
+
         SocketManager.intance().preAnalysisResponseNoRequestTag(
                 REQUEST_GROUP_TAG,
                 DeviceCmd.PAT_SEND_MESSAGE,
@@ -173,6 +182,8 @@ public class DeviceBootService extends Service implements LocationService.ILocat
 
     // 设备注册
     private void registerDevice() {
+        DeviceParams.getInstance().resetAESkey();
+        Logger.e("蜜月：" + DeviceParams.getInstance().getAESkey());
         RegisterRequest request = new RegisterRequest();
 
         request.deviceID = DeviceParams.getInstance().getDeviceId();
@@ -309,7 +320,7 @@ public class DeviceBootService extends Service implements LocationService.ILocat
         gpsRequest.setLongitude(longitude);
         gpsRequest.setLatitude(latitude);
 
-        SocketManager.intance().launch(REQUEST_GROUP_TAG, gpsRequest, null);
+//        SocketManager.intance().launch(REQUEST_GROUP_TAG, gpsRequest, null);
     }
 
     // 设备通用反馈

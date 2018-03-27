@@ -7,8 +7,7 @@
  */
 
 package com.atgc.hd.comm.config;
-import android.content.Context;
-import com.atgc.hd.HDApplication;
+
 /**
  * <p>描述：设备参数
  * <p>作者：duanjisi 2018年 02月 06日
@@ -16,11 +15,11 @@ import com.atgc.hd.HDApplication;
 
 public class DeviceParams {
     private static DeviceParams deviceParams = null;
-    private String deviceId;
-    private Context mContext;
+    private String deviceId = "10012017020000000000";
+    private String aeskey = "";
 
-    public DeviceParams() {
-        mContext = HDApplication.getInstance().getApplicationContext();
+    private DeviceParams() {
+        resetAESkey();
     }
 
     public static DeviceParams getInstance() {
@@ -35,13 +34,18 @@ public class DeviceParams {
     }
 
     public String getDeviceId() {
-//        10012017020000000000
-//        10012017001899000022
-//        10012017f6d0101be5ed
-//        if (TextUtils.isEmpty(deviceId)) {
-//            deviceId = Utils.getMacAddressFromIp(mContext);
-//        }
-//        return deviceId;
-        return "10012017020000000000";
+        return deviceId;
+    }
+
+    public void setAESkey(String aeskey) {
+        this.aeskey = aeskey;
+    }
+
+    public String getAESkey() {
+        return aeskey;
+    }
+
+    public void resetAESkey() {
+        aeskey = deviceId.substring(4);
     }
 }
