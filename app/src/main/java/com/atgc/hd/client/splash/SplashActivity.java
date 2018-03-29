@@ -63,7 +63,7 @@ public class SplashActivity extends BaseActivity {
 
         barHelper.displayActionBar(false);
 
-        String btnText = Constants.isEntry ? "加密模式：ON" : "加密模式OFF";
+        String btnText = Constants.isEntry ? "加密模式：ON" : "加密模式：OFF";
         btnEntrypt.setText(btnText);
 
         tvTips.setText("\n" + IPPort.getHOST());

@@ -183,7 +183,6 @@ public class DeviceBootService extends Service implements LocationService.ILocat
     // 设备注册
     private void registerDevice() {
         DeviceParams.getInstance().resetAESkey();
-        Logger.e("蜜月：" + DeviceParams.getInstance().getAESkey());
         RegisterRequest request = new RegisterRequest();
 
         request.deviceID = DeviceParams.getInstance().getDeviceId();

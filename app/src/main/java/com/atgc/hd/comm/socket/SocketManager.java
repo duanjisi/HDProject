@@ -435,7 +435,7 @@ public class SocketManager {
     public void preAnalysisResponseNoRequestTag(String groupTag,
                                                 String cmd,
                                                 Bundle bundle) {
-        analysisManager.preAnalysisResponseNoRequestTag(groupTag, cmd, null);
+        analysisManager.preAnalysisResponseNoRequestTag(groupTag, cmd, bundle);
     }
 
 
